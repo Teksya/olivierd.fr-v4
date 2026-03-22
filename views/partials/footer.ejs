@@ -1,0 +1,42 @@
+﻿  </main>
+
+  <footer class="site-footer">
+
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-brand__name">Olivier Dutoit</span>
+        <p class="footer-brand__tagline">Terminale Bac Pro CIEL &mdash; futur BTS SIO SISR</p>
+      </div>
+      <nav class="footer-nav">
+        <a href="/" class="footer-nav__link">Accueil</a>
+        <a href="/about" class="footer-nav__link">A propos</a>
+        <a href="/work" class="footer-nav__link">Projets</a>
+        <a href="/contact" class="footer-nav__link">Contact</a>
+      </nav>
+      <div class="footer-social">
+        <a href="http://github.com/olivierdti" target="_blank" rel="noopener" class="footer-social__link" aria-label="GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+        <a href="https://fr.linkedin.com/in/olivier-dutoit" target="_blank" rel="noopener" class="footer-social__link" aria-label="LinkedIn">
+          <i class="fa-brands fa-linkedin"></i>
+        </a>
+        <a href="mailto:contact@olivierd.fr" class="footer-social__link" aria-label="Email">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <span class="footer-bar__copy">&copy; <%= new Date().getFullYear() %> Olivier Dutoit &mdash; Tous droits r&eacute;serv&eacute;s</span>
+      <span class="footer-bar__copy">olivierd.fr</span>
+    </div>
+
+  </footer>
+
+  <script>
+    document.querySelectorAll('.reveal').forEach(el => {
+      new IntersectionObserver(([e]) => { if(e.isIntersecting) { el.classList.add('visible'); } }, {threshold:.12}).observe(el);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+﻿<%- include('partials/header') %>
+
+<div class="page-wrap">
+
+  <!-- HERO -->
+  <section style="padding:5rem 0 4rem">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center">
+
+      <div>
+        <p class="section-label reveal">Etudiant en informatique &middot; France</p>
+        <h1 class="reveal" style="font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:800;color:var(--text-strong);margin-bottom:1.5rem;transition-delay:.05s">
+          Olivier DUTOIT
+        </h1>
+        <p class="reveal" style="font-size:1rem;color:var(--text-body);max-width:480px;line-height:1.8;margin-bottom:2rem;transition-delay:.1s">
+          Actuellement en <strong style="color:var(--text-strong);font-weight:600">Terminale Bac Pro CIEL</strong>, je recherche une alternance en <strong style="color:var(--text-strong);font-weight:600">BTS SIO SISR</strong> pour approfondir mes comp&eacute;tences en r&eacute;seaux et administration syst&egrave;me. Passionn&eacute; par l&apos;infrastructure IT, je d&eacute;veloppe &eacute;galement mes comp&eacute;tences en d&eacute;veloppement web pour cr&eacute;er des outils et interfaces modernes.
+        </p>
+        <div class="reveal" style="display:flex;gap:.75rem;flex-wrap:wrap;transition-delay:.15s">
+          <a href="/work" class="btn btn-primary">Voir mes projets</a>
+          <a href="/contact" class="btn btn-ghost">Me contacter</a>
+        </div>
+      </div>
+
+      <!-- Terminal -->
+      <div class="reveal term-wrap" style="transition-delay:.2s">
+        <div class="term-titlebar">
+          <span class="term-win-title">olivier@srv-01 &mdash; Konsole</span>
+          <div class="term-win-btns">
+            <span class="term-win-btn"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><polyline points="1.5,3 4.5,6 7.5,3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="term-win-btn"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><polyline points="1.5,6 4.5,3 7.5,6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="term-win-btn term-win-btn--close"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><line x1="1.5" y1="1.5" x2="7.5" y2="7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="7.5" y1="1.5" x2="1.5" y2="7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+          </div>
+        </div>
+        <div class="term-tabs">
+          <div class="term-tab term-tab--active">Shell</div>
+        </div>
+        <div class="term-body">
+          <div id="terminal-output"></div>
+          <span class="term-cursor" id="term-cursor">&#9608;</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- STATS + TECH -->
+  <div class="stat-block reveal">
+
+    <div class="stat-xp">
+      <span class="stat-xp__big">+3 ans</span>
+      <span class="stat-xp__big" style="color:var(--text-body);font-weight:400">d&apos;exp&eacute;rience</span>
+      <span class="stat-xp__sub">avec les technologies modernes</span>
+    </div>
+
+    <div class="tech-cards">
+      <div class="tc tc--win">
+        <div class="tc__top"><span class="tc__num">01</span><span class="tc__dot"></span></div>
+        <div class="tc__bottom">
+          <span class="tc__name">Windows Server</span>
+          <span class="tc__sub">2016 &middot; 2019 &middot; 2022</span>
+        </div>
+      </div>
+      <div class="tc tc--lnx">
+        <div class="tc__top"><span class="tc__num">02</span><span class="tc__dot"></span></div>
+        <div class="tc__bottom">
+          <span class="tc__name">Linux</span>
+          <span class="tc__sub">Debian &middot; Ubuntu &middot; Kali</span>
+        </div>
+      </div>
+      <div class="tc tc--net">
+        <div class="tc__top"><span class="tc__num">03</span><span class="tc__dot"></span></div>
+        <div class="tc__bottom">
+          <span class="tc__name">Cisco &middot; Mikrotik</span>
+          <span class="tc__sub">VLAN &middot; VPN &middot; Firewall</span>
+        </div>
+      </div>
+      <div class="tc tc--prx">
+        <div class="tc__top"><span class="tc__num">04</span><span class="tc__dot"></span></div>
+        <div class="tc__bottom">
+          <span class="tc__name">Proxmox PVE</span>
+          <span class="tc__sub">KVM &middot; LXC &middot; Clustering</span>
+        </div>
+      </div>
+      <div class="tc tc--cnt">
+        <div class="tc__top"><span class="tc__num">05</span><span class="tc__dot"></span></div>
+        <div class="tc__bottom">
+          <span class="tc__name">Conteneurs</span>
+          <span class="tc__sub">Docker &middot; OVM &middot; NAS</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TECHNOLOGIES -->
+  <div class="stat-block reveal">
+
+    <div class="stat-xp">
+      <span class="stat-xp__big">Technologies</span>
+      <span class="stat-xp__big" style="color:var(--text-body);font-weight:400">que j&apos;utilise</span>
+    </div>
+
+    <div class="tech-card-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem">
+
+      <div class="tech-card">
+        <div class="tech-card__title">R&eacute;seaux &amp; Syst&egrave;mes</div>
+        <div class="tech-card__chips">
+          <span class="chip">Windows Server</span>
+          <span class="chip">Linux</span>
+          <span class="chip">Cisco</span>
+          <span class="chip">Mikrotik</span>
+          <span class="chip">Wireshark</span>
+        </div>
+      </div>
+
+      <div class="tech-card">
+        <div class="tech-card__title">Langages</div>
+        <div class="tech-card__chips">
+          <span class="chip">JavaScript</span>
+          <span class="chip">Node.js</span>
+          <span class="chip">PHP</span>
+          <span class="chip">Python</span>
+          <span class="chip">C#</span>
+          <span class="chip">Java</span>
+          <span class="chip">Lua</span>
+        </div>
+      </div>
+
+      <div class="tech-card">
+        <div class="tech-card__title">Front-End</div>
+        <div class="tech-card__chips">
+          <span class="chip">HTML/CSS</span>
+          <span class="chip">Tailwind CSS</span>
+          <span class="chip">Figma</span>
+          <span class="chip">Canva</span>
+        </div>
+      </div>
+
+      <div class="tech-card">
+        <div class="tech-card__title">Outils &amp; Autres</div>
+        <div class="tech-card__chips">
+          <span class="chip">Docker</span>
+          <span class="chip">Git</span>
+          <span class="chip">MySQL</span>
+          <span class="chip">Excel</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script defer src="/js/scroll.js"></script>
+<script defer src="/js/terminal.js"></script>
+
+<%- include('partials/footer') %>

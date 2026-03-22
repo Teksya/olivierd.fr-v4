@@ -1,0 +1,45 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><%= title || 'Olivier D.' %></title>
+
+  <meta name="description" content="<%= description || 'Olivier DUTOIT — Étudiant en Bac Pro CIEL, recherche alternance BTS SIO SISR.' %>">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= url || 'https://www.olivierd.fr' %>">
+  <meta property="og:title" content="<%= title || 'Olivier D.' %>">
+  <meta property="og:description" content="<%= description || 'Étudiant en Bac Pro CIEL recherchant une alternance BTS SIO SISR.' %>">
+  <meta property="og:image" content="<%= ogImage || 'https://www.olivierd.fr/og-image.png' %>">
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/js/loader.js" defer></script>
+</head>
+<body style="overflow:hidden">
+  <div id="page-loader">
+    <div class="ld-dot-row">
+      <div class="ld-dot"></div>
+      <div class="ld-dot"></div>
+      <div class="ld-dot"></div>
+    </div>
+  </div>
+
+  <nav class="site-nav">
+    <div class="site-nav__inner">
+      <a href="/" class="nav-logo">Olivier D.</a>
+      <div class="nav-links">
+        <a href="/work" class="nav-link">Travaux</a>
+        <a href="/about" class="nav-link">À propos</a>
+        <a href="/contact" class="nav-link">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>

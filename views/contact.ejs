@@ -1,0 +1,107 @@
+﻿<%- include('partials/header') %>
+
+<div class="page-wrap">
+
+  <!-- -- HEADER -------------------------------------------- -->
+  <section style="padding:4rem 0 3rem">
+    <p class="section-label reveal">Discutons</p>
+    <h1 class="reveal" style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--text-strong);margin-bottom:1rem;transition-delay:.05s">Me contacter</h1>
+    <p class="reveal" style="color:var(--text);max-width:460px;transition-delay:.1s">Vous avez un projet ou une opportunit? d'alternance BTS SIO SISR&nbsp;? Je suis disponible.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- -- CONTENU ----------------------------------------- -->
+  <section style="padding:3.5rem 0 5rem">
+    <div class="reveal" style="display:grid;grid-template-columns:2fr 3fr;gap:3rem;align-items:start;transition-delay:.06s">
+
+      <!-- Info -->
+      <div>
+        <p style="font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.25rem">Coordonn?es</p>
+
+        <a href="mailto:contact@olivierd.fr" class="cinfo-row">
+          <div class="cinfo-icon"><i class="fas fa-envelope"></i></div>
+          <div>
+            <div class="cinfo-label">Email</div>
+            <div class="cinfo-val">contact@olivierd.fr</div>
+          </div>
+        </a>
+
+        <a href="http://github.com/olivierdti" target="_blank" rel="noopener" class="cinfo-row">
+          <div class="cinfo-icon"><i class="fab fa-github"></i></div>
+          <div>
+            <div class="cinfo-label">GitHub</div>
+            <div class="cinfo-val">olivierdti</div>
+          </div>
+        </a>
+
+        <a href="https://fr.linkedin.com/in/olivier-dutoit" target="_blank" rel="noopener" class="cinfo-row">
+          <div class="cinfo-icon"><i class="fab fa-linkedin"></i></div>
+          <div>
+            <div class="cinfo-label">LinkedIn</div>
+            <div class="cinfo-val">olivier-dutoit</div>
+          </div>
+        </a>
+
+        <div class="cinfo-row" style="cursor:default">
+          <div class="cinfo-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <div class="cinfo-label">Localisation</div>
+            <div class="cinfo-val">France</div>
+          </div>
+        </div>
+
+        <div style="margin-top:1.75rem;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)">
+          <p style="font-size:.75rem;color:var(--text-muted);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.06em;font-weight:600">Statut</p>
+          <p style="font-size:.9rem;color:var(--text-body)">Ouvert aux opportunit?s d'alternance <strong style="color:var(--text-strong);font-weight:600">BTS SIO SISR</strong></p>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem">
+        <p style="font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.5rem">Envoyer un message</p>
+
+        <% if (success) { %>
+        <div style="padding:.85rem 1rem;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);border-radius:var(--radius);margin-bottom:1.1rem;font-size:.875rem;color:#4ade80">
+          <%= success %>
+        </div>
+        <% } %>
+        <% if (error) { %>
+        <div style="padding:.85rem 1rem;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2);border-radius:var(--radius);margin-bottom:1.1rem;font-size:.875rem;color:#f87171">
+          <%= error %>
+        </div>
+        <% } %>
+
+        <form action="/contact" method="POST" style="display:flex;flex-direction:column;gap:1.1rem">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="form-field">
+              <label class="form-label" for="name">Nom</label>
+              <input class="form-input" type="text" id="name" name="name" placeholder="Jean Dupont" required>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="email">Email</label>
+              <input class="form-input" type="email" id="email" name="email" placeholder="jean@example.com" required>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="subject">Sujet</label>
+            <input class="form-input" type="text" id="subject" name="subject" placeholder="Proposition d'alternance BTS SIO SISR">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="message">Message</label>
+            <textarea class="form-textarea" id="message" name="message" placeholder="Bonjour Olivier, ..." required></textarea>
+          </div>
+          <div class="cf-turnstile" data-sitekey="<%= turnstileSiteKey %>" data-theme="dark"></div>
+          <div>
+            <button class="btn btn-primary" type="submit" style="border:none;cursor:pointer">Envoyer le message</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<%- include('partials/footer') %>

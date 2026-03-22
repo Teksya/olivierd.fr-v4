@@ -1,0 +1,60 @@
+﻿<%- include('partials/header') %>
+
+<div class="page-wrap">
+
+  <section style="padding:4rem 0 2.5rem">
+    <p class="section-label reveal">Projets &amp; r&eacute;alisations</p>
+    <h1 class="reveal" style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--text-strong);margin-bottom:.75rem;transition-delay:.05s">Mes Travaux</h1>
+    <p class="reveal" style="color:var(--text);max-width:480px;transition-delay:.1s">Projets acad&eacute;miques et personnels &mdash; infrastructure, administration syst&egrave;me, d&eacute;veloppement.</p>
+  </section>
+
+  <section style="padding-bottom:5rem">
+
+    <% const featured = projects.find(p => p.featured); %>
+    <% const others = projects.filter(p => !p.featured); %>
+
+    <% if (featured) { %>
+      <div class="reveal card" style="margin-bottom:1rem;display:grid;grid-template-columns:1fr 1fr;overflow:hidden">
+        <img loading="lazy" src="<%= featured.image %>" alt="<%= featured.title %>" class="card-img" style="height:100%;min-height:200px">
+        <div class="card-body" style="display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem">
+              <% featured.chips.forEach(chip => { %>
+                <span class="chip"><%= chip %></span>
+              <% }); %>
+            </div>
+            <div class="card-title" style="font-size:1.2rem;margin-bottom:.6rem"><%= featured.title %></div>
+            <p class="card-desc"><%= featured.description %></p>
+          </div>
+          <div class="card-tags">
+            <% featured.tags.forEach(tag => { %>
+              <span class="chip"><%= tag %></span>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <div class="reveal" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;transition-delay:.06s">
+
+      <% others.forEach(project => { %>
+        <div class="card">
+          <img loading="lazy" src="<%= project.image %>" alt="<%= project.title %>" class="card-img-sm">
+          <div class="card-body">
+            <div class="card-title"><%= project.title %></div>
+            <p class="card-desc"><%= project.description %></p>
+            <div class="card-tags">
+              <% project.tags.forEach(tag => { %>
+                <span class="chip"><%= tag %></span>
+              <% }); %>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+
+    </div>
+  </section>
+
+</div>
+
+<%- include('partials/footer') %>

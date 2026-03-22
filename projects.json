@@ -1,0 +1,139 @@
+[
+  {
+    "id": 1,
+    "featured": true,
+    "title": "Système de logging SSH & fail2ban",
+    "description": "Centralisation et archivage des connexions SSH et des actions fail2ban. Notifications temps réel via webhook et email, archivage automatique.",
+    "image": "ssh.webp",
+    "tags": [
+      "bash",
+      "fail2ban",
+      "webhook",
+      "logging"
+    ],
+    "chips": [
+      "Featured",
+      "Security"
+    ]
+  },
+  {
+    "id": 8,
+    "featured": false,
+    "title": "Portfolio Web v4",
+    "description": "Ce site — développé avec Express.js et EJS. Design moderne et responsive.",
+    "image": "api.webp",
+    "tags": [
+      "node.js",
+      "express",
+      "ejs"
+    ]
+  },
+  {
+    "id": 2,
+    "featured": false,
+    "title": "Monitoring Proxmox",
+    "description": "Surveillance hebdomadaire des VMs/CT — détection d'état, redémarrage auto, notifications webhook & email.",
+    "image": "proxmox.webp",
+    "tags": [
+      "bash",
+      "proxmox",
+      "cron"
+    ]
+  },
+  {
+    "id": 3,
+    "featured": false,
+    "title": "Nextcloud self-hosted",
+    "description": "Déploiement Nextcloud auto-hébergé avec NAS pour le stockage. Apache, PHP, tâches cron, partage SMB.",
+    "image": "nextcloud.webp",
+    "tags": [
+      "nextcloud",
+      "apache",
+      "php"
+    ]
+  },
+  {
+    "id": 4,
+    "featured": false,
+    "title": "Configuration Réseau",
+    "description": "Infrastructure réseau complète — routage, VLAN, pare-feu, VPN sur Mikrotik et HP Aruba.",
+    "image": "switch.webp",
+    "tags": [
+      "mikrotik",
+      "vlan",
+      "vpn"
+    ]
+  },
+  {
+    "id": 5,
+    "featured": false,
+    "title": "Serveur Mail",
+    "description": "Serveur mail avec poste.io via Docker — gestion boîtes, DNS (MX, SPF, DKIM), sécurisation TLS.",
+    "image": "mails.webp",
+    "tags": [
+      "docker",
+      "poste.io",
+      "dns"
+    ]
+  },
+  {
+    "id": 6,
+    "featured": false,
+    "title": "Serveur Proxmox",
+    "description": "Configuration et administration d'une node Proxmox dédiée à l'hébergement avec monitoring.",
+    "image": "proxmox.webp",
+    "tags": [
+      "pve",
+      "linux",
+      "kvm"
+    ]
+  },
+  {
+    "id": 7,
+    "featured": false,
+    "title": "NAS OpenMediaVault",
+    "description": "Mise en place d'un NAS avec OpenMediaVault — configuration SMB/NFS, gestion RAID.",
+    "image": "hdd.webp",
+    "tags": [
+      "omv",
+      "smb",
+      "raid"
+    ]
+  },
+  {
+    "id": 9,
+    "featured": false,
+    "title": "API REST",
+    "description": "API REST Node.js/Express pour gestion de données utilisateurs sur un serveur de jeu Garry's Mod.",
+    "image": "api.webp",
+    "tags": [
+      "node.js",
+      "express",
+      "mysql"
+    ]
+  },
+  {
+    "id": 10,
+    "featured": false,
+    "title": "Site vitrine — solve-scp",
+    "description": "Site vitrine pour un serveur Garry's Mod SCP RP — lore, équipes, avancement du projet.",
+    "image": "solvescp.webp",
+    "tags": [
+      "html",
+      "css",
+      "design"
+    ]
+  },
+  {
+    "id": 11,
+    "featured": false,
+    "title": "Site vitrine — solve-city.fr",
+    "description": "Site vitrine GTA RP — concept, captures et statut. Projet non abouti.",
+    "image": "solvecity.webp",
+    "tags": [
+      "html",
+      "css",
+      "gta rp"
+    ]
+  }
+]
