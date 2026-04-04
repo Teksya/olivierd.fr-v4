@@ -222,7 +222,7 @@ function githubGet(path) {
 }
 
 function formatGhEvent(ev) {
-	const repo = ev.repo?.name?.replace('olivierdti/', '') || ev.repo?.name || '';
+	const repo = ev.repo?.name?.replace('Teksya/', '') || ev.repo?.name || '';
 	switch (ev.type) {
 		case 'PushEvent': {
 			const n = ev.payload?.commits?.length || 1;
@@ -248,7 +248,7 @@ function formatGhEvent(ev) {
 app.get('/api/github', async (req, res) => {
 	try {
 		if (ghCache && Date.now() - ghCacheAt < 120000) return res.json(ghCache);
-		const events = await githubGet('/users/olivierdti/events/public?per_page=1');
+		const events = await githubGet('/users/Teksya/events/public?per_page=1');
 		if (!Array.isArray(events) || !events[0]) return res.json({ ok: false });
 		const ev = events[0];
 		const fmt = formatGhEvent(ev);
