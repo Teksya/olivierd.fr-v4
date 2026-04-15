@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><%= title || 'Administration - À propos' %></title>
+  <meta name="description" content="Gestion des intégrations de la page À propos.">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-page">
+  <main class="admin-layout">
+    <%- include('partials/admin-sidebar', { activePage }) %>
+
+    <section class="admin-content">
+      <header class="admin-topbar admin-topbar--page">
+        <div>
+          <p class="admin-kicker">Configuration</p>
+          <h1>A propos & integrations</h1>
+        </div>
+        <div class="admin-head-actions">
+          <a href="/about" class="btn btn-ghost" target="_blank" rel="noopener">Voir la page À propos</a>
+          <a href="/admin/logout" class="btn btn-ghost">Se déconnecter</a>
+        </div>
+      </header>
+
+      <% if (error) { %>
+        <div class="admin-alert admin-alert--error"><%= error %></div>
+      <% } %>
+      <% if (success) { %>
+        <div class="admin-alert admin-alert--success"><%= success %></div>
+      <% } %>
+
+      <section class="admin-panel">
+        <h2>Widgets de la page À propos</h2>
+        <p class="admin-help">Gérez ici les paramètres Spotify, Discord, GitHub et Homelab utilisés sur la page À propos.</p>
+
+        <form method="POST" action="/admin/about" class="admin-stack-form">
+          <article class="admin-subpanel">
+            <h3>Spotify</h3>
+            <div class="admin-form-grid">
+              <label class="admin-checkbox" for="SPOTIFY_ENABLED">
+                <input type="checkbox" id="SPOTIFY_ENABLED" name="SPOTIFY_ENABLED" value="true" <%= spotifyConfig.SPOTIFY_ENABLED ? 'checked' : '' %>>
+                Activer le widget Spotify
+              </label>
+
+              <div>
+                <label for="SPOTIFY_CLIENT_ID">Client ID</label>
+                <input id="SPOTIFY_CLIENT_ID" name="SPOTIFY_CLIENT_ID" type="text" value="<%= spotifyConfig.SPOTIFY_CLIENT_ID || '' %>">
+              </div>
+
+              <div>
+                <label for="SPOTIFY_CLIENT_SECRET">Client Secret</label>
+                <input id="SPOTIFY_CLIENT_SECRET" name="SPOTIFY_CLIENT_SECRET" type="text" value="<%= spotifyConfig.SPOTIFY_CLIENT_SECRET || '' %>">
+              </div>
+
+              <div class="admin-field-full">
+                <label for="SPOTIFY_REFRESH_TOKEN">Refresh Token</label>
+                <input id="SPOTIFY_REFRESH_TOKEN" name="SPOTIFY_REFRESH_TOKEN" type="text" value="<%= spotifyConfig.SPOTIFY_REFRESH_TOKEN || '' %>">
+              </div>
+            </div>
+            <p class="admin-help">Pour régénérer un token : <a href="/spotify-auth">lancer OAuth Spotify</a>.</p>
+          </article>
+
+          <article class="admin-subpanel">
+            <h3>Discord</h3>
+            <div class="admin-form-grid">
+              <label class="admin-checkbox" for="DISCORD_ENABLED">
+                <input type="checkbox" id="DISCORD_ENABLED" name="DISCORD_ENABLED" value="true" <%= spotifyConfig.DISCORD_ENABLED ? 'checked' : '' %>>
+                Activer le widget Discord
+              </label>
+
+              <div>
+                <label for="DISCORD_USER_ID">Discord User ID</label>
+                <input id="DISCORD_USER_ID" name="DISCORD_USER_ID" type="text" value="<%= spotifyConfig.DISCORD_USER_ID || '' %>">
+              </div>
+
+              <div>
+                <label for="DISCORD_USERNAME">Nom affiché</label>
+                <input id="DISCORD_USERNAME" name="DISCORD_USERNAME" type="text" value="<%= spotifyConfig.DISCORD_USERNAME || '' %>">
+              </div>
+
+              <div class="admin-field-full">
+                <label for="DISCORD_AVATAR_URL">URL avatar</label>
+                <input id="DISCORD_AVATAR_URL" name="DISCORD_AVATAR_URL" type="text" value="<%= spotifyConfig.DISCORD_AVATAR_URL || '' %>">
+              </div>
+            </div>
+          </article>
+
+          <article class="admin-subpanel">
+            <h3>GitHub</h3>
+            <div class="admin-form-grid">
+              <label class="admin-checkbox" for="GITHUB_ENABLED">
+                <input type="checkbox" id="GITHUB_ENABLED" name="GITHUB_ENABLED" value="true" <%= spotifyConfig.GITHUB_ENABLED ? 'checked' : '' %>>
+                Activer le widget GitHub
+              </label>
+
+              <div>
+                <label for="GITHUB_USERNAME">Nom d'utilisateur GitHub</label>
+                <input id="GITHUB_USERNAME" name="GITHUB_USERNAME" type="text" value="<%= spotifyConfig.GITHUB_USERNAME || '' %>">
+              </div>
+
+              <div>
+                <label for="GITHUB_TOKEN">Token GitHub (optionnel)</label>
+                <input id="GITHUB_TOKEN" name="GITHUB_TOKEN" type="password" value="<%= spotifyConfig.GITHUB_TOKEN || '' %>">
+              </div>
+            </div>
+          </article>
+
+          <article class="admin-subpanel">
+            <h3>Homelab (Uptime Kuma)</h3>
+            <div class="admin-form-grid">
+              <label class="admin-checkbox" for="HOMELAB_ENABLED">
+                <input type="checkbox" id="HOMELAB_ENABLED" name="HOMELAB_ENABLED" value="true" <%= spotifyConfig.HOMELAB_ENABLED ? 'checked' : '' %>>
+                Activer le widget Homelab
+              </label>
+
+              <div>
+                <label for="HOMELAB_NAME">Nom affiché</label>
+                <input id="HOMELAB_NAME" name="HOMELAB_NAME" type="text" value="<%= spotifyConfig.HOMELAB_NAME || '' %>">
+              </div>
+
+              <div>
+                <label for="UPTIME_BASE">Hôte Uptime Kuma</label>
+                <input id="UPTIME_BASE" name="UPTIME_BASE" type="text" value="<%= spotifyConfig.UPTIME_BASE || '' %>" placeholder="status.example.com">
+              </div>
+
+              <div>
+                <label for="UPTIME_SLUG">Slug status page</label>
+                <input id="UPTIME_SLUG" name="UPTIME_SLUG" type="text" value="<%= spotifyConfig.UPTIME_SLUG || '' %>" placeholder="global">
+              </div>
+            </div>
+          </article>
+
+          <button type="submit" class="btn btn-primary">Enregistrer les intégrations</button>
+        </form>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

@@ -4,12 +4,85 @@ const https = require('https');
 const querystring = require('querystring');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const projectsPath = path.join(__dirname, 'projects.json');
+const adminConfigPath = path.join(__dirname, 'admin-config.json');
 function loadProjects() {
 	delete require.cache[require.resolve(projectsPath)];
 	return require(projectsPath);
+}
+
+function saveProjects(projects) {
+	fs.writeFileSync(projectsPath, JSON.stringify(projects, null, 2) + '\n', 'utf8');
+}
+
+function parseBoolean(value) {
+	if (typeof value === 'boolean') return value;
+	const normalized = String(value || '').trim().toLowerCase();
+	return normalized === 'true' || normalized === '1' || normalized === 'on' || normalized === 'yes';
+}
+
+function loadAdminConfig() {
+	const defaults = {
+		SPOTIFY_ENABLED: process.env.SPOTIFY_ENABLED === 'true',
+		SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID || '',
+		SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET || '',
+		SPOTIFY_REFRESH_TOKEN: process.env.SPOTIFY_REFRESH_TOKEN || '',
+		DISCORD_ENABLED: process.env.DISCORD_ENABLED !== 'false',
+		DISCORD_USER_ID: process.env.DISCORD_USER_ID || '293855276665405440',
+		DISCORD_USERNAME: process.env.DISCORD_USERNAME || 'Teksya',
+		DISCORD_AVATAR_URL: process.env.DISCORD_AVATAR_URL || 'https://cdn.discordapp.com/avatars/293855276665405440/c0b1517c692b47673ddcfc35214514f3.webp?size=80',
+		GITHUB_ENABLED: process.env.GITHUB_ENABLED !== 'false',
+		GITHUB_USERNAME: process.env.GITHUB_USERNAME || 'Teksya',
+		GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
+		HOMELAB_ENABLED: process.env.HOMELAB_ENABLED !== 'false',
+		HOMELAB_NAME: process.env.HOMELAB_NAME || 'Homelab',
+		UPTIME_BASE: process.env.UPTIME_BASE || 'status.olivierd.fr',
+		UPTIME_SLUG: process.env.UPTIME_SLUG || 'global'
+	};
+
+	if (!fs.existsSync(adminConfigPath)) return defaults;
+
+	try {
+		const parsed = JSON.parse(fs.readFileSync(adminConfigPath, 'utf8'));
+		const has = (k) => Object.prototype.hasOwnProperty.call(parsed, k);
+		return {
+			...defaults,
+			...parsed,
+			SPOTIFY_ENABLED: has('SPOTIFY_ENABLED') ? parseBoolean(parsed.SPOTIFY_ENABLED) : defaults.SPOTIFY_ENABLED,
+			DISCORD_ENABLED: has('DISCORD_ENABLED') ? parseBoolean(parsed.DISCORD_ENABLED) : defaults.DISCORD_ENABLED,
+			GITHUB_ENABLED: has('GITHUB_ENABLED') ? parseBoolean(parsed.GITHUB_ENABLED) : defaults.GITHUB_ENABLED,
+			HOMELAB_ENABLED: has('HOMELAB_ENABLED') ? parseBoolean(parsed.HOMELAB_ENABLED) : defaults.HOMELAB_ENABLED
+		};
+	} catch (e) {
+		console.error('Admin config parse error:', e.message);
+		return defaults;
+	}
+}
+
+function saveAdminConfig(config) {
+	const sanitized = {
+		SPOTIFY_ENABLED: parseBoolean(config.SPOTIFY_ENABLED),
+		SPOTIFY_CLIENT_ID: String(config.SPOTIFY_CLIENT_ID || '').trim(),
+		SPOTIFY_CLIENT_SECRET: String(config.SPOTIFY_CLIENT_SECRET || '').trim(),
+		SPOTIFY_REFRESH_TOKEN: String(config.SPOTIFY_REFRESH_TOKEN || '').trim(),
+		DISCORD_ENABLED: parseBoolean(config.DISCORD_ENABLED),
+		DISCORD_USER_ID: String(config.DISCORD_USER_ID || '').trim(),
+		DISCORD_USERNAME: String(config.DISCORD_USERNAME || '').trim(),
+		DISCORD_AVATAR_URL: String(config.DISCORD_AVATAR_URL || '').trim(),
+		GITHUB_ENABLED: parseBoolean(config.GITHUB_ENABLED),
+		GITHUB_USERNAME: String(config.GITHUB_USERNAME || '').trim(),
+		GITHUB_TOKEN: String(config.GITHUB_TOKEN || '').trim(),
+		HOMELAB_ENABLED: parseBoolean(config.HOMELAB_ENABLED),
+		HOMELAB_NAME: String(config.HOMELAB_NAME || '').trim(),
+		UPTIME_BASE: String(config.UPTIME_BASE || '').trim(),
+		UPTIME_SLUG: String(config.UPTIME_SLUG || '').trim()
+	};
+
+	fs.writeFileSync(adminConfigPath, JSON.stringify(sanitized, null, 2) + '\n', 'utf8');
+	return sanitized;
 }
 
 const app = express();
@@ -26,20 +99,106 @@ app.use(express.json());
 const turnstileSiteKey = process.env.CLOUDFLARE_TURNSTILE_SITE_KEY || '';
 const turnstileSecretKey = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY || '';
 
+const adminAccessCode = String(process.env.ADMIN_ACCESS_CODE || '').trim();
+const adminSessionSecret = process.env.ADMIN_SESSION_SECRET || 'change-this-admin-session-secret';
+const adminSessionCookie = 'admin_session';
+const adminSessionDurationMs = 8 * 60 * 60 * 1000;
+
+if (!/^\d{6}$/.test(adminAccessCode)) {
+	console.warn('ADMIN_ACCESS_CODE is missing or invalid. Use a 6-digit code in .env to enable admin login.');
+}
+
+function parseCookies(header) {
+	const cookies = {};
+	if (!header) return cookies;
+
+	header.split(';').forEach((entry) => {
+		const idx = entry.indexOf('=');
+		if (idx <= 0) return;
+		const key = entry.slice(0, idx).trim();
+		const value = entry.slice(idx + 1).trim();
+		cookies[key] = decodeURIComponent(value);
+	});
+
+	return cookies;
+}
+
+function createAdminSessionValue() {
+	const issuedAt = Date.now();
+	const nonce = crypto.randomBytes(16).toString('hex');
+	const payload = `${issuedAt}.${nonce}`;
+	const sig = crypto.createHmac('sha256', adminSessionSecret).update(payload).digest('hex');
+	return `${payload}.${sig}`;
+}
+
+function verifyAdminSessionValue(value) {
+	if (!value) return false;
+	const parts = value.split('.');
+	if (parts.length !== 3) return false;
+
+	const [issuedAtRaw, nonce, sig] = parts;
+	if (!/^\d+$/.test(issuedAtRaw) || !nonce || !sig) return false;
+
+	const payload = `${issuedAtRaw}.${nonce}`;
+	const expected = crypto.createHmac('sha256', adminSessionSecret).update(payload).digest('hex');
+	const sigBuf = Buffer.from(sig);
+	const expBuf = Buffer.from(expected);
+	if (sigBuf.length !== expBuf.length) return false;
+	if (!crypto.timingSafeEqual(sigBuf, expBuf)) return false;
+
+	const issuedAt = Number(issuedAtRaw);
+	return Number.isFinite(issuedAt) && Date.now() - issuedAt <= adminSessionDurationMs;
+}
+
+function setAdminSessionCookie(res, value, maxAgeMs) {
+	const attrs = [
+		`${adminSessionCookie}=${encodeURIComponent(value)}`,
+		'Path=/',
+		'HttpOnly',
+		'SameSite=Strict',
+		`Max-Age=${Math.floor(maxAgeMs / 1000)}`
+	];
+
+	if (process.env.NODE_ENV === 'production') attrs.push('Secure');
+
+	res.setHeader('Set-Cookie', attrs.join('; '));
+}
+
+function requireAdmin(req, res, next) {
+	const cookies = parseCookies(req.headers.cookie || '');
+	if (verifyAdminSessionValue(cookies[adminSessionCookie])) return next();
+	return res.redirect('/admin/login');
+}
+
 // ── Spotify ────────────────────────────────────────────
-const spotifyEnabled      = process.env.SPOTIFY_ENABLED === 'true';
-const spotifyClientId     = process.env.SPOTIFY_CLIENT_ID || '';
-const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || '';
-const spotifyRefreshToken = process.env.SPOTIFY_REFRESH_TOKEN || '';
-const spotifyRedirectUri  = 'http://localhost:' + (process.env.PORT || 3000) + '/callback';
+let spotifyConfig = loadAdminConfig();
+
+function getAboutConfig() {
+	return {
+		spotifyEnabled: parseBoolean(spotifyConfig.SPOTIFY_ENABLED),
+		discordEnabled: parseBoolean(spotifyConfig.DISCORD_ENABLED),
+		discordUserId: String(spotifyConfig.DISCORD_USER_ID || '').trim(),
+		discordUsername: String(spotifyConfig.DISCORD_USERNAME || '').trim() || 'Discord',
+		discordAvatarUrl: String(spotifyConfig.DISCORD_AVATAR_URL || '').trim(),
+		githubEnabled: parseBoolean(spotifyConfig.GITHUB_ENABLED),
+		githubUsername: String(spotifyConfig.GITHUB_USERNAME || '').trim() || 'github',
+		homelabEnabled: parseBoolean(spotifyConfig.HOMELAB_ENABLED),
+		homelabName: String(spotifyConfig.HOMELAB_NAME || '').trim() || 'Homelab'
+	};
+}
 
 let spotifyAccessToken  = null;
 let spotifyTokenExpires = 0;
+let spotifyTokenKey = '';
 
-function spotifyPost(path, body) {
+function getSpotifyRedirectUri() {
+	return 'http://localhost:' + (process.env.PORT || 3000) + '/callback';
+}
+
+function spotifyPost(path, body, config) {
 	return new Promise((resolve, reject) => {
 		const postData = querystring.stringify(body);
-		const auth = Buffer.from(`${spotifyClientId}:${spotifyClientSecret}`).toString('base64');
+		const auth = Buffer.from(`${config.SPOTIFY_CLIENT_ID}:${config.SPOTIFY_CLIENT_SECRET}`).toString('base64');
 		const opts = {
 			hostname: 'accounts.spotify.com',
 			path,
@@ -83,54 +242,74 @@ function spotifyGet(path, token) {
 }
 
 async function getSpotifyToken() {
+	const tokenKey = `${spotifyConfig.SPOTIFY_CLIENT_ID}:${spotifyConfig.SPOTIFY_REFRESH_TOKEN}`;
+	if (tokenKey !== spotifyTokenKey) {
+		spotifyAccessToken = null;
+		spotifyTokenExpires = 0;
+		spotifyTokenKey = tokenKey;
+	}
+
 	if (spotifyAccessToken && Date.now() < spotifyTokenExpires) return spotifyAccessToken;
-	const data = await spotifyPost('/api/token', { grant_type: 'refresh_token', refresh_token: spotifyRefreshToken });
+	const data = await spotifyPost('/api/token', {
+		grant_type: 'refresh_token',
+		refresh_token: spotifyConfig.SPOTIFY_REFRESH_TOKEN
+	}, spotifyConfig);
 	spotifyAccessToken  = data.access_token;
 	spotifyTokenExpires = Date.now() + (data.expires_in - 60) * 1000;
 	return spotifyAccessToken;
 }
 
 // ── Spotify OAuth (setup temporaire) ──────────────────
-if (spotifyEnabled) {
-	app.get('/spotify-auth', (req, res) => {
-		const scope = 'user-read-currently-playing user-read-playback-state user-read-recently-played';
-		const url = 'https://accounts.spotify.com/authorize?' + querystring.stringify({
-			client_id: spotifyClientId,
-			response_type: 'code',
-			redirect_uri: spotifyRedirectUri,
-			scope
-		});
-		res.redirect(url);
-	});
+app.get('/spotify-auth', requireAdmin, (req, res) => {
+	if (!spotifyConfig.SPOTIFY_ENABLED || !spotifyConfig.SPOTIFY_CLIENT_ID || !spotifyConfig.SPOTIFY_CLIENT_SECRET) {
+		return res.status(400).send('Spotify non configuré.');
+	}
 
-	app.get('/callback', async (req, res) => {
-		const code = req.query.code;
-		if (!code) return res.send('Erreur : pas de code.');
-		try {
-			const data = await spotifyPost('/api/token', {
-				grant_type: 'authorization_code',
-				code,
-				redirect_uri: spotifyRedirectUri
-			});
-			res.send(`<pre style="font:1rem monospace;padding:2rem;background:#111;color:#4ade80">
+	const scope = 'user-read-currently-playing user-read-playback-state user-read-recently-played';
+	const url = 'https://accounts.spotify.com/authorize?' + querystring.stringify({
+		client_id: spotifyConfig.SPOTIFY_CLIENT_ID,
+		response_type: 'code',
+		redirect_uri: getSpotifyRedirectUri(),
+		scope
+	});
+	res.redirect(url);
+});
+
+app.get('/callback', requireAdmin, async (req, res) => {
+	if (!spotifyConfig.SPOTIFY_CLIENT_ID || !spotifyConfig.SPOTIFY_CLIENT_SECRET) {
+		return res.status(400).send('Spotify non configuré.');
+	}
+
+	const code = req.query.code;
+	if (!code) return res.send('Erreur : pas de code.');
+	try {
+		const data = await spotifyPost('/api/token', {
+			grant_type: 'authorization_code',
+			code,
+			redirect_uri: getSpotifyRedirectUri()
+		}, spotifyConfig);
+		res.send(`<pre style="font:1rem monospace;padding:2rem;background:#111;color:#4ade80">
 refresh_token obtenu :
 
 ${data.refresh_token}
 
-Copie cette valeur dans ton .env :
+Valeur détectée :
 SPOTIFY_REFRESH_TOKEN=${data.refresh_token}
 
-Puis supprime les routes /spotify-auth et /callback de server.js.
+Tu peux aussi la coller depuis l'admin.
 </pre>`);
-		} catch(e) {
-			res.send('Erreur : ' + e.message);
-		}
-	});
-}
+	} catch(e) {
+		res.send('Erreur : ' + e.message);
+	}
+});
 
 // ── Spotify helpers ───────────────────────────────────
 async function fetchSpotifyState() {
-	if (!spotifyClientId || !spotifyClientSecret || !spotifyRefreshToken) return { playing: false };
+	if (!spotifyConfig.SPOTIFY_ENABLED) return { playing: false };
+	if (!spotifyConfig.SPOTIFY_CLIENT_ID || !spotifyConfig.SPOTIFY_CLIENT_SECRET || !spotifyConfig.SPOTIFY_REFRESH_TOKEN) {
+		return { playing: false };
+	}
+
 	try {
 		const token = await getSpotifyToken();
 		const data  = await spotifyGet('/v1/me/player/currently-playing', token);
@@ -210,7 +389,8 @@ function githubGet(path) {
 			method: 'GET',
 			headers: { 'User-Agent': 'olivierd.fr', 'Accept': 'application/vnd.github+json' }
 		};
-		if (process.env.GITHUB_TOKEN) opts.headers['Authorization'] = 'Bearer ' + process.env.GITHUB_TOKEN;
+		const githubToken = String(spotifyConfig.GITHUB_TOKEN || process.env.GITHUB_TOKEN || '').trim();
+		if (githubToken) opts.headers['Authorization'] = 'Bearer ' + githubToken;
 		const req = https.request(opts, (res) => {
 			let d = '';
 			res.on('data', c => d += c);
@@ -247,8 +427,11 @@ function formatGhEvent(ev) {
 
 app.get('/api/github', async (req, res) => {
 	try {
+		if (!parseBoolean(spotifyConfig.GITHUB_ENABLED)) return res.json({ ok: false });
+		const githubUsername = String(spotifyConfig.GITHUB_USERNAME || '').trim();
+		if (!githubUsername) return res.json({ ok: false });
 		if (ghCache && Date.now() - ghCacheAt < 120000) return res.json(ghCache);
-		const events = await githubGet('/users/Teksya/events/public?per_page=1');
+		const events = await githubGet(`/users/${encodeURIComponent(githubUsername)}/events/public?per_page=1`);
 		if (!Array.isArray(events) || !events[0]) return res.json({ ok: false });
 		const ev = events[0];
 		const fmt = formatGhEvent(ev);
@@ -264,12 +447,17 @@ app.get('/api/github', async (req, res) => {
 // ── API Uptime Kuma ───────────────────────────────────
 let uptimeCache = null;
 let uptimeCacheAt = 0;
-const UPTIME_BASE = 'status.olivierd.fr';
-const UPTIME_SLUG = 'global';
 
-function uptimeGet(path) {
+function getUptimeConfig() {
+	return {
+		base: String(spotifyConfig.UPTIME_BASE || '').trim(),
+		slug: String(spotifyConfig.UPTIME_SLUG || '').trim()
+	};
+}
+
+function uptimeGet(hostname, path) {
 	return new Promise((resolve, reject) => {
-		const opts = { hostname: UPTIME_BASE, path, method: 'GET', headers: { 'User-Agent': 'olivierd.fr' } };
+		const opts = { hostname, path, method: 'GET', headers: { 'User-Agent': 'olivierd.fr' } };
 		const req = https.request(opts, (r) => {
 			let d = '';
 			r.on('data', c => d += c);
@@ -283,9 +471,12 @@ function uptimeGet(path) {
 app.get('/api/uptime', async (req, res) => {
 	if (uptimeCache && Date.now() - uptimeCacheAt < 60000) return res.json(uptimeCache);
 	try {
+		if (!parseBoolean(spotifyConfig.HOMELAB_ENABLED)) return res.json({ ok: false });
+		const uptime = getUptimeConfig();
+		if (!uptime.base || !uptime.slug) return res.json({ ok: false });
 		const [page, hb] = await Promise.all([
-			uptimeGet(`/api/status-page/${UPTIME_SLUG}`),
-			uptimeGet(`/api/status-page/heartbeat/${UPTIME_SLUG}`)
+			uptimeGet(uptime.base, `/api/status-page/${uptime.slug}`),
+			uptimeGet(uptime.base, `/api/status-page/heartbeat/${uptime.slug}`)
 		]);
 		const groups = (page.publicGroupList || []).filter(g => g.name !== 'Global');
 		const hbList  = hb.heartbeatList || {};
@@ -342,7 +533,8 @@ app.get('/about', (req, res) => res.render('about', {
 	title: 'Olivier D - À propos',
 	description: 'En savoir plus sur mon parcours, mes compétences en réseaux et systèmes, et mes projets.',
 	url: 'https://www.olivierd.fr/about',
-	ogImage: 'https://www.olivierd.fr/og-image.png'
+	ogImage: 'https://www.olivierd.fr/og-image.png',
+	aboutConfig: getAboutConfig()
 }));
 
 app.get('/work', (req, res) => res.render('work', { 
@@ -438,6 +630,263 @@ app.post('/contact', async (req, res) => {
 	} catch (err) {
 		console.error('Turnstile verification error:', err);
 		return res.status(500).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Erreur serveur lors de la vérification Turnstile.', success: null, description: 'Contactez-moi pour discuter d\'opportunités d\'alternance ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+	}
+});
+
+// ── Admin ─────────────────────────────────────────────
+app.get('/admin/login', (req, res) => {
+	res.render('admin-login', {
+		title: 'Admin Login',
+		error: null,
+		description: 'Connexion administrateur.',
+		url: 'https://www.olivierd.fr/admin/login',
+		ogImage: 'https://www.olivierd.fr/og-image.png'
+	});
+});
+
+app.post('/admin/login', (req, res) => {
+	const code = String(req.body.code || '').trim();
+
+	if (!/^\d{6}$/.test(code)) {
+		return res.status(400).render('admin-login', {
+			title: 'Admin Login',
+			error: 'Le code doit contenir exactement 6 chiffres.',
+			description: 'Connexion administrateur.',
+			url: 'https://www.olivierd.fr/admin/login',
+			ogImage: 'https://www.olivierd.fr/og-image.png'
+		});
+	}
+
+	if (!/^\d{6}$/.test(adminAccessCode)) {
+		return res.status(500).render('admin-login', {
+			title: 'Admin Login',
+			error: 'ADMIN_ACCESS_CODE n\'est pas configuré correctement sur le serveur.',
+			description: 'Connexion administrateur.',
+			url: 'https://www.olivierd.fr/admin/login',
+			ogImage: 'https://www.olivierd.fr/og-image.png'
+		});
+	}
+
+	if (code !== adminAccessCode) {
+		return res.status(401).render('admin-login', {
+			title: 'Admin Login',
+			error: 'Code invalide.',
+			description: 'Connexion administrateur.',
+			url: 'https://www.olivierd.fr/admin/login',
+			ogImage: 'https://www.olivierd.fr/og-image.png'
+		});
+	}
+
+	setAdminSessionCookie(res, createAdminSessionValue(), adminSessionDurationMs);
+	return res.redirect('/admin');
+});
+
+app.get('/admin/logout', (req, res) => {
+	setAdminSessionCookie(res, '', 0);
+	return res.redirect('/admin/login');
+});
+
+function renderAdminView(req, res, view, options = {}) {
+	const hasOwn = (key) => Object.prototype.hasOwnProperty.call(options, key);
+	const success = hasOwn('success') ? options.success : (req.query.success || null);
+	const error = hasOwn('error') ? options.error : (req.query.error || null);
+
+	return res.status(options.status || 200).render(view, {
+		title: options.title || 'Administration',
+		error,
+		success,
+		spotifyConfig,
+		aboutConfig: getAboutConfig(),
+		projects: options.projects || loadProjects(),
+		activePage: options.activePage || 'dashboard',
+		description: options.description || 'Administration du portfolio.',
+		url: `https://www.olivierd.fr${req.path}`,
+		ogImage: 'https://www.olivierd.fr/og-image.png'
+	});
+}
+
+app.get('/admin', requireAdmin, (req, res) => {
+	return renderAdminView(req, res, 'admin', {
+		title: 'Administration - Dashboard',
+		activePage: 'dashboard'
+	});
+});
+
+app.get('/admin/about', requireAdmin, (req, res) => {
+	return renderAdminView(req, res, 'admin-spotify', {
+		title: 'Administration - À propos',
+		activePage: 'about'
+	});
+});
+
+app.get('/admin/spotify', requireAdmin, (req, res) => res.redirect('/admin/about'));
+
+app.get('/admin/projects', requireAdmin, (req, res) => {
+	return renderAdminView(req, res, 'admin-projects', {
+		title: 'Administration - Projets',
+		activePage: 'projects'
+	});
+});
+
+app.get('/admin/projects/new', requireAdmin, (req, res) => {
+	return renderAdminView(req, res, 'admin-project-new', {
+		title: 'Administration - Nouveau projet',
+		activePage: 'project-new'
+	});
+});
+
+function handleAdminAboutSave(req, res) {
+	try {
+		ghCache = null;
+		ghCacheAt = 0;
+		uptimeCache = null;
+		uptimeCacheAt = 0;
+
+		spotifyConfig = saveAdminConfig({
+			SPOTIFY_ENABLED: parseBoolean(req.body.SPOTIFY_ENABLED),
+			SPOTIFY_CLIENT_ID: req.body.SPOTIFY_CLIENT_ID,
+			SPOTIFY_CLIENT_SECRET: req.body.SPOTIFY_CLIENT_SECRET,
+			SPOTIFY_REFRESH_TOKEN: req.body.SPOTIFY_REFRESH_TOKEN,
+			DISCORD_ENABLED: parseBoolean(req.body.DISCORD_ENABLED),
+			DISCORD_USER_ID: req.body.DISCORD_USER_ID,
+			DISCORD_USERNAME: req.body.DISCORD_USERNAME,
+			DISCORD_AVATAR_URL: req.body.DISCORD_AVATAR_URL,
+			GITHUB_ENABLED: parseBoolean(req.body.GITHUB_ENABLED),
+			GITHUB_USERNAME: req.body.GITHUB_USERNAME,
+			GITHUB_TOKEN: req.body.GITHUB_TOKEN,
+			HOMELAB_ENABLED: parseBoolean(req.body.HOMELAB_ENABLED),
+			HOMELAB_NAME: req.body.HOMELAB_NAME,
+			UPTIME_BASE: req.body.UPTIME_BASE,
+			UPTIME_SLUG: req.body.UPTIME_SLUG
+		});
+
+		spotifyAccessToken = null;
+		spotifyTokenExpires = 0;
+		spotifyTokenKey = '';
+
+		return res.redirect('/admin/about?success=' + encodeURIComponent('Configuration À propos enregistrée.'));
+	} catch (e) {
+		console.error('Admin Spotify update error:', e.message);
+		return renderAdminView(req, res, 'admin-spotify', {
+			status: 500,
+			activePage: 'about',
+			title: 'Administration - À propos',
+			error: 'Impossible d\'enregistrer la configuration À propos.',
+			success: null
+		});
+	}
+}
+
+app.post('/admin/about', requireAdmin, handleAdminAboutSave);
+app.post('/admin/spotify', requireAdmin, handleAdminAboutSave);
+
+function splitCsv(input) {
+	return String(input || '')
+		.split(',')
+		.map((s) => s.trim())
+		.filter(Boolean);
+}
+
+function normalizeProjectPayload(body, baseProject = {}) {
+	return {
+		...baseProject,
+		title: String(body.title || '').trim(),
+		description: String(body.description || '').trim(),
+		image: String(body.image || '').trim(),
+		tags: splitCsv(body.tags),
+		chips: splitCsv(body.chips),
+		featured: parseBoolean(body.featured)
+	};
+}
+
+function ensureSingleFeatured(projects, featuredId) {
+	return projects.map((project) => ({
+		...project,
+		featured: Number(project.id) === Number(featuredId)
+	}));
+}
+
+app.post('/admin/projects/create', requireAdmin, (req, res) => {
+	try {
+		const projects = loadProjects();
+		const maxId = projects.reduce((acc, p) => Math.max(acc, Number(p.id) || 0), 0);
+		const created = normalizeProjectPayload(req.body, {
+			id: maxId + 1,
+			featured: false
+		});
+
+		if (!created.title || !created.description) {
+			throw new Error('Titre et description obligatoires.');
+		}
+
+		let updatedProjects = [...projects, created];
+		if (created.featured) {
+			updatedProjects = ensureSingleFeatured(updatedProjects, created.id);
+		}
+
+		saveProjects(updatedProjects);
+		return res.redirect('/admin/projects?success=' + encodeURIComponent('Projet ajouté avec succès.'));
+	} catch (e) {
+		console.error('Admin project create error:', e.message);
+		return renderAdminView(req, res, 'admin-project-new', {
+			status: 400,
+			activePage: 'project-new',
+			title: 'Administration - Nouveau projet',
+			error: e.message || 'Impossible d\'ajouter le projet.',
+			success: null
+		});
+	}
+});
+
+app.post('/admin/projects/:id/update', requireAdmin, (req, res) => {
+	try {
+		const projectId = Number(req.params.id);
+		const projects = loadProjects();
+		const index = projects.findIndex((p) => Number(p.id) === projectId);
+		if (index === -1) throw new Error('Projet introuvable.');
+
+		const updated = normalizeProjectPayload(req.body, { ...projects[index], id: projects[index].id });
+		if (!updated.title || !updated.description) throw new Error('Titre et description obligatoires.');
+
+		projects[index] = updated;
+		let finalProjects = projects;
+		if (updated.featured) {
+			finalProjects = ensureSingleFeatured(projects, updated.id);
+		}
+
+		saveProjects(finalProjects);
+		return res.redirect('/admin/projects?success=' + encodeURIComponent('Projet mis à jour.'));
+	} catch (e) {
+		console.error('Admin project update error:', e.message);
+		return renderAdminView(req, res, 'admin-projects', {
+			status: 400,
+			activePage: 'projects',
+			title: 'Administration - Projets',
+			error: e.message || 'Impossible de modifier le projet.',
+			success: null
+		});
+	}
+});
+
+app.post('/admin/projects/:id/delete', requireAdmin, (req, res) => {
+	try {
+		const projectId = Number(req.params.id);
+		const projects = loadProjects();
+		const nextProjects = projects.filter((p) => Number(p.id) !== projectId);
+
+		if (nextProjects.length === projects.length) throw new Error('Projet introuvable.');
+
+		saveProjects(nextProjects);
+		return res.redirect('/admin/projects?success=' + encodeURIComponent('Projet supprimé.'));
+	} catch (e) {
+		console.error('Admin project delete error:', e.message);
+		return renderAdminView(req, res, 'admin-projects', {
+			status: 400,
+			activePage: 'projects',
+			title: 'Administration - Projets',
+			error: e.message || 'Impossible de supprimer le projet.',
+			success: null
+		});
 	}
 });
 

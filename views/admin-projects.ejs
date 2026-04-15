@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><%= title || 'Administration - Projets' %></title>
+  <meta name="description" content="Gestion des projets du portfolio.">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-page">
+  <main class="admin-layout">
+    <%- include('partials/admin-sidebar', { activePage }) %>
+
+    <section class="admin-content">
+      <header class="admin-topbar admin-topbar--page">
+        <div>
+          <p class="admin-kicker">Gestion des projets</p>
+          <h1>Projets existants</h1>
+        </div>
+        <div class="admin-head-actions">
+          <a href="/admin/projects/new" class="btn btn-primary">Nouveau projet</a>
+          <a href="/admin/logout" class="btn btn-ghost">Se déconnecter</a>
+        </div>
+      </header>
+
+      <% if (error) { %>
+        <div class="admin-alert admin-alert--error"><%= error %></div>
+      <% } %>
+      <% if (success) { %>
+        <div class="admin-alert admin-alert--success"><%= success %></div>
+      <% } %>
+
+      <section class="admin-panel">
+        <h2>Liste des projets</h2>
+
+        <% if (!projects.length) { %>
+          <p class="admin-muted">Aucun projet enregistré pour le moment.</p>
+        <% } %>
+
+        <div class="admin-project-list">
+          <% projects.forEach(project => { %>
+            <article class="admin-project-card">
+              <form id="project-form-<%= project.id %>" method="POST" action="/admin/projects/<%= project.id %>/update" class="admin-form-grid">
+                <div>
+                  <label>Titre</label>
+                  <input name="title" type="text" value="<%= project.title %>" required>
+                </div>
+
+                <div>
+                  <label>Image</label>
+                  <input name="image" type="text" value="<%= project.image %>">
+                </div>
+
+                <div class="admin-field-full">
+                  <label>Description</label>
+                  <textarea name="description" rows="4" required><%= project.description %></textarea>
+                </div>
+
+                <div>
+                  <label>Tags</label>
+                  <input name="tags" type="text" value="<%= (project.tags || []).join(', ') %>">
+                </div>
+
+                <div>
+                  <label>Chips</label>
+                  <input name="chips" type="text" value="<%= (project.chips || []).join(', ') %>">
+                </div>
+
+                <label class="admin-checkbox">
+                  <input name="featured" type="checkbox" value="true" <%= project.featured ? 'checked' : '' %>>
+                  Projet à la une
+                </label>
+
+              </form>
+
+              <div class="admin-card-actions">
+                <button type="submit" form="project-form-<%= project.id %>" class="btn btn-primary">Mettre à jour</button>
+                <form class="admin-delete-form" method="POST" action="/admin/projects/<%= project.id %>/delete" onsubmit="return confirm('Supprimer ce projet ?');">
+                  <button type="submit" class="btn admin-danger">Supprimer</button>
+                </form>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

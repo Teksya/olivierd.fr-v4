@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><%= title || 'Administration - Nouveau projet' %></title>
+  <meta name="description" content="Création de projet dans l'administration.">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-page">
+  <main class="admin-layout">
+    <%- include('partials/admin-sidebar', { activePage }) %>
+
+    <section class="admin-content">
+      <header class="admin-topbar admin-topbar--page">
+        <div>
+          <p class="admin-kicker">Gestion des projets</p>
+          <h1>Nouveau projet</h1>
+        </div>
+        <div class="admin-head-actions">
+          <a href="/admin/projects" class="btn btn-ghost">Voir tous les projets</a>
+          <a href="/admin/logout" class="btn btn-ghost">Se déconnecter</a>
+        </div>
+      </header>
+
+      <% if (error) { %>
+        <div class="admin-alert admin-alert--error"><%= error %></div>
+      <% } %>
+      <% if (success) { %>
+        <div class="admin-alert admin-alert--success"><%= success %></div>
+      <% } %>
+
+      <section class="admin-panel">
+        <h2>Créer un projet</h2>
+        <form method="POST" action="/admin/projects/create" class="admin-form-grid">
+          <div>
+            <label for="new-title">Titre</label>
+            <input id="new-title" name="title" type="text" required>
+          </div>
+
+          <div>
+            <label for="new-image">Image (ex : proxmox.webp)</label>
+            <input id="new-image" name="image" type="text" placeholder="image.webp">
+          </div>
+
+          <div class="admin-field-full">
+            <label for="new-description">Description</label>
+            <textarea id="new-description" name="description" rows="4" required></textarea>
+          </div>
+
+          <div>
+            <label for="new-tags">Tags (séparés par des virgules)</label>
+            <input id="new-tags" name="tags" type="text" placeholder="node.js, express, ejs">
+          </div>
+
+          <div>
+            <label for="new-chips">Chips (séparés par des virgules)</label>
+            <input id="new-chips" name="chips" type="text" placeholder="Featured, Security">
+          </div>
+
+          <label class="admin-checkbox" for="new-featured">
+            <input id="new-featured" name="featured" type="checkbox" value="true">
+            Définir comme projet à la une
+          </label>
+
+          <button type="submit" class="btn btn-primary">Ajouter le projet</button>
+        </form>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><%= title || 'Administration' %></title>
+  <meta name="description" content="Administration du portfolio.">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-page">
+  <main class="admin-layout">
+    <%- include('partials/admin-sidebar', { activePage }) %>
+
+    <section class="admin-content">
+      <header class="admin-topbar admin-topbar--page">
+        <div>
+          <p class="admin-kicker">Tableau de bord</p>
+          <h1>Administration du site</h1>
+        </div>
+        <div class="admin-head-actions">
+          <a href="/admin/projects/new" class="btn btn-primary">Nouveau projet</a>
+          <a href="/admin/logout" class="btn btn-ghost">Se déconnecter</a>
+        </div>
+      </header>
+
+      <% if (error) { %>
+        <div class="admin-alert admin-alert--error"><%= error %></div>
+      <% } %>
+      <% if (success) { %>
+        <div class="admin-alert admin-alert--success"><%= success %></div>
+      <% } %>
+
+      <% const featuredProject = projects.find((p) => p.featured); %>
+      <% const missingImagesCount = projects.filter((p) => !String(p.image || '').trim()).length; %>
+
+      <section class="admin-panel">
+        <h2>Vue d'ensemble</h2>
+        <p class="admin-help">Accédez rapidement aux sections clés pour gérer le portfolio.</p>
+
+        <div class="admin-overview-layout">
+          <div>
+            <div class="admin-dashboard-grid">
+              <article class="admin-stat-card">
+                <p class="admin-stat-label">Projets total</p>
+                <p class="admin-stat-value"><%= projects.length %></p>
+              </article>
+
+              <article class="admin-stat-card">
+                <p class="admin-stat-label">Projet à la une</p>
+                <p class="admin-stat-value"><%= featuredProject ? 'Oui' : 'Non' %></p>
+              </article>
+
+              <article class="admin-stat-card">
+                <p class="admin-stat-label">Spotify</p>
+                <p class="admin-stat-value"><%= spotifyConfig.SPOTIFY_ENABLED ? 'Actif' : 'Désactivé' %></p>
+              </article>
+
+              <article class="admin-stat-card">
+                <p class="admin-stat-label">Sans image</p>
+                <p class="admin-stat-value"><%= missingImagesCount %></p>
+              </article>
+            </div>
+
+            <div class="admin-quick-actions">
+              <a href="/admin/projects/new" class="btn btn-ghost">Ajouter un projet</a>
+              <a href="/admin/projects" class="btn btn-ghost">Éditer les projets</a>
+              <a href="/admin/about" class="btn btn-ghost">Configurer les intégrations</a>
+            </div>
+          </div>
+
+          <aside class="admin-activity-card" aria-label="Résumé activité">
+            <h3>Résumé rapide</h3>
+            <p class="admin-activity-line">
+              <span>Projet à la une :</span>
+              <strong><%= featuredProject ? featuredProject.title : 'Aucun' %></strong>
+            </p>
+            <p class="admin-activity-line">
+              <span>Dernier projet :</span>
+              <strong><%= projects.length ? projects[0].title : 'Aucun' %></strong>
+            </p>
+            <p class="admin-activity-line">
+              <span>Spotify :</span>
+              <strong><%= spotifyConfig.SPOTIFY_ENABLED ? 'Activé' : 'Désactivé' %></strong>
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="admin-panel">
+        <div class="admin-recent-header">
+          <h2>Derniers projets</h2>
+          <a href="/admin/projects" class="btn btn-ghost">Voir toute la liste</a>
+        </div>
+
+        <div class="admin-recent-list">
+          <% projects.slice(0, 5).forEach(project => { %>
+            <article class="admin-recent-item">
+              <div>
+                <p class="admin-recent-title"><%= project.title %></p>
+                <p class="admin-recent-meta"><%= (project.tags || []).slice(0, 3).join(' • ') || 'Sans tag' %></p>
+              </div>
+              <a href="/admin/projects" class="btn btn-ghost">Éditer</a>
+            </article>
+          <% }) %>
+          <% if (!projects.length) { %>
+            <p class="admin-muted">Aucun projet pour le moment.</p>
+          <% } %>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>
