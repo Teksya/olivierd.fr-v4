@@ -670,7 +670,7 @@ if (smtpHost && smtpUser) {
 
 app.get('/', (req, res) => res.render('index', { 
 	title: 'Olivier D - Accueil',
-	description: 'Étudiant en Bac Pro CIEL recherchant une alternance BTS SIO SISR. Passionné par les réseaux, administration système et développement web.',
+	description: 'Étudiant en Bac Pro CIEL futur alternant en BTS SIO SISR. Passionné par les réseaux, administration système et développement web.',
 	url: 'https://www.olivierd.fr',
 	ogImage: 'https://www.olivierd.fr/og-image.png'
 }));
@@ -696,7 +696,7 @@ app.get('/contact', (req, res) => res.render('contact', {
 	turnstileSiteKey, 
 	error: null, 
 	success: null,
-	description: 'Contactez-moi pour discuter d\'opportunités d\'alternance ou de projets.',
+	description: 'Contactez-moi pour discuter d\'opportunités de projets.',
 	url: 'https://www.olivierd.fr/contact',
 	ogImage: 'https://www.olivierd.fr/og-image.png'
 }));
@@ -745,7 +745,7 @@ app.post('/contact', async (req, res) => {
 	const token = req.body['cf-turnstile-response'];
 
 	if (!token) {
-		return res.status(400).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Validation Turnstile manquante.', success: null, description: 'Contactez-moi pour discuter d\'opportunités d\'alternance ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+		return res.status(400).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Validation Turnstile manquante.', success: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
 	}
 
 	try {
@@ -760,22 +760,22 @@ app.post('/contact', async (req, res) => {
 						text: `Nom: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
 						html: `<p><strong>Nom:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Message:</strong></p><p>${message}</p>`
 					});
-					return res.render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, success: 'Message envoyé avec succès.', error: null, description: 'Contactez-moi pour discuter d\'opportunités d\'alternance ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+					return res.render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, success: 'Message envoyé avec succès.', error: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
 				} catch (mailErr) {
 					console.error('Mail send error:', mailErr);
-					return res.status(500).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: "Impossible d'envoyer l'email.", success: null, description: 'Contactez-moi pour discuter d\'opportunités d\'alternance ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+					return res.status(500).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: "Impossible d'envoyer l'email.", success: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
 				}
 			} else {
 				// No transporter configured
 				console.warn('SMTP transporter not configured; skipping email send.');
-				return res.render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, success: 'Validation Turnstile réussie (email non envoyé, SMTP non configuré).', error: null, description: 'Contactez-moi pour discuter d\'opportunités d\'alternance ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+				return res.render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, success: 'Validation Turnstile réussie (email non envoyé, SMTP non configuré).', error: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
 			}
 		} else {
-			return res.status(400).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Échec de la vérification Turnstile.', success: null, description: 'Contactez-moi pour discuter d\'opportunités d\'alternance ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+			return res.status(400).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Échec de la vérification Turnstile.', success: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
 		}
 	} catch (err) {
 		console.error('Turnstile verification error:', err);
-		return res.status(500).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Erreur serveur lors de la vérification Turnstile.', success: null, description: 'Contactez-moi pour discuter d\'opportunités d\'alternance ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+		return res.status(500).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Erreur serveur lors de la vérification Turnstile.', success: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
 	}
 });
 
