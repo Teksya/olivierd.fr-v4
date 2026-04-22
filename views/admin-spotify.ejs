@@ -36,7 +36,7 @@
 
       <section class="admin-panel">
         <h2>Widgets de la page À propos</h2>
-        <p class="admin-help">Gérez ici les paramètres Spotify, Discord, GitHub et Homelab utilisés sur la page À propos.</p>
+        <p class="admin-help">Gérez ici les paramètres Spotify, Discord, GitHub et Infrastructure utilisés sur la page À propos.</p>
 
         <form method="POST" action="/admin/about" class="admin-stack-form">
           <article class="admin-subpanel">
@@ -111,7 +111,7 @@
           </article>
 
           <article class="admin-subpanel">
-            <h3>Homelab (Uptime Kuma)</h3>
+            <h3>Infrastructure (Kener)</h3>
             <div class="admin-form-grid">
               <label class="admin-checkbox" for="HOMELAB_ENABLED">
                 <input type="checkbox" id="HOMELAB_ENABLED" name="HOMELAB_ENABLED" value="true" <%= spotifyConfig.HOMELAB_ENABLED ? 'checked' : '' %>>
@@ -124,15 +124,16 @@
               </div>
 
               <div>
-                <label for="UPTIME_BASE">Hôte Uptime Kuma</label>
-                <input id="UPTIME_BASE" name="UPTIME_BASE" type="text" value="<%= spotifyConfig.UPTIME_BASE || '' %>" placeholder="status.example.com">
+                <label for="KENER_BASE">Hôte Kener</label>
+                <input id="KENER_BASE" name="KENER_BASE" type="text" value="<%= spotifyConfig.KENER_BASE || '' %>" placeholder="status.example.com">
               </div>
 
               <div>
-                <label for="UPTIME_SLUG">Slug status page</label>
-                <input id="UPTIME_SLUG" name="UPTIME_SLUG" type="text" value="<%= spotifyConfig.UPTIME_SLUG || '' %>" placeholder="global">
+                <label for="KENER_PAGE_PATH">Chemin de page (optionnel)</label>
+                <input id="KENER_PAGE_PATH" name="KENER_PAGE_PATH" type="text" value="<%= spotifyConfig.KENER_PAGE_PATH || '' %>" placeholder="/ ou vide pour la page principale">
               </div>
             </div>
+            <p class="admin-help">La clé API Kener est lue depuis la variable d'environnement KENER_API_KEY.</p>
           </article>
 
           <button type="submit" class="btn btn-primary">Enregistrer les intégrations</button>

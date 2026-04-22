@@ -107,21 +107,20 @@
     <% } %>
 
     <% if (!aboutConfig || aboutConfig.homelabEnabled) { %>
-    <div id="ut-card" class="ut-card" style="display:none">
+    <a id="ut-card" class="ut-card ut-card--link" href="https://status.olivierd.fr/" style="display:none">
       <div class="ut-card__banner"></div>
       <div class="ut-card__top">
         <div class="ut-card__icon-wrap">
           <svg class="ut-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28"><rect x="2" y="3" width="20" height="7" rx="1.5"/><rect x="2" y="14" width="20" height="7" rx="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="5.5" cy="17.5" r="1" fill="currentColor"/></svg>
         </div>
-        <svg class="ut-card__logo" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11 11-4.925 11-11S18.075 1 12 1zm0 2a9 9 0 1 1 0 18A9 9 0 0 1 12 3zm0 2a7 7 0 1 0 0 14A7 7 0 0 0 12 5zm-.5 3h1v5.25l3.5 2.1-.5.866L11.5 14V8z"/></svg>
-      </div>
+<img src="https://status.olivierd.fr/badge/_/uptime?sinceLast=2592000&color=043724&style=flat-square" alt="uptime" style="max-width: 150px;" />      </div>
       <div class="ut-card__body">
-        <div class="ut-card__name"><%= (aboutConfig && aboutConfig.homelabName) ? aboutConfig.homelabName : 'Homelab' %></div>
-        <div id="ut-status" class="ut-card__status">Chargement...</div>
+        <div class="ut-card__name"><%= (aboutConfig && aboutConfig.homelabName) ? aboutConfig.homelabName : 'Homelab' %></div> 
+        <div id="ut-status" class="ut-card__status">Chargement...</div> 
       </div>
       <div class="card__divider"></div>
       <div id="ut-groups" class="ut-card__groups"></div>
-    </div>
+    </a>
     <% } %>
 
     </div>

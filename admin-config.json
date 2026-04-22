@@ -12,6 +12,6 @@
   "GITHUB_TOKEN": "",
   "HOMELAB_ENABLED": true,
   "HOMELAB_NAME": "Homelab",
-  "UPTIME_BASE": "status.olivierd.fr",
-  "UPTIME_SLUG": "global"
+  "KENER_BASE": "status.olivierd.fr",
+  "KENER_PAGE_PATH": ""
 }

@@ -25,6 +25,7 @@ function parseBoolean(value) {
 }
 
 function loadAdminConfig() {
+	const legacySlug = String(process.env.UPTIME_SLUG || '').trim();
 	const defaults = {
 		SPOTIFY_ENABLED: process.env.SPOTIFY_ENABLED === 'true',
 		SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID || '',
@@ -39,8 +40,8 @@ function loadAdminConfig() {
 		GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
 		HOMELAB_ENABLED: process.env.HOMELAB_ENABLED !== 'false',
 		HOMELAB_NAME: process.env.HOMELAB_NAME || 'Homelab',
-		UPTIME_BASE: process.env.UPTIME_BASE || 'status.olivierd.fr',
-		UPTIME_SLUG: process.env.UPTIME_SLUG || 'global'
+		KENER_BASE: process.env.KENER_BASE || process.env.UPTIME_BASE || 'status.olivierd.fr',
+		KENER_PAGE_PATH: process.env.KENER_PAGE_PATH || (legacySlug && legacySlug !== 'global' ? legacySlug : '')
 	};
 
 	if (!fs.existsSync(adminConfigPath)) return defaults;
@@ -48,9 +49,13 @@ function loadAdminConfig() {
 	try {
 		const parsed = JSON.parse(fs.readFileSync(adminConfigPath, 'utf8'));
 		const has = (k) => Object.prototype.hasOwnProperty.call(parsed, k);
+		const kenerBase = has('KENER_BASE') ? parsed.KENER_BASE : (has('UPTIME_BASE') ? parsed.UPTIME_BASE : defaults.KENER_BASE);
+		const kenerPagePathRaw = has('KENER_PAGE_PATH') ? parsed.KENER_PAGE_PATH : (has('UPTIME_SLUG') ? parsed.UPTIME_SLUG : defaults.KENER_PAGE_PATH);
 		return {
 			...defaults,
 			...parsed,
+			KENER_BASE: String(kenerBase || '').trim(),
+			KENER_PAGE_PATH: normalizeKenerPagePath(kenerPagePathRaw),
 			SPOTIFY_ENABLED: has('SPOTIFY_ENABLED') ? parseBoolean(parsed.SPOTIFY_ENABLED) : defaults.SPOTIFY_ENABLED,
 			DISCORD_ENABLED: has('DISCORD_ENABLED') ? parseBoolean(parsed.DISCORD_ENABLED) : defaults.DISCORD_ENABLED,
 			GITHUB_ENABLED: has('GITHUB_ENABLED') ? parseBoolean(parsed.GITHUB_ENABLED) : defaults.GITHUB_ENABLED,
@@ -77,8 +82,8 @@ function saveAdminConfig(config) {
 		GITHUB_TOKEN: String(config.GITHUB_TOKEN || '').trim(),
 		HOMELAB_ENABLED: parseBoolean(config.HOMELAB_ENABLED),
 		HOMELAB_NAME: String(config.HOMELAB_NAME || '').trim(),
-		UPTIME_BASE: String(config.UPTIME_BASE || '').trim(),
-		UPTIME_SLUG: String(config.UPTIME_SLUG || '').trim()
+		KENER_BASE: String(config.KENER_BASE || '').trim(),
+		KENER_PAGE_PATH: normalizeKenerPagePath(config.KENER_PAGE_PATH)
 	};
 
 	fs.writeFileSync(adminConfigPath, JSON.stringify(sanitized, null, 2) + '\n', 'utf8');
@@ -170,11 +175,11 @@ function requireAdmin(req, res, next) {
 	return res.redirect('/admin/login');
 }
 
-// ── Spotify ────────────────────────────────────────────
+// ── Spotify ───────────────────────────────────────────
 let spotifyConfig = loadAdminConfig();
 
 function getAboutConfig() {
-	return {
+    return {
 		spotifyEnabled: parseBoolean(spotifyConfig.SPOTIFY_ENABLED),
 		discordEnabled: parseBoolean(spotifyConfig.DISCORD_ENABLED),
 		discordUserId: String(spotifyConfig.DISCORD_USER_ID || '').trim(),
@@ -187,7 +192,7 @@ function getAboutConfig() {
 	};
 }
 
-let spotifyAccessToken  = null;
+let spotifyAccessToken = null;
 let spotifyTokenExpires = 0;
 let spotifyTokenKey = '';
 
@@ -209,11 +214,19 @@ function spotifyPost(path, body, config) {
 				'Content-Length': Buffer.byteLength(postData)
 			}
 		};
+
 		const req = https.request(opts, (res) => {
 			let d = '';
-			res.on('data', c => d += c);
-			res.on('end', () => { try { resolve(JSON.parse(d)); } catch(e) { reject(e); } });
+			res.on('data', (c) => d += c);
+			res.on('end', () => {
+				try {
+					resolve(JSON.parse(d || '{}'));
+				} catch (e) {
+					reject(e);
+				}
+			});
 		});
+
 		req.on('error', reject);
 		req.write(postData);
 		req.end();
@@ -228,18 +241,209 @@ function spotifyGet(path, token) {
 			method: 'GET',
 			headers: { 'Authorization': `Bearer ${token}` }
 		};
+
 		const req = https.request(opts, (res) => {
 			let d = '';
-			res.on('data', c => d += c);
+			res.on('data', (c) => d += c);
 			res.on('end', () => {
 				if (res.statusCode === 204 || !d) return resolve(null);
-				try { resolve(JSON.parse(d)); } catch(e) { reject(e); }
+				try {
+					resolve(JSON.parse(d));
+				} catch (e) {
+					reject(e);
+				}
 			});
 		});
+
 		req.on('error', reject);
 		req.end();
 	});
 }
+
+// ── Infrastructure (Kener) ───────────────────────────
+function normalizeKenerBasePath(pathname) {
+	const value = String(pathname || '').trim();
+	if (!value || value === '/') return '';
+	return '/' + value.replace(/^\/+|\/+$/g, '');
+}
+
+function normalizeKenerPagePath(pathname) {
+	const value = String(pathname || '').trim();
+	if (!value || value === '/' || value.toLowerCase() === 'global') return '';
+	return value.replace(/^\/+|\/+$/g, '');
+}
+
+function getKenerConfig() {
+	const rawBase = String(spotifyConfig.KENER_BASE || spotifyConfig.UPTIME_BASE || '').trim();
+	const rawPagePath = String(spotifyConfig.KENER_PAGE_PATH || spotifyConfig.UPTIME_SLUG || '').trim();
+	const apiKey = String(process.env.KENER_API_KEY || '').trim();
+
+	if (!rawBase) {
+		return {
+			hostname: '',
+			port: null,
+			basePath: '',
+			pagePath: normalizeKenerPagePath(rawPagePath),
+			apiKey
+		};
+	}
+
+	const candidate = /^https?:\/\//i.test(rawBase) ? rawBase : `https://${rawBase}`;
+
+	try {
+		const parsed = new URL(candidate);
+		return {
+			hostname: parsed.hostname,
+			port: parsed.port ? Number(parsed.port) : null,
+			basePath: normalizeKenerBasePath(parsed.pathname),
+			pagePath: normalizeKenerPagePath(rawPagePath),
+			apiKey
+		};
+	} catch (e) {
+		return {
+			hostname: '',
+			port: null,
+			basePath: '',
+			pagePath: normalizeKenerPagePath(rawPagePath),
+			apiKey
+		};
+	}
+}
+
+function kenerGet(config, endpointPath) {
+	const requestPath = `${config.basePath || ''}${endpointPath}`.replace(/\/+/g, '/');
+
+	return new Promise((resolve, reject) => {
+		const opts = {
+			hostname: config.hostname,
+			path: requestPath,
+			method: 'GET',
+			headers: {
+				'User-Agent': 'olivierd.fr',
+				'Authorization': `Bearer ${config.apiKey}`
+			}
+		};
+
+		if (config.port) opts.port = config.port;
+
+		const req = https.request(opts, (r) => {
+			let d = '';
+			r.on('data', (c) => d += c);
+			r.on('end', () => {
+				if (r.statusCode >= 400) return reject(new Error(`HTTP ${r.statusCode}`));
+				try {
+					resolve(JSON.parse(d || '{}'));
+				} catch (e) {
+					reject(e);
+				}
+			});
+		});
+
+		req.on('error', reject);
+		req.end();
+	});
+}
+
+function isMonitorUp(status) {
+	return String(status || '').trim().toUpperCase() === 'UP';
+}
+
+function fallbackMonitorUp(monitor) {
+	const status = String(monitor && monitor.status || '').trim().toUpperCase();
+	if (!status || status === 'ACTIVE' || status === 'UP' || status === 'OK') return true;
+	if (status === 'DOWN' || status === 'INACTIVE' || status === 'PAUSED') return false;
+
+	const defaultStatus = String(monitor && monitor.default_status || '').trim().toUpperCase();
+	if (defaultStatus === 'DOWN') return false;
+	return true;
+}
+
+function computeMonitorUptime(dataPoints) {
+	if (!Array.isArray(dataPoints) || !dataPoints.length) return 100;
+	const upCount = dataPoints.filter((point) => isMonitorUp(point.status)).length;
+	return Math.round((upCount / dataPoints.length) * 1000) / 10;
+}
+
+function pickKenerPage(pages, pagePath) {
+	if (!Array.isArray(pages) || !pages.length) return null;
+	const normalizedPath = normalizeKenerPagePath(pagePath);
+	if (!normalizedPath) return pages[0];
+	return pages.find((page) => normalizeKenerPagePath(page.page_path) === normalizedPath) || null;
+}
+
+async function loadKenerGroups(kenerConfig) {
+	const [pagesResponse, monitorsResponse] = await Promise.all([
+		kenerGet(kenerConfig, '/api/v4/pages'),
+		kenerGet(kenerConfig, '/api/v4/monitors')
+	]);
+
+	const pages = Array.isArray(pagesResponse.pages) ? pagesResponse.pages : [];
+	const page = pickKenerPage(pages, kenerConfig.pagePath);
+	if (!page || !Array.isArray(page.monitors) || !page.monitors.length) return [];
+
+	const monitors = Array.isArray(monitorsResponse.monitors) ? monitorsResponse.monitors : [];
+	const monitorMap = new Map(monitors.map((monitor) => [String(monitor.tag || ''), monitor]));
+	const endTs = Math.floor(Date.now() / 1000);
+	const startTs = endTs - 24 * 60 * 60;
+
+	const orderedMonitors = [...page.monitors].sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
+	const groups = await Promise.all(orderedMonitors.map(async (pageMonitor) => {
+		const tag = String(pageMonitor.monitor_tag || '').trim();
+		if (!tag) return null;
+
+		const monitor = monitorMap.get(tag) || {};
+		const name = String(monitor.name || tag).trim();
+
+		try {
+			const monitorData = await kenerGet(
+				kenerConfig,
+				`/api/v4/monitors/${encodeURIComponent(tag)}/data?start_ts=${startTs}&end_ts=${endTs}`
+			);
+			const dataPoints = Array.isArray(monitorData.data) ? monitorData.data : [];
+			const latest = dataPoints[dataPoints.length - 1] || null;
+			const up = latest ? isMonitorUp(latest.status) : fallbackMonitorUp(monitor);
+			const uptime = computeMonitorUptime(dataPoints);
+
+			return {
+				group: name,
+				up,
+				monitors: [{ name, up, uptime }]
+			};
+		} catch (e) {
+			const up = fallbackMonitorUp(monitor);
+			return {
+				group: name,
+				up,
+				monitors: [{ name, up, uptime: up ? 100 : 0 }]
+			};
+		}
+	}));
+
+	return groups.filter(Boolean);
+}
+
+let uptimeCache = null;
+let uptimeCacheAt = 0;
+
+app.get('/api/uptime', async (req, res) => {
+	if (uptimeCache && Date.now() - uptimeCacheAt < 60000) return res.json(uptimeCache);
+	try {
+		if (!parseBoolean(spotifyConfig.HOMELAB_ENABLED)) return res.json({ ok: false });
+		const kener = getKenerConfig();
+		if (!kener.hostname || !kener.apiKey) return res.json({ ok: false });
+
+		const groups = await loadKenerGroups(kener);
+		if (!groups.length) return res.json({ ok: false });
+
+		const overall = groups.every((group) => group.up);
+		uptimeCache = { ok: true, overall, groups };
+		uptimeCacheAt = Date.now();
+		res.json(uptimeCache);
+	} catch (e) {
+		console.error('Kener API error:', e.message);
+		res.json({ ok: false });
+	}
+});
 
 async function getSpotifyToken() {
 	const tokenKey = `${spotifyConfig.SPOTIFY_CLIENT_ID}:${spotifyConfig.SPOTIFY_REFRESH_TOKEN}`;
@@ -440,64 +644,6 @@ app.get('/api/github', async (req, res) => {
 		res.json(ghCache);
 	} catch(e) {
 		console.error('GitHub API error:', e.message);
-		res.json({ ok: false });
-	}
-});
-
-// ── API Uptime Kuma ───────────────────────────────────
-let uptimeCache = null;
-let uptimeCacheAt = 0;
-
-function getUptimeConfig() {
-	return {
-		base: String(spotifyConfig.UPTIME_BASE || '').trim(),
-		slug: String(spotifyConfig.UPTIME_SLUG || '').trim()
-	};
-}
-
-function uptimeGet(hostname, path) {
-	return new Promise((resolve, reject) => {
-		const opts = { hostname, path, method: 'GET', headers: { 'User-Agent': 'olivierd.fr' } };
-		const req = https.request(opts, (r) => {
-			let d = '';
-			r.on('data', c => d += c);
-			r.on('end', () => { try { resolve(JSON.parse(d)); } catch(e) { reject(e); } });
-		});
-		req.on('error', reject);
-		req.end();
-	});
-}
-
-app.get('/api/uptime', async (req, res) => {
-	if (uptimeCache && Date.now() - uptimeCacheAt < 60000) return res.json(uptimeCache);
-	try {
-		if (!parseBoolean(spotifyConfig.HOMELAB_ENABLED)) return res.json({ ok: false });
-		const uptime = getUptimeConfig();
-		if (!uptime.base || !uptime.slug) return res.json({ ok: false });
-		const [page, hb] = await Promise.all([
-			uptimeGet(uptime.base, `/api/status-page/${uptime.slug}`),
-			uptimeGet(uptime.base, `/api/status-page/heartbeat/${uptime.slug}`)
-		]);
-		const groups = (page.publicGroupList || []).filter(g => g.name !== 'Global');
-		const hbList  = hb.heartbeatList || {};
-		const upList  = hb.uptimeList   || {};
-		const result  = groups.map(g => {
-			const monitors = (g.monitorList || []).map(m => {
-				const beats  = hbList[String(m.id)] || [];
-				const last   = beats[beats.length - 1];
-				const up     = last ? last.status === 1 : true;
-				const uptime = upList[m.id + '_24'] ?? 1;
-				return { name: m.name, up, uptime: Math.round(uptime * 1000) / 10 };
-			});
-			const allUp = monitors.every(m => m.up);
-			return { group: g.name, up: allUp, monitors };
-		});
-		const overall = result.every(g => g.up);
-		uptimeCache = { ok: true, overall, groups: result };
-		uptimeCacheAt = Date.now();
-		res.json(uptimeCache);
-	} catch(e) {
-		console.error('Uptime Kuma error:', e.message);
 		res.json({ ok: false });
 	}
 });
@@ -756,8 +902,8 @@ function handleAdminAboutSave(req, res) {
 			GITHUB_TOKEN: req.body.GITHUB_TOKEN,
 			HOMELAB_ENABLED: parseBoolean(req.body.HOMELAB_ENABLED),
 			HOMELAB_NAME: req.body.HOMELAB_NAME,
-			UPTIME_BASE: req.body.UPTIME_BASE,
-			UPTIME_SLUG: req.body.UPTIME_SLUG
+			KENER_BASE: req.body.KENER_BASE,
+			KENER_PAGE_PATH: req.body.KENER_PAGE_PATH
 		});
 
 		spotifyAccessToken = null;
@@ -806,6 +952,29 @@ function ensureSingleFeatured(projects, featuredId) {
 	}));
 }
 
+function parseProjectOrder(input) {
+	return String(input || '')
+		.split(',')
+		.map((value) => Number(value.trim()))
+		.filter((value) => Number.isFinite(value));
+}
+
+function reorderProjectsByIds(projects, orderedIds) {
+	const normalizedIds = orderedIds.map((value) => Number(value));
+	const uniqueIds = Array.from(new Set(normalizedIds));
+
+	if (uniqueIds.length !== projects.length) {
+		throw new Error('Ordre invalide.');
+	}
+
+	const projectById = new Map(projects.map((project) => [Number(project.id), project]));
+	if (!uniqueIds.every((id) => projectById.has(id))) {
+		throw new Error('Ordre invalide.');
+	}
+
+	return uniqueIds.map((id) => projectById.get(id));
+}
+
 app.post('/admin/projects/create', requireAdmin, (req, res) => {
 	try {
 		const projects = loadProjects();
@@ -833,6 +1002,26 @@ app.post('/admin/projects/create', requireAdmin, (req, res) => {
 			activePage: 'project-new',
 			title: 'Administration - Nouveau projet',
 			error: e.message || 'Impossible d\'ajouter le projet.',
+			success: null
+		});
+	}
+});
+
+app.post('/admin/projects/reorder', requireAdmin, (req, res) => {
+	try {
+		const projects = loadProjects();
+		const orderedIds = parseProjectOrder(req.body.order);
+		const reorderedProjects = reorderProjectsByIds(projects, orderedIds);
+
+		saveProjects(reorderedProjects);
+		return res.redirect('/admin/projects?success=' + encodeURIComponent('Ordre des projets enregistré.'));
+	} catch (e) {
+		console.error('Admin project reorder error:', e.message);
+		return renderAdminView(req, res, 'admin-projects', {
+			status: 400,
+			activePage: 'projects',
+			title: 'Administration - Projets',
+			error: e.message || 'Impossible de réordonner les projets.',
 			success: null
 		});
 	}
@@ -911,4 +1100,4 @@ app.use((err, req, res, next) => {
 	});
 });
 
-app.listen(port, () => console.log(`Server listening on http://localhost:${port}`));
+app.listen(port, () => console.log(`Server listening on http://localhost:${port} \nStarted successfully`));

@@ -135,7 +135,7 @@
         var r = await fetch('/api/uptime');
         var d = await r.json();
         if (!d.ok) return;
-        statusEl.textContent = d.overall ? 'Tous les systemes operationnels' : 'Incidents en cours';
+        statusEl.textContent = d.overall ? 'Tous les systèmes sont opérationnels' : 'Incidents en cours';
         statusEl.dataset.up = d.overall;
         groupsEl.innerHTML = (d.groups || []).map(function (g) {
           return '<div class="ut-group">' + dot(g.up) + '<span class="ut-group__name">' + (g.group || '') + '</span></div>';
