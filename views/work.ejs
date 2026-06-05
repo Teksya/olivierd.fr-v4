@@ -14,7 +14,7 @@
     <% const others = projects.filter(p => !p.featured); %>
 
     <% if (featured) { %>
-      <div class="reveal card" style="margin-bottom:1rem;display:grid;grid-template-columns:1fr 1fr;overflow:hidden">
+      <div class="featured-card reveal card">
         <img loading="lazy" src="<%= featured.image %>" alt="<%= featured.title %>" class="card-img" style="height:100%;min-height:200px">
         <div class="card-body" style="display:flex;flex-direction:column;justify-content:space-between">
           <div>
@@ -35,7 +35,7 @@
       </div>
     <% } %>
 
-    <div class="reveal" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;transition-delay:.06s">
+    <div class="projects-grid reveal" style="transition-delay:.06s">
 
       <% others.forEach(project => { %>
         <div class="card">

@@ -13,17 +13,17 @@
 
   <!-- -- CONTENU ----------------------------------------- -->
   <section style="padding:3.5rem 0 5rem">
-    <div class="reveal" style="display:grid;grid-template-columns:2fr 3fr;gap:3rem;align-items:start;transition-delay:.06s">
+    <div class="contact-grid reveal" style="transition-delay:.06s">
 
       <!-- Info -->
       <div>
         <p style="font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.25rem">Coordonn?es</p>
 
-        <a href="mailto:contact@olivierd.fr" class="cinfo-row">
+        <a href="mailto:olivierdutoit@etik.com" class="cinfo-row">
           <div class="cinfo-icon"><i class="fas fa-envelope"></i></div>
           <div>
             <div class="cinfo-label">Email</div>
-            <div class="cinfo-val">contact@olivierd.fr</div>
+            <div class="cinfo-val">olivierdutoit@etik.com</div>
           </div>
         </a>
 
@@ -47,7 +47,7 @@
           <div class="cinfo-icon"><i class="fas fa-map-marker-alt"></i></div>
           <div>
             <div class="cinfo-label">Localisation</div>
-            <div class="cinfo-val">France</div>
+            <div class="cinfo-val">Saint-Étienne, France</div>
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@
         <% } %>
 
         <form action="/contact" method="POST" style="display:flex;flex-direction:column;gap:1.1rem">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="form-grid-2">
             <div class="form-field">
               <label class="form-label" for="name">Nom</label>
               <input class="form-input" type="text" id="name" name="name" placeholder="Jean Dupont" required>
@@ -86,7 +86,7 @@
             <label class="form-label" for="message">Message</label>
             <textarea class="form-textarea" id="message" name="message" placeholder="Bonjour Olivier, ..." required></textarea>
           </div>
-          <div class="cf-turnstile" data-sitekey="<%= turnstileSiteKey %>" data-theme="dark"></div>
+          <div class="cf-turnstile" data-sitekey="<%= turnstileSiteKey %>" data-theme="auto"></div>
           <div>
             <button class="btn btn-primary" type="submit" style="border:none;cursor:pointer">Envoyer le message</button>
           </div>

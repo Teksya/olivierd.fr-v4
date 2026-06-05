@@ -653,7 +653,7 @@ const smtpPort = parseInt(process.env.SMTP_PORT || '587', 10);
 const smtpUser = process.env.SMTP_USER || '';
 const smtpPass = process.env.SMTP_PASS || '';
 const fromEmail = process.env.FROM_EMAIL || 'no-reply@olivierd.fr';
-const toEmail = process.env.TO_EMAIL || 'contact@olivierd.fr';
+const toEmail = process.env.TO_EMAIL || 'olivierdutoit@etik.com';
 
 let transporter = null;
 if (smtpHost && smtpUser) {
@@ -698,6 +698,27 @@ app.get('/contact', (req, res) => res.render('contact', {
 	success: null,
 	description: 'Contactez-moi pour discuter d\'opportunités de projets.',
 	url: 'https://www.olivierd.fr/contact',
+	ogImage: 'https://www.olivierd.fr/og-image.png'
+}));
+
+app.get('/mentions-legales', (req, res) => res.render('mentions-legales', {
+	title: 'Olivier D - Mentions légales',
+	description: 'Mentions légales et conditions d\'utilisation du site olivierd.fr.',
+	url: 'https://www.olivierd.fr/mentions-legales',
+	ogImage: 'https://www.olivierd.fr/og-image.png'
+}));
+
+app.get('/conditions-generales', (req, res) => res.render('conditions-generales', {
+	title: 'Olivier D - Conditions générales',
+	description: 'Conditions générales d\'utilisation du site olivierd.fr et précision sur la boutique store.olivier-dutoit.fr.',
+	url: 'https://www.olivierd.fr/conditions-generales',
+	ogImage: 'https://www.olivierd.fr/og-image.png'
+}));
+
+app.get('/confidentialite', (req, res) => res.render('confidentialite', {
+	title: 'Olivier D - Confidentialité',
+	description: 'Politique de confidentialité du site olivierd.fr.',
+	url: 'https://www.olivierd.fr/confidentialite',
 	ogImage: 'https://www.olivierd.fr/og-image.png'
 }));
 

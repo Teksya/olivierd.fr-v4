@@ -3,8 +3,8 @@
 <div class="page-wrap">
 
   <!-- HERO -->
-  <section style="padding:5rem 0 4rem">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center">
+  <section class="hero-section">
+    <div class="hero-grid">
 
       <div>
         <p class="section-label reveal">Etudiant en informatique &middot; France</p>
@@ -20,22 +20,18 @@
         </div>
       </div>
 
-      <!-- Terminal -->
-      <div class="reveal term-wrap" style="transition-delay:.2s">
-        <div class="term-titlebar">
-          <span class="term-win-title">olivier@srv-01 &mdash; Konsole</span>
-          <div class="term-win-btns">
-            <span class="term-win-btn"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><polyline points="1.5,3 4.5,6 7.5,3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <span class="term-win-btn"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><polyline points="1.5,6 4.5,3 7.5,6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <span class="term-win-btn term-win-btn--close"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><line x1="1.5" y1="1.5" x2="7.5" y2="7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="7.5" y1="1.5" x2="1.5" y2="7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
-          </div>
+      <div class="reveal intro-panel" style="transition-delay:.2s">
+        <div class="intro-panel__row">
+          <span class="intro-panel__label">Objectif</span>
+          <strong>BTS SIO SISR en alternance</strong>
         </div>
-        <div class="term-tabs">
-          <div class="term-tab term-tab--active">Shell</div>
+        <div class="intro-panel__row">
+          <span class="intro-panel__label">Profil</span>
+          <strong>R&eacute;seaux, syst&egrave;mes, web</strong>
         </div>
-        <div class="term-body">
-          <div id="terminal-output"></div>
-          <span class="term-cursor" id="term-cursor">&#9608;</span>
+        <div class="intro-panel__row">
+          <span class="intro-panel__label">Stack</span>
+          <strong>Linux, Windows Server, Docker, Proxmox</strong>
         </div>
       </div>
 
@@ -103,7 +99,7 @@
       <span class="stat-xp__big" style="color:var(--text-body);font-weight:400">que j&apos;utilise</span>
     </div>
 
-    <div class="tech-card-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem">
+    <div class="tech-card-grid">
 
       <div class="tech-card">
         <div class="tech-card__title">R&eacute;seaux &amp; Syst&egrave;mes</div>
@@ -156,6 +152,5 @@
 </div>
 
 <script defer src="/js/scroll.js"></script>
-<script defer src="/js/terminal.js"></script>
 
 <%- include('partials/footer') %>

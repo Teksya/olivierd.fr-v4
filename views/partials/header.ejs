@@ -13,13 +13,16 @@
   <meta property="og:image" content="<%= ogImage || 'https://www.olivierd.fr/og-image.png' %>">
 
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
 
   <link rel="stylesheet" href="/styles.css">
+  <script>
+    (function(){
+      var theme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
   <script src="/js/loader.js" defer></script>
 </head>
 <body style="overflow:hidden">
@@ -38,6 +41,9 @@
         <a href="/work" class="nav-link">Travaux</a>
         <a href="/about" class="nav-link">À propos</a>
         <a href="/contact" class="nav-link">Contact</a>
+        <button class="theme-toggle" type="button" aria-label="Changer de theme" aria-pressed="false">
+          <span class="theme-toggle__icon" aria-hidden="true"></span>
+        </button>
       </div>
     </div>
   </nav>

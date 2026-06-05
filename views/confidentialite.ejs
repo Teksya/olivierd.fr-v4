@@ -1,0 +1,79 @@
+<%- include('partials/header') %>
+
+<div class="page-wrap">
+  <section style="padding:4rem 0 2.5rem">
+    <p class="section-label reveal">Vie privée</p>
+    <h1 class="reveal" style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--text-strong);margin-bottom:.85rem;transition-delay:.05s">Politique de confidentialité</h1>
+    <p class="reveal" style="color:var(--text);max-width:760px;transition-delay:.1s">
+      Cette page décrit les données personnelles susceptibles d'être traitées lors de votre visite sur olivierd.fr, les finalités de ces traitements, leurs destinataires et leur durée de conservation.
+    </p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section style="padding:3.5rem 0 5rem">
+    <div class="legal-grid reveal" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;transition-delay:.06s">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title" style="margin-bottom:.75rem">Données collectées</div>
+          <p class="card-desc" style="margin-bottom:.55rem">Lorsque vous utilisez le formulaire de contact, les données suivantes peuvent être collectées : nom, adresse électronique, objet, contenu du message et jeton de vérification anti-spam.</p>
+          <p class="card-desc" style="margin-bottom:.55rem">Des données techniques, comme l'adresse IP, peuvent également être traitées à des fins de sécurité et de prévention du spam.</p>
+          <p class="card-desc">Si vous accédez à l'espace d'administration, un identifiant de session temporaire peut être déposé dans votre navigateur afin de maintenir votre connexion.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title" style="margin-bottom:.75rem">Finalités</div>
+          <p class="card-desc" style="margin-bottom:.55rem">Les données transmises via le formulaire servent uniquement à traiter votre demande et à vous répondre.</p>
+          <p class="card-desc" style="margin-bottom:.55rem">Les données techniques sont utilisées pour protéger le site contre les abus, les messages automatisés et les tentatives d'accès non autorisées.</p>
+          <p class="card-desc">Les données de session liées à l'administration servent uniquement à sécuriser l'accès à l'espace administrateur.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title" style="margin-bottom:.75rem">Destinataires</div>
+          <p class="card-desc" style="margin-bottom:.55rem">Les messages issus du formulaire sont transmis à l'exploitant du site, Olivier Dutoit EI, par courrier électronique.</p>
+          <p class="card-desc" style="margin-bottom:.55rem">Les données nécessaires à la vérification anti-spam peuvent être transmises à Cloudflare dans le cadre du service Turnstile.</p>
+          <p class="card-desc">Certaines données d'affichage présentes sur la page À propos peuvent être récupérées auprès de services tiers tels que GitHub, Lanyard ou le service de statut de l'homelab.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title" style="margin-bottom:.75rem">Durée de conservation</div>
+          <p class="card-desc" style="margin-bottom:.55rem">Les messages reçus par courriel sont conservés pendant la durée nécessaire au traitement de la demande et au suivi éventuel de la conversation.</p>
+          <p class="card-desc" style="margin-bottom:.55rem">La session d'administration expire automatiquement après 8 heures.</p>
+          <p class="card-desc">Les préférences d'affichage de l'interface peuvent être conservées dans votre navigateur jusqu'à suppression par vos soins.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title" style="margin-bottom:.75rem">Base de traitement</div>
+          <p class="card-desc" style="margin-bottom:.55rem">Le traitement du formulaire repose sur l'intérêt légitime de répondre aux demandes entrantes.</p>
+          <p class="card-desc" style="margin-bottom:.55rem">La vérification anti-spam repose sur l'intérêt légitime de sécuriser le site.</p>
+          <p class="card-desc">La conservation des préférences d'affichage repose sur votre consentement implicite à l'utilisation des paramètres du navigateur.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title" style="margin-bottom:.75rem">Vos droits</div>
+          <p class="card-desc" style="margin-bottom:.55rem">Vous pouvez exercer vos droits d'accès, de rectification, d'effacement ou d'opposition en contactant l'exploitant du site par courriel.</p>
+          <p class="card-desc" style="margin-bottom:.55rem">Si vous ne souhaitez pas utiliser le formulaire de contact, vous pouvez écrire directement à l'adresse électronique indiquée dans les mentions légales.</p>
+          <p class="card-desc">Cette politique peut être mise à jour si de nouveaux services ou traitements sont ajoutés au site.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<style>
+  @media (max-width: 900px) {
+    .legal-grid { grid-template-columns: 1fr !important; }
+  }
+</style>
+
+<%- include('partials/footer') %>
