@@ -15,12 +15,19 @@
     if (!widget) return;
 
     var progressTick = null;
+    var fallbackTick = null;
+    var stream = null;
 
     function stopProgress() {
       if (progressTick) {
         clearInterval(progressTick);
         progressTick = null;
       }
+    }
+
+    function hideWidget() {
+      stopProgress();
+      widget.style.display = 'none';
     }
 
     function fmt(ms) {
@@ -47,42 +54,73 @@
       progressTick = setInterval(tick, 1000);
     }
 
+    async function fetchSpotifyState() {
+      try {
+        var r = await fetch('/api/spotify?ts=' + Date.now(), { cache: 'no-store' });
+        var d = await r.json();
+        applyState(d);
+      } catch (err) {
+        hideWidget();
+      }
+    }
+
+    function startFallbackPolling() {
+      if (fallbackTick) return;
+      fetchSpotifyState();
+      fallbackTick = setInterval(fetchSpotifyState, 2500);
+    }
+
+    function stopFallbackPolling() {
+      if (!fallbackTick) return;
+      clearInterval(fallbackTick);
+      fallbackTick = null;
+    }
+
     function applyState(d) {
       var img = document.getElementById('sp-img');
       var title = document.getElementById('sp-title');
       var artist = document.getElementById('sp-artist');
       var label = document.getElementById('sp-label');
-      var lastTime = document.getElementById('sp-last-time');
       var progress = document.querySelector('.sp-card__progress');
-      if (!img || !title || !artist || !label || !lastTime || !progress) return;
+      if (!img || !title || !artist || !label || !progress) return;
 
-      if (d && d.playing) {
-        img.src = d.image || '';
-        img.alt = d.album || '';
-        title.textContent = d.title || '';
-        title.href = d.url || '#';
-        artist.textContent = d.artist || '';
-        label.textContent = 'ECOUTE';
-        lastTime.style.display = 'none';
-        progress.style.display = '';
-        widget.classList.remove('sp-card--idle');
-        widget.style.display = '';
-        startProgress(d.progress_ms, d.duration_ms, d.fetched_at);
-      } else {
-        stopProgress();
-        widget.style.display = 'none';
+      if (!d || !d.playing) {
+        hideWidget();
+        return;
       }
+
+      img.src = d.image || '';
+      img.alt = d.album || '';
+      title.textContent = d.title || '';
+      title.href = d.url || '#';
+      artist.textContent = d.artist || '';
+      label.textContent = 'ECOUTE';
+      progress.style.display = '';
+      widget.style.display = '';
+      startProgress(d.progress_ms, d.duration_ms, d.fetched_at);
     }
 
-    var src = new EventSource('/api/spotify/stream');
-    src.onmessage = function (e) {
-      try {
-        applyState(JSON.parse(e.data));
-      } catch (err) {}
-    };
-    src.onerror = function () {
-      widget.style.display = 'none';
-    };
+    if ('EventSource' in window) {
+      stream = new EventSource('/api/spotify/stream');
+      stream.onopen = stopFallbackPolling;
+      stream.onmessage = function (e) {
+        try {
+          applyState(JSON.parse(e.data));
+        } catch (err) {}
+      };
+      stream.onerror = startFallbackPolling;
+    } else {
+      startFallbackPolling();
+    }
+
+    window.addEventListener('focus', fetchSpotifyState);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) fetchSpotifyState();
+    });
+    window.addEventListener('beforeunload', function () {
+      stopFallbackPolling();
+      if (stream) stream.close();
+    });
   })();
 
   (function initGithubWidget() {

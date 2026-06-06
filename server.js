@@ -40,7 +40,8 @@ function loadAdminConfig() {
 		GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
 		HOMELAB_ENABLED: process.env.HOMELAB_ENABLED !== 'false',
 		HOMELAB_NAME: process.env.HOMELAB_NAME || 'Homelab',
-		KENER_BASE: process.env.KENER_BASE || process.env.UPTIME_BASE || 'status.olivierd.fr',
+		SPOTIFY_REDIRECT_URI: process.env.SPOTIFY_REDIRECT_URI || 'https://www.olivier-dutoit.fr/callback',
+		KENER_BASE: process.env.KENER_BASE || process.env.UPTIME_BASE || 'status.olivier-dutoit.fr',
 		KENER_PAGE_PATH: process.env.KENER_PAGE_PATH || (legacySlug && legacySlug !== 'global' ? legacySlug : '')
 	};
 
@@ -82,6 +83,7 @@ function saveAdminConfig(config) {
 		GITHUB_TOKEN: String(config.GITHUB_TOKEN || '').trim(),
 		HOMELAB_ENABLED: parseBoolean(config.HOMELAB_ENABLED),
 		HOMELAB_NAME: String(config.HOMELAB_NAME || '').trim(),
+		SPOTIFY_REDIRECT_URI: String(config.SPOTIFY_REDIRECT_URI || '').trim(),
 		KENER_BASE: String(config.KENER_BASE || '').trim(),
 		KENER_PAGE_PATH: normalizeKenerPagePath(config.KENER_PAGE_PATH)
 	};
@@ -160,9 +162,11 @@ function setAdminSessionCookie(res, value, maxAgeMs) {
 		`${adminSessionCookie}=${encodeURIComponent(value)}`,
 		'Path=/',
 		'HttpOnly',
-		'SameSite=Strict',
+		'SameSite=Lax',
 		`Max-Age=${Math.floor(maxAgeMs / 1000)}`
 	];
+
+	attrs.splice(1, 0, 'Domain=.olivier-dutoit.fr');
 
 	if (process.env.NODE_ENV === 'production') attrs.push('Secure');
 
@@ -195,9 +199,10 @@ function getAboutConfig() {
 let spotifyAccessToken = null;
 let spotifyTokenExpires = 0;
 let spotifyTokenKey = '';
+let spotifyTokenPromise = null;
 
 function getSpotifyRedirectUri() {
-	return 'http://localhost:' + (process.env.PORT || 3000) + '/callback';
+	return String(spotifyConfig.SPOTIFY_REDIRECT_URI || '').trim() || 'https://www.olivier-dutoit.fr/callback';
 }
 
 function spotifyPost(path, body, config) {
@@ -219,11 +224,20 @@ function spotifyPost(path, body, config) {
 			let d = '';
 			res.on('data', (c) => d += c);
 			res.on('end', () => {
+				let data;
 				try {
-					resolve(JSON.parse(d || '{}'));
+					data = JSON.parse(d || '{}');
 				} catch (e) {
-					reject(e);
+					return reject(e);
 				}
+
+				if (res.statusCode >= 400) {
+					const err = new Error(data.error_description || data.error || `Spotify HTTP ${res.statusCode}`);
+					err.statusCode = res.statusCode;
+					return reject(err);
+				}
+
+				resolve(data);
 			});
 		});
 
@@ -247,11 +261,20 @@ function spotifyGet(path, token) {
 			res.on('data', (c) => d += c);
 			res.on('end', () => {
 				if (res.statusCode === 204 || !d) return resolve(null);
+				let data;
 				try {
-					resolve(JSON.parse(d));
+					data = JSON.parse(d);
 				} catch (e) {
-					reject(e);
+					return reject(e);
 				}
+
+				if (res.statusCode >= 400) {
+					const err = new Error((data.error && data.error.message) || data.error || `Spotify HTTP ${res.statusCode}`);
+					err.statusCode = res.statusCode;
+					return reject(err);
+				}
+
+				resolve(data);
 			});
 		});
 
@@ -319,7 +342,7 @@ function kenerGet(config, endpointPath) {
 			path: requestPath,
 			method: 'GET',
 			headers: {
-				'User-Agent': 'olivierd.fr',
+				'User-Agent': 'olivier-dutoit.fr',
 				'Authorization': `Bearer ${config.apiKey}`
 			}
 		};
@@ -451,16 +474,26 @@ async function getSpotifyToken() {
 		spotifyAccessToken = null;
 		spotifyTokenExpires = 0;
 		spotifyTokenKey = tokenKey;
+		spotifyTokenPromise = null;
 	}
 
 	if (spotifyAccessToken && Date.now() < spotifyTokenExpires) return spotifyAccessToken;
-	const data = await spotifyPost('/api/token', {
+	if (spotifyTokenPromise) return spotifyTokenPromise;
+
+	spotifyTokenPromise = spotifyPost('/api/token', {
 		grant_type: 'refresh_token',
 		refresh_token: spotifyConfig.SPOTIFY_REFRESH_TOKEN
-	}, spotifyConfig);
-	spotifyAccessToken  = data.access_token;
-	spotifyTokenExpires = Date.now() + (data.expires_in - 60) * 1000;
-	return spotifyAccessToken;
+	}, spotifyConfig).then((data) => {
+		if (!data.access_token) throw new Error('Spotify access token missing');
+		const expiresIn = Number(data.expires_in || 3600);
+		spotifyAccessToken = data.access_token;
+		spotifyTokenExpires = Date.now() + Math.max(expiresIn - 60, 60) * 1000;
+		return spotifyAccessToken;
+	}).finally(() => {
+		spotifyTokenPromise = null;
+	});
+
+	return spotifyTokenPromise;
 }
 
 // ── Spotify OAuth (setup temporaire) ──────────────────
@@ -508,77 +541,168 @@ Tu peux aussi la coller depuis l'admin.
 });
 
 // ── Spotify helpers ───────────────────────────────────
+function emptySpotifyState(available) {
+	return {
+		available: Boolean(available),
+		playing: false,
+		fetched_at: Date.now()
+	};
+}
+
+function formatSpotifyState(data) {
+	if (!data || !data.item || !data.is_playing) return emptySpotifyState(true);
+
+	const item = data.item;
+	const album = item.album || item.show || {};
+	const images = Array.isArray(album.images) ? album.images : [];
+	const artists = Array.isArray(item.artists)
+		? item.artists.map((artist) => artist.name).filter(Boolean)
+		: [item.show && item.show.publisher].filter(Boolean);
+
+	return {
+		available: true,
+		playing: true,
+		id: item.id || item.uri || item.external_urls?.spotify || '',
+		title: item.name || '',
+		artist: artists.join(', '),
+		album: album.name || '',
+		image: images[1]?.url || images[0]?.url || '',
+		url: item.external_urls?.spotify || '',
+		progress_ms: Number(data.progress_ms || 0),
+		duration_ms: Number(item.duration_ms || 0),
+		fetched_at: Date.now()
+	};
+}
+
+async function getSpotifyCurrentlyPlaying() {
+	let token = await getSpotifyToken();
+	try {
+		return await spotifyGet('/v1/me/player/currently-playing?additional_types=track,episode', token);
+	} catch (e) {
+		if (e.statusCode !== 401) throw e;
+		spotifyAccessToken = null;
+		spotifyTokenExpires = 0;
+		spotifyTokenPromise = null;
+		token = await getSpotifyToken();
+		return spotifyGet('/v1/me/player/currently-playing?additional_types=track,episode', token);
+	}
+}
+
 async function fetchSpotifyState() {
-	if (!spotifyConfig.SPOTIFY_ENABLED) return { playing: false };
+	if (!parseBoolean(spotifyConfig.SPOTIFY_ENABLED)) return emptySpotifyState(false);
 	if (!spotifyConfig.SPOTIFY_CLIENT_ID || !spotifyConfig.SPOTIFY_CLIENT_SECRET || !spotifyConfig.SPOTIFY_REFRESH_TOKEN) {
-		return { playing: false };
+		return emptySpotifyState(false);
 	}
 
 	try {
-		const token = await getSpotifyToken();
-		const data  = await spotifyGet('/v1/me/player/currently-playing', token);
-		if (!data || !data.item) return { playing: false };
-		return {
-			playing:      data.is_playing,
-			title:        data.item.name,
-			artist:       data.item.artists.map(a => a.name).join(', '),
-			album:        data.item.album.name,
-			image:        data.item.album.images[1]?.url || data.item.album.images[0]?.url,
-			url:          data.item.external_urls.spotify,
-			progress_ms:  data.progress_ms || 0,
-			duration_ms:  data.item.duration_ms || 0,
-			fetched_at:   Date.now()
-		};
+		return formatSpotifyState(await getSpotifyCurrentlyPlaying());
 	} catch(e) {
 		console.error('Spotify poll error:', e.message);
-		return { playing: false };
+		return emptySpotifyState(false);
 	}
 }
 
 // ── SSE: Spotify live stream ──────────────────────────
 const sseClients = new Set();
-let lastSpotifyState = null;
+let lastSpotifyStateKey = '';
 let lastPushAt = 0;
+let spotifyStatePromise = null;
+
+const SPOTIFY_POLL_INTERVAL_MS = 1500;
+const SPOTIFY_RESYNC_INTERVAL_MS = 5000;
+
+function getSpotifyStateKey(state) {
+	if (!state) return '';
+	return [
+		state.available ? '1' : '0',
+		state.playing ? '1' : '0',
+		state.id || '',
+		state.title || '',
+		state.artist || ''
+	].join('|');
+}
 
 function pushToClients(payload) {
+	if (sseClients.size === 0) return;
 	const msg = `data: ${JSON.stringify(payload)}\n\n`;
-	sseClients.forEach(c => c.write(msg));
+	sseClients.forEach((client) => {
+		try {
+			client.write(msg);
+		} catch (e) {
+			sseClients.delete(client);
+		}
+	});
+}
+
+function readSpotifyState() {
+	if (!spotifyStatePromise) {
+		spotifyStatePromise = fetchSpotifyState().finally(() => {
+			spotifyStatePromise = null;
+		});
+	}
+	return spotifyStatePromise;
+}
+
+async function refreshSpotifyState(options = {}) {
+	const state = await readSpotifyState();
+	const now = Date.now();
+	const stateKey = getSpotifyStateKey(state);
+	const changed = stateKey !== lastSpotifyStateKey;
+	const resyncDue = state.playing && now - lastPushAt >= SPOTIFY_RESYNC_INTERVAL_MS;
+
+	lastSpotifyStateKey = stateKey;
+
+	if (!options.silent && (options.force || changed || resyncDue)) {
+		lastPushAt = now;
+		pushToClients(state);
+	}
+
+	return state;
 }
 
 setInterval(async () => {
 	if (sseClients.size === 0) return; // pas de clients, pas d'appel API
-	const state = await fetchSpotifyState();
-	const now = Date.now();
-	const trackChanged = !lastSpotifyState
-		|| state.playing !== lastSpotifyState.playing
-		|| state.title   !== lastSpotifyState.title;
-	const resyncDue = state.playing && (now - lastPushAt > 10000);
-	if (trackChanged || resyncDue) {
-		lastSpotifyState = state;
-		lastPushAt = now;
-		pushToClients(state);
+	try {
+		await refreshSpotifyState();
+	} catch (e) {
+		console.error('Spotify stream error:', e.message);
 	}
-}, 500);
+}, SPOTIFY_POLL_INTERVAL_MS);
 
 app.get('/api/spotify/stream', async (req, res) => {
 	res.setHeader('Content-Type', 'text/event-stream');
 	res.setHeader('Cache-Control', 'no-cache');
 	res.setHeader('Connection', 'keep-alive');
+	res.setHeader('X-Accel-Buffering', 'no');
 	res.flushHeaders();
 
-	sseClients.add(res);
+	res.write('retry: 2500\n\n');
+	let closed = false;
+
+	req.on('close', () => {
+		closed = true;
+		sseClients.delete(res);
+	});
 
 	// envoie l'état courant immédiatement à la connexion
-	const state = lastSpotifyState || await fetchSpotifyState();
-	lastSpotifyState = state;
-	res.write(`data: ${JSON.stringify(state)}\n\n`);
-
-	req.on('close', () => sseClients.delete(res));
+	try {
+		const state = await refreshSpotifyState();
+		if (closed) return;
+		res.write(`data: ${JSON.stringify(state)}\n\n`);
+		sseClients.add(res);
+	} catch (e) {
+		if (closed) return;
+		res.write(`data: ${JSON.stringify(emptySpotifyState(false))}\n\n`);
+		sseClients.add(res);
+	}
 });
 
 // ── API Spotify Now Playing (REST fallback) ────────────
 app.get('/api/spotify', async (req, res) => {
-	res.json(await fetchSpotifyState());
+	res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+	res.setHeader('Pragma', 'no-cache');
+	res.setHeader('Expires', '0');
+	res.json(await refreshSpotifyState());
 });
 
 // ── API GitHub dernière activité ──────────────────────
@@ -591,7 +715,7 @@ function githubGet(path) {
 			hostname: 'api.github.com',
 			path,
 			method: 'GET',
-			headers: { 'User-Agent': 'olivierd.fr', 'Accept': 'application/vnd.github+json' }
+			headers: { 'User-Agent': 'olivier-dutoit.fr', 'Accept': 'application/vnd.github+json' }
 		};
 		const githubToken = String(spotifyConfig.GITHUB_TOKEN || process.env.GITHUB_TOKEN || '').trim();
 		if (githubToken) opts.headers['Authorization'] = 'Bearer ' + githubToken;
@@ -652,7 +776,7 @@ const smtpHost = process.env.SMTP_HOST || '';
 const smtpPort = parseInt(process.env.SMTP_PORT || '587', 10);
 const smtpUser = process.env.SMTP_USER || '';
 const smtpPass = process.env.SMTP_PASS || '';
-const fromEmail = process.env.FROM_EMAIL || 'no-reply@olivierd.fr';
+const fromEmail = process.env.FROM_EMAIL || 'no-reply@olivier-dutoit.fr';
 const toEmail = process.env.TO_EMAIL || 'olivierdutoit@etik.com';
 
 let transporter = null;
@@ -671,23 +795,23 @@ if (smtpHost && smtpUser) {
 app.get('/', (req, res) => res.render('index', { 
 	title: 'Olivier D - Accueil',
 	description: 'Étudiant en Bac Pro CIEL futur alternant en BTS SIO SISR. Passionné par les réseaux, administration système et développement web.',
-	url: 'https://www.olivierd.fr',
-	ogImage: 'https://www.olivierd.fr/og-image.png'
+	url: 'https://www.olivier-dutoit.fr',
+	ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 }));
 
 app.get('/about', (req, res) => res.render('about', { 
 	title: 'Olivier D - À propos',
 	description: 'En savoir plus sur mon parcours, mes compétences en réseaux et systèmes, et mes projets.',
-	url: 'https://www.olivierd.fr/about',
-	ogImage: 'https://www.olivierd.fr/og-image.png',
+	url: 'https://www.olivier-dutoit.fr/about',
+	ogImage: 'https://www.olivier-dutoit.fr/og-image.png',
 	aboutConfig: getAboutConfig()
 }));
 
 app.get('/work', (req, res) => res.render('work', { 
 	title: 'Olivier D - Travaux',
 	description: 'Découvrez mes projets en réseaux, administration système et développement web.',
-	url: 'https://www.olivierd.fr/work',
-	ogImage: 'https://www.olivierd.fr/og-image.png',
+	url: 'https://www.olivier-dutoit.fr/work',
+	ogImage: 'https://www.olivier-dutoit.fr/og-image.png',
 	projects: loadProjects()
 }));
 
@@ -697,29 +821,29 @@ app.get('/contact', (req, res) => res.render('contact', {
 	error: null, 
 	success: null,
 	description: 'Contactez-moi pour discuter d\'opportunités de projets.',
-	url: 'https://www.olivierd.fr/contact',
-	ogImage: 'https://www.olivierd.fr/og-image.png'
+	url: 'https://www.olivier-dutoit.fr/contact',
+	ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 }));
 
 app.get('/mentions-legales', (req, res) => res.render('mentions-legales', {
 	title: 'Olivier D - Mentions légales',
-	description: 'Mentions légales et conditions d\'utilisation du site olivierd.fr.',
-	url: 'https://www.olivierd.fr/mentions-legales',
-	ogImage: 'https://www.olivierd.fr/og-image.png'
+	description: 'Mentions légales et conditions d\'utilisation du site olivier-dutoit.fr.',
+	url: 'https://www.olivier-dutoit.fr/mentions-legales',
+	ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 }));
 
 app.get('/conditions-generales', (req, res) => res.render('conditions-generales', {
 	title: 'Olivier D - Conditions générales',
-	description: 'Conditions générales d\'utilisation du site olivierd.fr et précision sur la boutique store.olivier-dutoit.fr.',
-	url: 'https://www.olivierd.fr/conditions-generales',
-	ogImage: 'https://www.olivierd.fr/og-image.png'
+	description: 'Conditions générales d\'utilisation du site olivier-dutoit.fr et précision sur la boutique store.olivier-dutoit.fr.',
+	url: 'https://www.olivier-dutoit.fr/conditions-generales',
+	ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 }));
 
 app.get('/confidentialite', (req, res) => res.render('confidentialite', {
 	title: 'Olivier D - Confidentialité',
-	description: 'Politique de confidentialité du site olivierd.fr.',
-	url: 'https://www.olivierd.fr/confidentialite',
-	ogImage: 'https://www.olivierd.fr/og-image.png'
+	description: 'Politique de confidentialité du site olivier-dutoit.fr.',
+	url: 'https://www.olivier-dutoit.fr/confidentialite',
+	ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 }));
 
 function verifyTurnstile(token, remoteip) {
@@ -766,7 +890,7 @@ app.post('/contact', async (req, res) => {
 	const token = req.body['cf-turnstile-response'];
 
 	if (!token) {
-		return res.status(400).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Validation Turnstile manquante.', success: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+		return res.status(400).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Validation Turnstile manquante.', success: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivier-dutoit.fr/contact', ogImage: 'https://www.olivier-dutoit.fr/og-image.png' });
 	}
 
 	try {
@@ -781,22 +905,22 @@ app.post('/contact', async (req, res) => {
 						text: `Nom: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
 						html: `<p><strong>Nom:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Message:</strong></p><p>${message}</p>`
 					});
-					return res.render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, success: 'Message envoyé avec succès.', error: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+					return res.render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, success: 'Message envoyé avec succès.', error: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivier-dutoit.fr/contact', ogImage: 'https://www.olivier-dutoit.fr/og-image.png' });
 				} catch (mailErr) {
 					console.error('Mail send error:', mailErr);
-					return res.status(500).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: "Impossible d'envoyer l'email.", success: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+					return res.status(500).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: "Impossible d'envoyer l'email.", success: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivier-dutoit.fr/contact', ogImage: 'https://www.olivier-dutoit.fr/og-image.png' });
 				}
 			} else {
 				// No transporter configured
 				console.warn('SMTP transporter not configured; skipping email send.');
-				return res.render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, success: 'Validation Turnstile réussie (email non envoyé, SMTP non configuré).', error: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+				return res.render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, success: 'Validation Turnstile réussie (email non envoyé, SMTP non configuré).', error: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivier-dutoit.fr/contact', ogImage: 'https://www.olivier-dutoit.fr/og-image.png' });
 			}
 		} else {
-			return res.status(400).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Échec de la vérification Turnstile.', success: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+			return res.status(400).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Échec de la vérification Turnstile.', success: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivier-dutoit.fr/contact', ogImage: 'https://www.olivier-dutoit.fr/og-image.png' });
 		}
 	} catch (err) {
 		console.error('Turnstile verification error:', err);
-		return res.status(500).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Erreur serveur lors de la vérification Turnstile.', success: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivierd.fr/contact', ogImage: 'https://www.olivierd.fr/og-image.png' });
+		return res.status(500).render('contact', { title: 'Olivier D - Contact', turnstileSiteKey, error: 'Erreur serveur lors de la vérification Turnstile.', success: null, description: 'Contactez-moi pour discuter d\'opportunités ou de projets.', url: 'https://www.olivier-dutoit.fr/contact', ogImage: 'https://www.olivier-dutoit.fr/og-image.png' });
 	}
 });
 
@@ -806,8 +930,8 @@ app.get('/admin/login', (req, res) => {
 		title: 'Admin Login',
 		error: null,
 		description: 'Connexion administrateur.',
-		url: 'https://www.olivierd.fr/admin/login',
-		ogImage: 'https://www.olivierd.fr/og-image.png'
+		url: 'https://www.olivier-dutoit.fr/admin/login',
+		ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 	});
 });
 
@@ -819,8 +943,8 @@ app.post('/admin/login', (req, res) => {
 			title: 'Admin Login',
 			error: 'Le code doit contenir exactement 6 chiffres.',
 			description: 'Connexion administrateur.',
-			url: 'https://www.olivierd.fr/admin/login',
-			ogImage: 'https://www.olivierd.fr/og-image.png'
+			url: 'https://www.olivier-dutoit.fr/admin/login',
+			ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 		});
 	}
 
@@ -829,8 +953,8 @@ app.post('/admin/login', (req, res) => {
 			title: 'Admin Login',
 			error: 'ADMIN_ACCESS_CODE n\'est pas configuré correctement sur le serveur.',
 			description: 'Connexion administrateur.',
-			url: 'https://www.olivierd.fr/admin/login',
-			ogImage: 'https://www.olivierd.fr/og-image.png'
+			url: 'https://www.olivier-dutoit.fr/admin/login',
+			ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 		});
 	}
 
@@ -839,8 +963,8 @@ app.post('/admin/login', (req, res) => {
 			title: 'Admin Login',
 			error: 'Code invalide.',
 			description: 'Connexion administrateur.',
-			url: 'https://www.olivierd.fr/admin/login',
-			ogImage: 'https://www.olivierd.fr/og-image.png'
+			url: 'https://www.olivier-dutoit.fr/admin/login',
+			ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 		});
 	}
 
@@ -867,8 +991,8 @@ function renderAdminView(req, res, view, options = {}) {
 		projects: options.projects || loadProjects(),
 		activePage: options.activePage || 'dashboard',
 		description: options.description || 'Administration du portfolio.',
-		url: `https://www.olivierd.fr${req.path}`,
-		ogImage: 'https://www.olivierd.fr/og-image.png'
+		url: `https://www.olivier-dutoit.fr${req.path}`,
+		ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 	});
 }
 
@@ -923,6 +1047,7 @@ function handleAdminAboutSave(req, res) {
 			GITHUB_TOKEN: req.body.GITHUB_TOKEN,
 			HOMELAB_ENABLED: parseBoolean(req.body.HOMELAB_ENABLED),
 			HOMELAB_NAME: req.body.HOMELAB_NAME,
+			SPOTIFY_REDIRECT_URI: req.body.SPOTIFY_REDIRECT_URI,
 			KENER_BASE: req.body.KENER_BASE,
 			KENER_PAGE_PATH: req.body.KENER_PAGE_PATH
 		});
@@ -930,6 +1055,10 @@ function handleAdminAboutSave(req, res) {
 		spotifyAccessToken = null;
 		spotifyTokenExpires = 0;
 		spotifyTokenKey = '';
+		spotifyTokenPromise = null;
+		spotifyStatePromise = null;
+		lastSpotifyStateKey = '';
+		lastPushAt = 0;
 
 		return res.redirect('/admin/about?success=' + encodeURIComponent('Configuration À propos enregistrée.'));
 	} catch (e) {
@@ -1105,8 +1234,8 @@ app.use((req, res) => {
 	res.status(404).render('error404', { 
 		title: 'Olivier D - Page non trouvée',
 		description: 'La page que vous cherchez n\'existe pas.',
-		url: `https://www.olivierd.fr${req.originalUrl}`,
-		ogImage: 'https://www.olivierd.fr/og-image.png'
+		url: `https://www.olivier-dutoit.fr${req.originalUrl}`,
+		ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 	});
 });
 
@@ -1116,8 +1245,8 @@ app.use((err, req, res, next) => {
 	res.status(500).render('error500', { 
 		title: 'Olivier D - Erreur serveur',
 		description: 'Une erreur serveur est survenue.',
-		url: 'https://www.olivierd.fr',
-		ogImage: 'https://www.olivierd.fr/og-image.png'
+		url: 'https://www.olivier-dutoit.fr',
+		ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 	});
 });
 

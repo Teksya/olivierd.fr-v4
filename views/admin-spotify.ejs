@@ -61,8 +61,13 @@
                 <label for="SPOTIFY_REFRESH_TOKEN">Refresh Token</label>
                 <input id="SPOTIFY_REFRESH_TOKEN" name="SPOTIFY_REFRESH_TOKEN" type="text" value="<%= spotifyConfig.SPOTIFY_REFRESH_TOKEN || '' %>">
               </div>
+
+              <div class="admin-field-full">
+                <label for="SPOTIFY_REDIRECT_URI">Redirect URI</label>
+                <input id="SPOTIFY_REDIRECT_URI" name="SPOTIFY_REDIRECT_URI" type="text" value="<%= spotifyConfig.SPOTIFY_REDIRECT_URI || '' %>" placeholder="https://www.olivier-dutoit.fr/callback">
+              </div>
             </div>
-            <p class="admin-help">Pour régénérer un token : <a href="/spotify-auth">lancer OAuth Spotify</a>.</p>
+            <p class="admin-help">Le Redirect URI doit être identique dans l'admin et dans le tableau de bord Spotify. Pour régénérer un token : <a href="/spotify-auth">lancer OAuth Spotify</a>.</p>
           </article>
 
           <article class="admin-subpanel">

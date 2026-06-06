@@ -30,7 +30,6 @@
             <div id="sp-label" class="sp-card__label">ÉCOUTE</div>
             <a id="sp-title" class="sp-card__title" href="#" target="_blank" rel="noopener"></a>
             <div id="sp-artist" class="sp-card__artist"></div>
-            <div id="sp-last-time" class="sp-card__last-time" style="display:none"></div>
           </div>
         </div>
           <div class="card__divider"></div>
@@ -107,13 +106,13 @@
     <% } %>
 
     <% if (!aboutConfig || aboutConfig.homelabEnabled) { %>
-    <a id="ut-card" class="ut-card ut-card--link" href="https://status.olivierd.fr/" style="display:none">
+    <a id="ut-card" class="ut-card ut-card--link" href="https://status.olivier-dutoit.fr/" style="display:none">
       <div class="ut-card__banner"></div>
       <div class="ut-card__top">
         <div class="ut-card__icon-wrap">
           <svg class="ut-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28"><rect x="2" y="3" width="20" height="7" rx="1.5"/><rect x="2" y="14" width="20" height="7" rx="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="5.5" cy="17.5" r="1" fill="currentColor"/></svg>
         </div>
-<img src="https://status.olivierd.fr/badge/_/uptime?sinceLast=2592000&color=043724&style=flat-square" alt="uptime" style="max-width: 150px;" />      </div>
+<img src="https://status.olivier-dutoit.fr/badge/_/uptime?sinceLast=2592000&color=043724&style=flat-square" alt="uptime" style="max-width: 150px;" />      </div>
       <div class="ut-card__body">
         <div class="ut-card__name"><%= (aboutConfig && aboutConfig.homelabName) ? aboutConfig.homelabName : 'Homelab' %></div> 
         <div id="ut-status" class="ut-card__status">Chargement...</div> 

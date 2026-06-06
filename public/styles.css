@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   olivierd.fr — Design System
+   olivier-dutoit.fr — Design System
    ═══════════════════════════════════════════════════ */
 
 /* ── Variables ──────────────────────────────────── */
@@ -377,14 +377,6 @@ h1,h2,h3,h4 {
   width: 0%;
   transition: width .9s linear;
 }
-.sp-card__last-time {
-  font-size: .65rem;
-  color: var(--text-muted);
-  margin-top: .15rem;
-}
-.sp-card--idle .sp-card__cover { opacity: .6; filter: grayscale(.5); }
-.sp-card--idle .sp-card__bars  { display: none; }
-
 /* ── GitHub card ─────────────────────────────── */
 .gh-card {
   background: var(--surface);
