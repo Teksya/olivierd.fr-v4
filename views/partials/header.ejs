@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8">
@@ -13,19 +13,18 @@
   <meta property="og:image" content="<%= ogImage || 'https://www.olivier-dutoit.fr/og-image.png' %>">
 
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
 
   <link rel="stylesheet" href="/styles.css">
-  <script>
-    (function(){
-      var theme = localStorage.getItem('theme') || 'dark';
-      document.documentElement.dataset.theme = theme;
-    })();
-  </script>
   <script src="/js/loader.js" defer></script>
+  <script src="/js/effects.js" defer></script>
 </head>
 <body style="overflow:hidden">
+  <div class="scroll-progress" id="scroll-progress"></div>
   <div id="page-loader">
     <div class="ld-dot-row">
       <div class="ld-dot"></div>
@@ -41,9 +40,6 @@
         <a href="/work" class="nav-link">Travaux</a>
         <a href="/about" class="nav-link">À propos</a>
         <a href="/contact" class="nav-link">Contact</a>
-        <button class="theme-toggle" type="button" aria-label="Changer de theme" aria-pressed="false">
-          <span class="theme-toggle__icon" aria-hidden="true"></span>
-        </button>
       </div>
     </div>
   </nav>

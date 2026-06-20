@@ -1,17 +1,12 @@
 <%- include('partials/header') %>
 
 <div class="page-wrap">
-  <section style="padding:8rem 2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:60vh">
-    <div style="max-width:600px">
-      <div style="font-size:clamp(4rem,10vw,8rem);font-weight:800;color:var(--text-strong);margin-bottom:1rem;line-height:1">500</div>
-      
-      <h1 style="font-size:2rem;font-weight:700;color:var(--text-strong);margin-bottom:1rem">Erreur serveur</h1>
-      
-      <p style="font-size:1.1rem;color:var(--text-body);margin-bottom:2rem;line-height:1.8">
-        Une erreur inattendue s'est produite. Nos équipes ont été notifiées et travaillent à la résoudre. Veuillez réessayer dans quelques instants.
-      </p>
-      
-      <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center">
+  <section class="error-section">
+    <div>
+      <div class="error-code">500</div>
+      <h1 class="error-title">Erreur serveur</h1>
+      <p class="error-desc">Une erreur inattendue s'est produite. Veuillez réessayer dans quelques instants.</p>
+      <div class="error-ctas">
         <a href="/" class="btn btn-primary">Retour à l'accueil</a>
         <a href="/contact" class="btn btn-ghost">Me contacter</a>
       </div>

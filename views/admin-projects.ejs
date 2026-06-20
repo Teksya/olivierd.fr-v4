@@ -8,7 +8,7 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body class="admin-page">
@@ -41,7 +41,7 @@
           <p class="admin-muted">Aucun projet enregistré pour le moment.</p>
         <% } else { %>
           <div class="admin-project-toolbar">
-            <p class="admin-muted">Glissez-déposez les cartes ci-dessous puis enregistrez l'ordre.</p>
+            <p class="admin-muted">Glissez-déposez les cartes puis enregistrez l'ordre.</p>
             <form id="project-order-form" method="POST" action="/admin/projects/reorder" class="admin-reorder-form">
               <input id="project-order-input" name="order" type="hidden" value="<%= projects.map((project) => project.id).join(',') %>">
               <button type="submit" class="btn btn-primary">Enregistrer l'ordre</button>
@@ -76,27 +76,22 @@
                     <label>Titre</label>
                     <input name="title" type="text" value="<%= project.title %>" required>
                   </div>
-
                   <div>
                     <label>Image</label>
                     <input name="image" type="text" value="<%= project.image %>">
                   </div>
-
                   <div class="admin-field-full">
                     <label>Description</label>
                     <textarea name="description" rows="4" required><%= project.description %></textarea>
                   </div>
-
                   <div>
                     <label>Tags</label>
                     <input name="tags" type="text" value="<%= (project.tags || []).join(', ') %>">
                   </div>
-
                   <div>
                     <label>Chips</label>
                     <input name="chips" type="text" value="<%= (project.chips || []).join(', ') %>">
                   </div>
-
                   <label class="admin-checkbox">
                     <input name="featured" type="checkbox" value="true" <%= project.featured ? 'checked' : '' %>>
                     Projet à la une

@@ -296,153 +296,71 @@ function normalizeKenerPagePath(pathname) {
 	return value.replace(/^\/+|\/+$/g, '');
 }
 
-function getKenerConfig() {
+function getUptimeKumaConfig() {
 	const rawBase = String(spotifyConfig.KENER_BASE || spotifyConfig.UPTIME_BASE || '').trim();
-	const rawPagePath = String(spotifyConfig.KENER_PAGE_PATH || spotifyConfig.UPTIME_SLUG || '').trim();
+	const slug = String(spotifyConfig.KENER_PAGE_PATH || '').trim() || 'global';
 	const apiKey = String(process.env.KENER_API_KEY || '').trim();
 
-	if (!rawBase) {
-		return {
-			hostname: '',
-			port: null,
-			basePath: '',
-			pagePath: normalizeKenerPagePath(rawPagePath),
-			apiKey
-		};
-	}
+	if (!rawBase) return { hostname: '', slug, apiKey };
 
 	const candidate = /^https?:\/\//i.test(rawBase) ? rawBase : `https://${rawBase}`;
-
 	try {
 		const parsed = new URL(candidate);
-		return {
-			hostname: parsed.hostname,
-			port: parsed.port ? Number(parsed.port) : null,
-			basePath: normalizeKenerBasePath(parsed.pathname),
-			pagePath: normalizeKenerPagePath(rawPagePath),
-			apiKey
-		};
+		return { hostname: parsed.hostname, port: parsed.port ? Number(parsed.port) : null, slug, apiKey };
 	} catch (e) {
-		return {
-			hostname: '',
-			port: null,
-			basePath: '',
-			pagePath: normalizeKenerPagePath(rawPagePath),
-			apiKey
-		};
+		return { hostname: '', slug, apiKey };
 	}
 }
 
-function kenerGet(config, endpointPath) {
-	const requestPath = `${config.basePath || ''}${endpointPath}`.replace(/\/+/g, '/');
-
+function uptimeKumaGet(config, endpointPath) {
 	return new Promise((resolve, reject) => {
 		const opts = {
 			hostname: config.hostname,
-			path: requestPath,
+			path: endpointPath,
 			method: 'GET',
-			headers: {
-				'User-Agent': 'olivier-dutoit.fr',
-				'Authorization': `Bearer ${config.apiKey}`
-			}
+			headers: { 'User-Agent': 'olivier-dutoit.fr' }
 		};
-
 		if (config.port) opts.port = config.port;
+		if (config.apiKey) opts.headers['Authorization'] = `Bearer ${config.apiKey}`;
 
 		const req = https.request(opts, (r) => {
 			let d = '';
 			r.on('data', (c) => d += c);
 			r.on('end', () => {
 				if (r.statusCode >= 400) return reject(new Error(`HTTP ${r.statusCode}`));
-				try {
-					resolve(JSON.parse(d || '{}'));
-				} catch (e) {
-					reject(e);
-				}
+				try { resolve(JSON.parse(d || '{}')); } catch (e) { reject(e); }
 			});
 		});
-
 		req.on('error', reject);
 		req.end();
 	});
 }
 
-function isMonitorUp(status) {
-	return String(status || '').trim().toUpperCase() === 'UP';
-}
-
-function fallbackMonitorUp(monitor) {
-	const status = String(monitor && monitor.status || '').trim().toUpperCase();
-	if (!status || status === 'ACTIVE' || status === 'UP' || status === 'OK') return true;
-	if (status === 'DOWN' || status === 'INACTIVE' || status === 'PAUSED') return false;
-
-	const defaultStatus = String(monitor && monitor.default_status || '').trim().toUpperCase();
-	if (defaultStatus === 'DOWN') return false;
-	return true;
-}
-
-function computeMonitorUptime(dataPoints) {
-	if (!Array.isArray(dataPoints) || !dataPoints.length) return 100;
-	const upCount = dataPoints.filter((point) => isMonitorUp(point.status)).length;
-	return Math.round((upCount / dataPoints.length) * 1000) / 10;
-}
-
-function pickKenerPage(pages, pagePath) {
-	if (!Array.isArray(pages) || !pages.length) return null;
-	const normalizedPath = normalizeKenerPagePath(pagePath);
-	if (!normalizedPath) return pages[0];
-	return pages.find((page) => normalizeKenerPagePath(page.page_path) === normalizedPath) || null;
-}
-
-async function loadKenerGroups(kenerConfig) {
-	const [pagesResponse, monitorsResponse] = await Promise.all([
-		kenerGet(kenerConfig, '/api/v4/pages'),
-		kenerGet(kenerConfig, '/api/v4/monitors')
+async function loadUptimeKumaGroups(config) {
+	const [statusPage, heartbeatPage] = await Promise.all([
+		uptimeKumaGet(config, `/api/status-page/${encodeURIComponent(config.slug)}`),
+		uptimeKumaGet(config, `/api/status-page/heartbeat/${encodeURIComponent(config.slug)}`)
 	]);
 
-	const pages = Array.isArray(pagesResponse.pages) ? pagesResponse.pages : [];
-	const page = pickKenerPage(pages, kenerConfig.pagePath);
-	if (!page || !Array.isArray(page.monitors) || !page.monitors.length) return [];
+	const publicGroups = Array.isArray(statusPage.publicGroupList) ? statusPage.publicGroupList : [];
+	const heartbeats = heartbeatPage.heartbeatList || {};
 
-	const monitors = Array.isArray(monitorsResponse.monitors) ? monitorsResponse.monitors : [];
-	const monitorMap = new Map(monitors.map((monitor) => [String(monitor.tag || ''), monitor]));
-	const endTs = Math.floor(Date.now() / 1000);
-	const startTs = endTs - 24 * 60 * 60;
+	return publicGroups
+		.sort((a, b) => (a.weight || 0) - (b.weight || 0))
+		.map((group) => {
+			const name = String(group.name || '').trim();
+			const monitors = Array.isArray(group.monitorList) ? group.monitorList : [];
 
-	const orderedMonitors = [...page.monitors].sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
-	const groups = await Promise.all(orderedMonitors.map(async (pageMonitor) => {
-		const tag = String(pageMonitor.monitor_tag || '').trim();
-		if (!tag) return null;
+			const monitorStatuses = monitors.map((m) => {
+				const beats = heartbeats[String(m.id)] || [];
+				if (!beats.length) return true;
+				return beats[beats.length - 1].status === 1;
+			});
 
-		const monitor = monitorMap.get(tag) || {};
-		const name = String(monitor.name || tag).trim();
-
-		try {
-			const monitorData = await kenerGet(
-				kenerConfig,
-				`/api/v4/monitors/${encodeURIComponent(tag)}/data?start_ts=${startTs}&end_ts=${endTs}`
-			);
-			const dataPoints = Array.isArray(monitorData.data) ? monitorData.data : [];
-			const latest = dataPoints[dataPoints.length - 1] || null;
-			const up = latest ? isMonitorUp(latest.status) : fallbackMonitorUp(monitor);
-			const uptime = computeMonitorUptime(dataPoints);
-
-			return {
-				group: name,
-				up,
-				monitors: [{ name, up, uptime }]
-			};
-		} catch (e) {
-			const up = fallbackMonitorUp(monitor);
-			return {
-				group: name,
-				up,
-				monitors: [{ name, up, uptime: up ? 100 : 0 }]
-			};
-		}
-	}));
-
-	return groups.filter(Boolean);
+			const up = monitorStatuses.length === 0 || monitorStatuses.every(Boolean);
+			return { group: name, up };
+		})
+		.filter((g) => g.group);
 }
 
 let uptimeCache = null;
@@ -452,18 +370,18 @@ app.get('/api/uptime', async (req, res) => {
 	if (uptimeCache && Date.now() - uptimeCacheAt < 60000) return res.json(uptimeCache);
 	try {
 		if (!parseBoolean(spotifyConfig.HOMELAB_ENABLED)) return res.json({ ok: false });
-		const kener = getKenerConfig();
-		if (!kener.hostname || !kener.apiKey) return res.json({ ok: false });
+		const config = getUptimeKumaConfig();
+		if (!config.hostname) return res.json({ ok: false });
 
-		const groups = await loadKenerGroups(kener);
+		const groups = await loadUptimeKumaGroups(config);
 		if (!groups.length) return res.json({ ok: false });
 
-		const overall = groups.every((group) => group.up);
+		const overall = groups.every((g) => g.up);
 		uptimeCache = { ok: true, overall, groups };
 		uptimeCacheAt = Date.now();
 		res.json(uptimeCache);
 	} catch (e) {
-		console.error('Kener API error:', e.message);
+		console.error('Uptime Kuma API error:', e.message);
 		res.json({ ok: false });
 	}
 });

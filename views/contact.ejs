@@ -1,100 +1,90 @@
-﻿<%- include('partials/header') %>
+<%- include('partials/header') %>
 
 <div class="page-wrap">
 
-  <!-- -- HEADER -------------------------------------------- -->
-  <section style="padding:4rem 0 3rem">
-    <p class="section-label reveal">Discutons</p>
-    <h1 class="reveal" style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--text-strong);margin-bottom:1rem;transition-delay:.05s">Me contacter</h1>
-    <p class="reveal" style="color:var(--text);max-width:460px;transition-delay:.1s">Vous avez un projet ou une opportunitée&nbsp;? Je suis disponible.</p>
-  </section>
+  <div class="about-header reveal">
+    <p class="section-label">Contact</p>
+    <h1>Me contacter</h1>
+    <p>Vous avez un projet ou une opportunité ? Je suis disponible.</p>
+  </div>
 
   <div class="divider"></div>
 
-  <!-- -- CONTENU ----------------------------------------- -->
-  <section style="padding:3.5rem 0 5rem">
-    <div class="contact-grid reveal" style="transition-delay:.06s">
+  <div class="contact-layout">
 
-      <!-- Info -->
-      <div>
-        <p style="font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.25rem">Coordonn?es</p>
+    <div class="reveal" style="transition-delay:.06s">
+      <p class="contact-info-title">Coordonnées</p>
 
-        <a href="mailto:olivierdutoit@etik.com" class="cinfo-row">
-          <div class="cinfo-icon"><i class="fas fa-envelope"></i></div>
-          <div>
-            <div class="cinfo-label">Email</div>
-            <div class="cinfo-val">olivierdutoit@etik.com</div>
-          </div>
-        </a>
+      <a href="mailto:olivierdutoit@etik.com" class="cinfo-row">
+        <div class="cinfo-icon"><i class="fas fa-envelope"></i></div>
+        <div>
+          <div class="cinfo-label">Email</div>
+          <div class="cinfo-val">olivierdutoit@etik.com</div>
+        </div>
+      </a>
 
-        <a href="http://github.com/Teksya" target="_blank" rel="noopener" class="cinfo-row">
-          <div class="cinfo-icon"><i class="fab fa-github"></i></div>
-          <div>
-            <div class="cinfo-label">GitHub</div>
-            <div class="cinfo-val">Teksya</div>
-          </div>
-        </a>
+      <a href="http://github.com/Teksya" target="_blank" rel="noopener" class="cinfo-row">
+        <div class="cinfo-icon"><i class="fab fa-github"></i></div>
+        <div>
+          <div class="cinfo-label">GitHub</div>
+          <div class="cinfo-val">Teksya</div>
+        </div>
+      </a>
 
-        <a href="https://fr.linkedin.com/in/olivier-dutoit" target="_blank" rel="noopener" class="cinfo-row">
-          <div class="cinfo-icon"><i class="fab fa-linkedin"></i></div>
-          <div>
-            <div class="cinfo-label">LinkedIn</div>
-            <div class="cinfo-val">olivier-dutoit</div>
-          </div>
-        </a>
+      <a href="https://fr.linkedin.com/in/olivier-dutoit" target="_blank" rel="noopener" class="cinfo-row">
+        <div class="cinfo-icon"><i class="fab fa-linkedin"></i></div>
+        <div>
+          <div class="cinfo-label">LinkedIn</div>
+          <div class="cinfo-val">olivier-dutoit</div>
+        </div>
+      </a>
 
-        <div class="cinfo-row" style="cursor:default">
-          <div class="cinfo-icon"><i class="fas fa-map-marker-alt"></i></div>
-          <div>
-            <div class="cinfo-label">Localisation</div>
-            <div class="cinfo-val">Saint-Étienne, France</div>
-          </div>
+      <div class="cinfo-row" style="cursor:default">
+        <div class="cinfo-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <div>
+          <div class="cinfo-label">Localisation</div>
+          <div class="cinfo-val">Saint-Étienne, France</div>
         </div>
       </div>
-
-      <!-- Form -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem">
-        <p style="font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.5rem">Envoyer un message</p>
-
-        <% if (success) { %>
-        <div style="padding:.85rem 1rem;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);border-radius:var(--radius);margin-bottom:1.1rem;font-size:.875rem;color:#4ade80">
-          <%= success %>
-        </div>
-        <% } %>
-        <% if (error) { %>
-        <div style="padding:.85rem 1rem;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2);border-radius:var(--radius);margin-bottom:1.1rem;font-size:.875rem;color:#f87171">
-          <%= error %>
-        </div>
-        <% } %>
-
-        <form action="/contact" method="POST" style="display:flex;flex-direction:column;gap:1.1rem">
-          <div class="form-grid-2">
-            <div class="form-field">
-              <label class="form-label" for="name">Nom</label>
-              <input class="form-input" type="text" id="name" name="name" placeholder="Jean Dupont" required>
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="email">Email</label>
-              <input class="form-input" type="email" id="email" name="email" placeholder="jean@example.com" required>
-            </div>
-          </div>
-          <div class="form-field">
-            <label class="form-label" for="subject">Sujet</label>
-            <input class="form-input" type="text" id="subject" name="subject" placeholder="Demande de dev web">
-          </div>
-          <div class="form-field">
-            <label class="form-label" for="message">Message</label>
-            <textarea class="form-textarea" id="message" name="message" placeholder="Bonjour Olivier, ..." required></textarea>
-          </div>
-          <div class="cf-turnstile" data-sitekey="<%= turnstileSiteKey %>" data-theme="auto"></div>
-          <div>
-            <button class="btn btn-primary" type="submit" style="border:none;cursor:pointer">Envoyer le message</button>
-          </div>
-        </form>
-      </div>
-
     </div>
-  </section>
+
+    <div class="contact-form-wrap reveal" style="transition-delay:.1s">
+      <p class="contact-info-title">Envoyer un message</p>
+
+      <% if (success) { %>
+        <div class="form-alert form-alert--success"><%= success %></div>
+      <% } %>
+      <% if (error) { %>
+        <div class="form-alert form-alert--error"><%= error %></div>
+      <% } %>
+
+      <form action="/contact" method="POST" style="display:flex;flex-direction:column;gap:1rem">
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label class="form-label" for="name">Nom</label>
+            <input class="form-input" type="text" id="name" name="name" placeholder="Jean Dupont" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="jean@example.com" required>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="subject">Sujet</label>
+          <input class="form-input" type="text" id="subject" name="subject" placeholder="Demande de dev web">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="message">Message</label>
+          <textarea class="form-textarea" id="message" name="message" placeholder="Bonjour Olivier, ..." required></textarea>
+        </div>
+        <div class="cf-turnstile" data-sitekey="<%= turnstileSiteKey %>" data-theme="dark"></div>
+        <div>
+          <button class="btn btn-primary" type="submit">Envoyer</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
 
 </div>
 

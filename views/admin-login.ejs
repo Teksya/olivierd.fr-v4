@@ -8,24 +8,24 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body class="admin-page">
   <main class="admin-login-wrap">
     <section class="admin-login-card">
       <p class="admin-kicker">Espace administration</p>
-      <h1>Connexion administrateur</h1>
-      <p class="admin-muted">Entrez votre code d'accès à 6 chiffres.</p>
+      <h1>Connexion</h1>
+      <p class="admin-muted" style="margin-top:.4rem">Entrez votre code d'accès à 6 chiffres.</p>
 
       <% if (error) { %>
-        <div class="admin-alert admin-alert--error"><%= error %></div>
+        <div class="admin-alert admin-alert--error" style="margin-top:.85rem"><%= error %></div>
       <% } %>
 
       <form method="POST" action="/admin/login" class="admin-form" autocomplete="off">
         <label for="code">Code d'accès</label>
         <input id="code" name="code" type="password" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" placeholder="000000" required>
-        <button type="submit" class="btn btn-primary">Se connecter</button>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Se connecter</button>
       </form>
     </section>
   </main>

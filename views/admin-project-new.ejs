@@ -8,7 +8,7 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body class="admin-page">
@@ -41,32 +41,26 @@
             <label for="new-title">Titre</label>
             <input id="new-title" name="title" type="text" required>
           </div>
-
           <div>
             <label for="new-image">Image (ex : proxmox.webp)</label>
             <input id="new-image" name="image" type="text" placeholder="image.webp">
           </div>
-
           <div class="admin-field-full">
             <label for="new-description">Description</label>
             <textarea id="new-description" name="description" rows="4" required></textarea>
           </div>
-
           <div>
             <label for="new-tags">Tags (séparés par des virgules)</label>
             <input id="new-tags" name="tags" type="text" placeholder="node.js, express, ejs">
           </div>
-
           <div>
             <label for="new-chips">Chips (séparés par des virgules)</label>
             <input id="new-chips" name="chips" type="text" placeholder="Featured, Security">
           </div>
-
           <label class="admin-checkbox" for="new-featured">
             <input id="new-featured" name="featured" type="checkbox" value="true">
             Définir comme projet à la une
           </label>
-
           <button type="submit" class="btn btn-primary">Ajouter le projet</button>
         </form>
       </section>

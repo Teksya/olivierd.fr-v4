@@ -8,7 +8,7 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body class="admin-page">
@@ -19,10 +19,10 @@
       <header class="admin-topbar admin-topbar--page">
         <div>
           <p class="admin-kicker">Configuration</p>
-          <h1>A propos & integrations</h1>
+          <h1>À propos &amp; intégrations</h1>
         </div>
         <div class="admin-head-actions">
-          <a href="/about" class="btn btn-ghost" target="_blank" rel="noopener">Voir la page À propos</a>
+          <a href="/about" class="btn btn-ghost" target="_blank" rel="noopener">Voir la page</a>
           <a href="/admin/logout" class="btn btn-ghost">Se déconnecter</a>
         </div>
       </header>
@@ -35,8 +35,8 @@
       <% } %>
 
       <section class="admin-panel">
-        <h2>Widgets de la page À propos</h2>
-        <p class="admin-help">Gérez ici les paramètres Spotify, Discord, GitHub et Infrastructure utilisés sur la page À propos.</p>
+        <h2>Widgets</h2>
+        <p class="admin-help">Gérez les paramètres Spotify, Discord, GitHub et Infrastructure.</p>
 
         <form method="POST" action="/admin/about" class="admin-stack-form">
           <article class="admin-subpanel">
@@ -46,28 +46,24 @@
                 <input type="checkbox" id="SPOTIFY_ENABLED" name="SPOTIFY_ENABLED" value="true" <%= spotifyConfig.SPOTIFY_ENABLED ? 'checked' : '' %>>
                 Activer le widget Spotify
               </label>
-
               <div>
                 <label for="SPOTIFY_CLIENT_ID">Client ID</label>
                 <input id="SPOTIFY_CLIENT_ID" name="SPOTIFY_CLIENT_ID" type="text" value="<%= spotifyConfig.SPOTIFY_CLIENT_ID || '' %>">
               </div>
-
               <div>
                 <label for="SPOTIFY_CLIENT_SECRET">Client Secret</label>
                 <input id="SPOTIFY_CLIENT_SECRET" name="SPOTIFY_CLIENT_SECRET" type="text" value="<%= spotifyConfig.SPOTIFY_CLIENT_SECRET || '' %>">
               </div>
-
               <div class="admin-field-full">
                 <label for="SPOTIFY_REFRESH_TOKEN">Refresh Token</label>
                 <input id="SPOTIFY_REFRESH_TOKEN" name="SPOTIFY_REFRESH_TOKEN" type="text" value="<%= spotifyConfig.SPOTIFY_REFRESH_TOKEN || '' %>">
               </div>
-
               <div class="admin-field-full">
                 <label for="SPOTIFY_REDIRECT_URI">Redirect URI</label>
                 <input id="SPOTIFY_REDIRECT_URI" name="SPOTIFY_REDIRECT_URI" type="text" value="<%= spotifyConfig.SPOTIFY_REDIRECT_URI || '' %>" placeholder="https://www.olivier-dutoit.fr/callback">
               </div>
             </div>
-            <p class="admin-help">Le Redirect URI doit être identique dans l'admin et dans le tableau de bord Spotify. Pour régénérer un token : <a href="/spotify-auth">lancer OAuth Spotify</a>.</p>
+            <p class="admin-help" style="margin-top:.6rem">Pour régénérer un token : <a href="/spotify-auth">lancer OAuth Spotify</a>.</p>
           </article>
 
           <article class="admin-subpanel">
@@ -77,17 +73,14 @@
                 <input type="checkbox" id="DISCORD_ENABLED" name="DISCORD_ENABLED" value="true" <%= spotifyConfig.DISCORD_ENABLED ? 'checked' : '' %>>
                 Activer le widget Discord
               </label>
-
               <div>
                 <label for="DISCORD_USER_ID">Discord User ID</label>
                 <input id="DISCORD_USER_ID" name="DISCORD_USER_ID" type="text" value="<%= spotifyConfig.DISCORD_USER_ID || '' %>">
               </div>
-
               <div>
                 <label for="DISCORD_USERNAME">Nom affiché</label>
                 <input id="DISCORD_USERNAME" name="DISCORD_USERNAME" type="text" value="<%= spotifyConfig.DISCORD_USERNAME || '' %>">
               </div>
-
               <div class="admin-field-full">
                 <label for="DISCORD_AVATAR_URL">URL avatar</label>
                 <input id="DISCORD_AVATAR_URL" name="DISCORD_AVATAR_URL" type="text" value="<%= spotifyConfig.DISCORD_AVATAR_URL || '' %>">
@@ -102,14 +95,12 @@
                 <input type="checkbox" id="GITHUB_ENABLED" name="GITHUB_ENABLED" value="true" <%= spotifyConfig.GITHUB_ENABLED ? 'checked' : '' %>>
                 Activer le widget GitHub
               </label>
-
               <div>
-                <label for="GITHUB_USERNAME">Nom d'utilisateur GitHub</label>
+                <label for="GITHUB_USERNAME">Nom d'utilisateur</label>
                 <input id="GITHUB_USERNAME" name="GITHUB_USERNAME" type="text" value="<%= spotifyConfig.GITHUB_USERNAME || '' %>">
               </div>
-
               <div>
-                <label for="GITHUB_TOKEN">Token GitHub (optionnel)</label>
+                <label for="GITHUB_TOKEN">Token (optionnel)</label>
                 <input id="GITHUB_TOKEN" name="GITHUB_TOKEN" type="password" value="<%= spotifyConfig.GITHUB_TOKEN || '' %>">
               </div>
             </div>
@@ -122,26 +113,23 @@
                 <input type="checkbox" id="HOMELAB_ENABLED" name="HOMELAB_ENABLED" value="true" <%= spotifyConfig.HOMELAB_ENABLED ? 'checked' : '' %>>
                 Activer le widget Homelab
               </label>
-
               <div>
                 <label for="HOMELAB_NAME">Nom affiché</label>
                 <input id="HOMELAB_NAME" name="HOMELAB_NAME" type="text" value="<%= spotifyConfig.HOMELAB_NAME || '' %>">
               </div>
-
               <div>
                 <label for="KENER_BASE">Hôte Kener</label>
                 <input id="KENER_BASE" name="KENER_BASE" type="text" value="<%= spotifyConfig.KENER_BASE || '' %>" placeholder="status.example.com">
               </div>
-
               <div>
-                <label for="KENER_PAGE_PATH">Chemin de page (optionnel)</label>
-                <input id="KENER_PAGE_PATH" name="KENER_PAGE_PATH" type="text" value="<%= spotifyConfig.KENER_PAGE_PATH || '' %>" placeholder="/ ou vide pour la page principale">
+                <label for="KENER_PAGE_PATH">Chemin de page</label>
+                <input id="KENER_PAGE_PATH" name="KENER_PAGE_PATH" type="text" value="<%= spotifyConfig.KENER_PAGE_PATH || '' %>" placeholder="/">
               </div>
             </div>
-            <p class="admin-help">La clé API Kener est lue depuis la variable d'environnement KENER_API_KEY.</p>
+            <p class="admin-help" style="margin-top:.6rem">La clé API Kener est lue depuis la variable d'environnement KENER_API_KEY.</p>
           </article>
 
-          <button type="submit" class="btn btn-primary">Enregistrer les intégrations</button>
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
         </form>
       </section>
     </section>

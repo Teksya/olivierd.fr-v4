@@ -13,5 +13,5 @@
   "HOMELAB_ENABLED": true,
   "HOMELAB_NAME": "Homelab",
   "KENER_BASE": "status.olivier-dutoit.fr",
-  "KENER_PAGE_PATH": ""
+  "KENER_PAGE_PATH": "global"
 }

@@ -1,46 +1,32 @@
-﻿  </main>
+  </main>
+
+  <button class="scroll-top" id="scroll-top" aria-label="Retour en haut">
+    <i class="fa-solid fa-chevron-up"></i>
+  </button>
 
   <footer class="site-footer">
-
     <div class="footer-inner">
-      <div class="footer-brand">
-        <span class="footer-brand__name">Olivier Dutoit</span>
-        <p class="footer-brand__tagline">Terminale Bac Pro CIEL &mdash; futur BTS SIO SISR</p>
-      </div>
-      <nav class="footer-nav">
-        <a href="/" class="footer-nav__link">Accueil</a>
-        <a href="/about" class="footer-nav__link">A propos</a>
-        <a href="/work" class="footer-nav__link">Projets</a>
-        <a href="/contact" class="footer-nav__link">Contact</a>
-        <a href="/conditions-generales" class="footer-nav__link">CGU / CGV</a>
-        <a href="/confidentialite" class="footer-nav__link">Confidentialité</a>
-        <a href="/mentions-legales" class="footer-nav__link">Mentions légales</a>
-      </nav>
-      <div class="footer-social">
-        <a href="http://github.com/Teksya" target="_blank" rel="noopener" class="footer-social__link" aria-label="GitHub">
-          <i class="fa-brands fa-github"></i>
-        </a>
-        <a href="https://fr.linkedin.com/in/olivier-dutoit" target="_blank" rel="noopener" class="footer-social__link" aria-label="LinkedIn">
-          <i class="fa-brands fa-linkedin"></i>
-        </a>
-        <a href="mailto:olivierdutoit@etik.com" class="footer-social__link" aria-label="Email">
-          <i class="fa-solid fa-envelope"></i>
-        </a>
+      <span class="footer-left">&copy; <%= new Date().getFullYear() %> Olivier D.</span>
+      <div class="footer-right">
+        <a href="http://github.com/Teksya" target="_blank" rel="noopener" class="footer-link">GitHub</a>
+        <a href="https://fr.linkedin.com/in/olivier-dutoit" target="_blank" rel="noopener" class="footer-link">LinkedIn</a>
+        <a href="mailto:olivierdutoit@etik.com" class="footer-link">Email</a>
+      <a href="https://www.anthropic.com" target="_blank" rel="noopener" class="footer-claude-link" aria-label="Built with Claude">
+        <img src="/claude.png" alt="Claude" class="footer-claude">
+      </a>
       </div>
     </div>
-
-    <div class="footer-bar">
-      <span class="footer-bar__copy">&copy; <%= new Date().getFullYear() %> Olivier Dutoit &mdash; Tous droits r&eacute;serv&eacute;s</span>
-      <span class="footer-bar__copy">olivier-dutoit.fr</span>
+    <div class="footer-legal">
+      <a href="/mentions-legales" class="footer-legal__link">Mentions légales</a>
+      <a href="/confidentialite" class="footer-legal__link">Confidentialité</a>
+      <a href="/conditions-generales" class="footer-legal__link">CGU</a>
     </div>
-
   </footer>
 
   <script>
     document.querySelectorAll('.reveal').forEach(el => {
-      new IntersectionObserver(([e]) => { if(e.isIntersecting) { el.classList.add('visible'); } }, {threshold:.12}).observe(el);
+      new IntersectionObserver(([e]) => { if(e.isIntersecting) { el.classList.add('visible'); } }, {threshold:.1}).observe(el);
     });
   </script>
-  <script src="/js/theme.js" defer></script>
 </body>
 </html>

@@ -8,7 +8,7 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body class="admin-page">
@@ -19,7 +19,7 @@
       <header class="admin-topbar admin-topbar--page">
         <div>
           <p class="admin-kicker">Tableau de bord</p>
-          <h1>Administration du site</h1>
+          <h1>Administration</h1>
         </div>
         <div class="admin-head-actions">
           <a href="/admin/projects/new" class="btn btn-primary">Nouveau projet</a>
@@ -45,20 +45,17 @@
           <div>
             <div class="admin-dashboard-grid">
               <article class="admin-stat-card">
-                <p class="admin-stat-label">Projets total</p>
+                <p class="admin-stat-label">Projets</p>
                 <p class="admin-stat-value"><%= projects.length %></p>
               </article>
-
               <article class="admin-stat-card">
-                <p class="admin-stat-label">Projet à la une</p>
+                <p class="admin-stat-label">À la une</p>
                 <p class="admin-stat-value"><%= featuredProject ? 'Oui' : 'Non' %></p>
               </article>
-
               <article class="admin-stat-card">
                 <p class="admin-stat-label">Spotify</p>
-                <p class="admin-stat-value"><%= spotifyConfig.SPOTIFY_ENABLED ? 'Actif' : 'Désactivé' %></p>
+                <p class="admin-stat-value"><%= spotifyConfig.SPOTIFY_ENABLED ? 'Actif' : 'Off' %></p>
               </article>
-
               <article class="admin-stat-card">
                 <p class="admin-stat-label">Sans image</p>
                 <p class="admin-stat-value"><%= missingImagesCount %></p>
@@ -68,14 +65,14 @@
             <div class="admin-quick-actions">
               <a href="/admin/projects/new" class="btn btn-ghost">Ajouter un projet</a>
               <a href="/admin/projects" class="btn btn-ghost">Éditer les projets</a>
-              <a href="/admin/about" class="btn btn-ghost">Configurer les intégrations</a>
+              <a href="/admin/about" class="btn btn-ghost">Intégrations</a>
             </div>
           </div>
 
-          <aside class="admin-activity-card" aria-label="Résumé activité">
-            <h3>Résumé rapide</h3>
+          <aside class="admin-activity-card">
+            <h3>Résumé</h3>
             <p class="admin-activity-line">
-              <span>Projet à la une :</span>
+              <span>À la une :</span>
               <strong><%= featuredProject ? featuredProject.title : 'Aucun' %></strong>
             </p>
             <p class="admin-activity-line">
@@ -93,7 +90,7 @@
       <section class="admin-panel">
         <div class="admin-recent-header">
           <h2>Derniers projets</h2>
-          <a href="/admin/projects" class="btn btn-ghost">Voir toute la liste</a>
+          <a href="/admin/projects" class="btn btn-ghost">Tout voir</a>
         </div>
 
         <div class="admin-recent-list">
@@ -101,7 +98,7 @@
             <article class="admin-recent-item">
               <div>
                 <p class="admin-recent-title"><%= project.title %></p>
-                <p class="admin-recent-meta"><%= (project.tags || []).slice(0, 3).join(' • ') || 'Sans tag' %></p>
+                <p class="admin-recent-meta"><%= (project.tags || []).slice(0, 3).join(' · ') || 'Sans tag' %></p>
               </div>
               <a href="/admin/projects" class="btn btn-ghost">Éditer</a>
             </article>

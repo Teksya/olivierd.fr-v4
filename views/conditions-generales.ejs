@@ -1,61 +1,52 @@
 <%- include('partials/header') %>
 
 <div class="page-wrap">
-  <section style="padding:4rem 0 2.5rem">
+  <section class="section-header">
     <p class="section-label reveal">Cadre d'utilisation</p>
-    <h1 class="reveal" style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--text-strong);margin-bottom:.85rem;transition-delay:.05s">Conditions générales</h1>
-    <p class="reveal" style="color:var(--text);max-width:740px;transition-delay:.1s">
+    <h1 class="section-title reveal" style="transition-delay:.05s">Conditions générales</h1>
+    <p class="section-desc reveal" style="transition-delay:.1s;max-width:740px">
       Ce site est un portfolio personnel. Aucune vente n'y est effectuée. Les ventes, si elles existent, sont gérées sur store.olivier-dutoit.fr avec ses propres conditions générales de vente.
     </p>
   </section>
 
   <div class="divider"></div>
 
-  <section style="padding:3.5rem 0 5rem">
-    <div class="legal-grid reveal" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;transition-delay:.06s">
+  <section style="padding:3rem 0 5rem">
+    <div class="legal-grid reveal" style="transition-delay:.06s">
       <div class="card">
         <div class="card-body">
           <div class="card-title" style="margin-bottom:.75rem">Conditions générales d'utilisation</div>
-          <p class="card-desc" style="margin-bottom:.55rem">L'accès au site est libre et gratuit. L'utilisateur s'engage à consulter le site dans le respect des lois en vigueur et à ne pas en perturber le fonctionnement.</p>
-          <p class="card-desc" style="margin-bottom:.55rem">Les contenus publiés ont une vocation informative et personnelle. Ils peuvent être modifiés, suspendus ou supprimés à tout moment sans préavis.</p>
+          <p class="card-desc" style="margin-bottom:.5rem">L'accès au site est libre et gratuit. L'utilisateur s'engage à consulter le site dans le respect des lois en vigueur et à ne pas en perturber le fonctionnement.</p>
+          <p class="card-desc" style="margin-bottom:.5rem">Les contenus publiés ont une vocation informative et personnelle. Ils peuvent être modifiés, suspendus ou supprimés à tout moment sans préavis.</p>
           <p class="card-desc">Toute reproduction, modification ou diffusion non autorisée des contenus est interdite sans accord préalable.</p>
         </div>
       </div>
-
       <div class="card">
         <div class="card-body">
           <div class="card-title" style="margin-bottom:.75rem">Conditions générales de vente</div>
-          <p class="card-desc" style="margin-bottom:.55rem">Aucune vente de biens ou de services n'est effectuée sur ce site.</p>
-          <p class="card-desc" style="margin-bottom:.55rem">Les conditions générales de vente sont donc sans objet pour le site principal.</p>
+          <p class="card-desc" style="margin-bottom:.5rem">Aucune vente de biens ou de services n'est effectuée sur ce site.</p>
+          <p class="card-desc" style="margin-bottom:.5rem">Les conditions générales de vente sont donc sans objet pour le site principal.</p>
           <p class="card-desc">Toute activité commerciale éventuelle est régie par les CGV du sous-domaine store.olivier-dutoit.fr.</p>
         </div>
       </div>
-
       <div class="card">
         <div class="card-body">
           <div class="card-title" style="margin-bottom:.75rem">Responsabilité</div>
-          <p class="card-desc" style="margin-bottom:.55rem">L'éditeur du site s'efforce de fournir des informations exactes mais ne peut garantir l'absence d'erreurs ou d'omissions.</p>
-          <p class="card-desc" style="margin-bottom:.55rem">L'utilisateur reste responsable de l'usage qu'il fait des informations consultées.</p>
+          <p class="card-desc" style="margin-bottom:.5rem">L'éditeur du site s'efforce de fournir des informations exactes mais ne peut garantir l'absence d'erreurs ou d'omissions.</p>
+          <p class="card-desc" style="margin-bottom:.5rem">L'utilisateur reste responsable de l'usage qu'il fait des informations consultées.</p>
           <p class="card-desc">L'éditeur ne saurait être tenu responsable des dommages indirects liés à l'utilisation du site.</p>
         </div>
       </div>
-
       <div class="card">
         <div class="card-body">
           <div class="card-title" style="margin-bottom:.75rem">Droit applicable</div>
-          <p class="card-desc" style="margin-bottom:.55rem">Le site est régi par le droit français.</p>
-          <p class="card-desc" style="margin-bottom:.55rem">En cas de litige, une solution amiable sera recherchée en priorité.</p>
+          <p class="card-desc" style="margin-bottom:.5rem">Le site est régi par le droit français.</p>
+          <p class="card-desc" style="margin-bottom:.5rem">En cas de litige, une solution amiable sera recherchée en priorité.</p>
           <p class="card-desc">À défaut d'accord, les juridictions françaises compétentes seront saisies.</p>
         </div>
       </div>
     </div>
   </section>
 </div>
-
-<style>
-  @media (max-width: 900px) {
-    .legal-grid { grid-template-columns: 1fr !important; }
-  }
-</style>
 
 <%- include('partials/footer') %>

@@ -1,156 +1,147 @@
-﻿<%- include('partials/header') %>
+<%- include('partials/header') %>
 
 <div class="page-wrap">
+  <div class="bento-page">
 
-  <!-- HERO -->
-  <section class="hero-section">
-    <div class="hero-grid">
-
-      <div>
-        <p class="section-label reveal">Etudiant en informatique &middot; France</p>
-        <h1 class="reveal" style="font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:800;color:var(--text-strong);margin-bottom:1.5rem;transition-delay:.05s">
-          Olivier DUTOIT
-        </h1>
-        <p class="reveal" style="font-size:1rem;color:var(--text-body);max-width:480px;line-height:1.8;margin-bottom:2rem;transition-delay:.1s">
-          Actuellement en <strong style="color:var(--text-strong);font-weight:600">Terminale Bac Pro CIEL</strong>, futur alternant en <strong style="color:var(--text-strong);font-weight:600">BTS SIO SISR</strong> pour approfondir mes comp&eacute;tences en r&eacute;seaux et administration syst&egrave;me. Passionn&eacute; par l&apos;infrastructure IT, je d&eacute;veloppe &eacute;galement mes comp&eacute;tences en d&eacute;veloppement web pour cr&eacute;er des outils et interfaces modernes.
-        </p>
-        <div class="reveal" style="display:flex;gap:.75rem;flex-wrap:wrap;transition-delay:.15s">
-          <a href="/work" class="btn btn-primary">Voir mes projets</a>
-          <a href="/contact" class="btn btn-ghost">Me contacter</a>
-        </div>
-      </div>
-
-      <div class="reveal intro-panel" style="transition-delay:.2s">
-        <div class="intro-panel__row">
-          <span class="intro-panel__label">Objectif</span>
-          <strong>BTS SIO SISR en alternance</strong>
-        </div>
-        <div class="intro-panel__row">
-          <span class="intro-panel__label">Profil</span>
-          <strong>R&eacute;seaux, syst&egrave;mes, web</strong>
-        </div>
-        <div class="intro-panel__row">
-          <span class="intro-panel__label">Stack</span>
-          <strong>Linux, Windows Server, Docker, Proxmox</strong>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- STATS + TECH -->
-  <div class="stat-block reveal">
-
-    <div class="stat-xp">
-      <span class="stat-xp__big">+3 ans</span>
-      <span class="stat-xp__big" style="color:var(--text-body);font-weight:400">d&apos;exp&eacute;rience</span>
-      <span class="stat-xp__sub">avec les technologies modernes</span>
-    </div>
-
-    <div class="tech-cards">
-      <div class="tc tc--win">
-        <div class="tc__top"><span class="tc__num">01</span><span class="tc__dot"></span></div>
-        <div class="tc__bottom">
-          <span class="tc__name">Windows Server</span>
-          <span class="tc__sub">2016 &middot; 2019 &middot; 2022</span>
-        </div>
-      </div>
-      <div class="tc tc--lnx">
-        <div class="tc__top"><span class="tc__num">02</span><span class="tc__dot"></span></div>
-        <div class="tc__bottom">
-          <span class="tc__name">Linux</span>
-          <span class="tc__sub">Debian &middot; Ubuntu &middot; Kali</span>
-        </div>
-      </div>
-      <div class="tc tc--net">
-        <div class="tc__top"><span class="tc__num">03</span><span class="tc__dot"></span></div>
-        <div class="tc__bottom">
-          <span class="tc__name">Cisco &middot; Mikrotik</span>
-          <span class="tc__sub">VLAN &middot; VPN &middot; Firewall</span>
-        </div>
-      </div>
-      <div class="tc tc--prx">
-        <div class="tc__top"><span class="tc__num">04</span><span class="tc__dot"></span></div>
-        <div class="tc__bottom">
-          <span class="tc__name">Proxmox PVE</span>
-          <span class="tc__sub">KVM &middot; LXC &middot; Clustering</span>
-        </div>
-      </div>
-      <div class="tc tc--cnt">
-        <div class="tc__top"><span class="tc__num">05</span><span class="tc__dot"></span></div>
-        <div class="tc__bottom">
-          <span class="tc__name">Conteneurs</span>
-          <span class="tc__sub">Docker &middot; OVM &middot; NAS</span>
-        </div>
+    <!-- HERO -->
+    <div class="bento-card bento-main reveal">
+      <span class="bento-kicker">Étudiant en informatique &middot; France</span>
+      <h1>Olivier<br>DUTOIT</h1>
+      <p>
+        Actuellement en <strong style="color:var(--text-strong)">Terminale Bac Pro CIEL</strong>, futur alternant en <strong style="color:var(--text-strong)">BTS SIO SISR</strong>. Passionné par l'infrastructure IT, je développe également mes compétences en développement web.
+      </p>
+      <div class="bento-ctas">
+        <a href="/work" class="btn btn-primary">Voir mes projets</a>
+        <a href="/contact" class="btn btn-ghost">Me contacter</a>
       </div>
     </div>
 
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- TECHNOLOGIES -->
-  <div class="stat-block reveal">
-
-    <div class="stat-xp">
-      <span class="stat-xp__big">Technologies</span>
-      <span class="stat-xp__big" style="color:var(--text-body);font-weight:400">que j&apos;utilise</span>
+    <!-- STAT -->
+    <div class="bento-card bento-stat reveal" style="transition-delay:.12s">
+      <div class="stat-number" data-count="4">+0</div>
+      <div class="stat-label">Années d'expérience avec les technologies modernes</div>
     </div>
 
-    <div class="tech-card-grid">
+    <!-- GOAL -->
+    <div class="bento-card bento-goal reveal" style="transition-delay:.22s">
+      <span class="goal-badge">Objectif</span>
+      <div class="goal-title">BTS SIO SISR</div>
+      <div class="goal-desc">En alternance &mdash; réseaux, systèmes, web</div>
+    </div>
 
-      <div class="tech-card">
-        <div class="tech-card__title">R&eacute;seaux &amp; Syst&egrave;mes</div>
-        <div class="tech-card__chips">
-          <span class="chip">Windows Server</span>
-          <span class="chip">Linux</span>
-          <span class="chip">Cisco</span>
-          <span class="chip">Mikrotik</span>
-          <span class="chip">Wireshark</span>
+    <!-- LOCATION -->
+    <div class="bento-card bento-location reveal" style="transition-delay:.32s">
+      <i class="fa-solid fa-location-dot loc-icon"></i>
+      <div class="loc-city">Saint-Étienne</div>
+      <div class="loc-country">France</div>
+    </div>
+
+    <!-- STACK -->
+    <div class="bento-card bento-stack reveal" style="transition-delay:.38s">
+      <div class="stack-title">Stack principale</div>
+      <div class="stack-items">
+        <span class="chip">Linux</span>
+        <span class="chip">Windows Server</span>
+        <span class="chip">Docker</span>
+        <span class="chip">Proxmox</span>
+        <span class="chip">Cisco</span>
+        <span class="chip">Mikrotik</span>
+        <span class="chip">Node.js</span>
+        <span class="chip">Git</span>
+      </div>
+    </div>
+
+    <!-- COMPETENCES -->
+    <div class="bento-card bento-competences reveal" style="transition-delay:.46s">
+      <div class="comp-header">
+        <span class="comp-title">Compétences</span>
+        <span class="comp-sub">5 domaines clés</span>
+      </div>
+      <div class="tech-cards">
+        <div class="tc tc--win">
+          <div class="tc__top"><span class="tc__num">01</span><span class="tc__dot"></span></div>
+          <div class="tc__bottom">
+            <span class="tc__name">Windows Server</span>
+            <span class="tc__sub">2016 &middot; 2019 &middot; 2022</span>
+          </div>
+        </div>
+        <div class="tc tc--lnx">
+          <div class="tc__top"><span class="tc__num">02</span><span class="tc__dot"></span></div>
+          <div class="tc__bottom">
+            <span class="tc__name">Linux</span>
+            <span class="tc__sub">Debian &middot; Ubuntu &middot; Kali</span>
+          </div>
+        </div>
+        <div class="tc tc--net">
+          <div class="tc__top"><span class="tc__num">03</span><span class="tc__dot"></span></div>
+          <div class="tc__bottom">
+            <span class="tc__name">Cisco &middot; Mikrotik</span>
+            <span class="tc__sub">VLAN &middot; VPN &middot; Firewall</span>
+          </div>
+        </div>
+        <div class="tc tc--prx">
+          <div class="tc__top"><span class="tc__num">04</span><span class="tc__dot"></span></div>
+          <div class="tc__bottom">
+            <span class="tc__name">Proxmox PVE</span>
+            <span class="tc__sub">KVM &middot; LXC &middot; Clustering</span>
+          </div>
+        </div>
+        <div class="tc tc--cnt">
+          <div class="tc__top"><span class="tc__num">05</span><span class="tc__dot"></span></div>
+          <div class="tc__bottom">
+            <span class="tc__name">Conteneurs</span>
+            <span class="tc__sub">Docker &middot; OVM &middot; NAS</span>
+          </div>
         </div>
       </div>
+    </div>
 
-      <div class="tech-card">
-        <div class="tech-card__title">Langages</div>
-        <div class="tech-card__chips">
-          <span class="chip">JavaScript</span>
-          <span class="chip">Node.js</span>
-          <span class="chip">PHP</span>
-          <span class="chip">Python</span>
-          <span class="chip">C#</span>
-          <span class="chip">Java</span>
-          <span class="chip">Lua</span>
-        </div>
+    <!-- TECH CATEGORIES -->
+    <div class="bento-card bento-tech bento-t1 reveal" style="transition-delay:.54s">
+      <div class="tech-card__title">Réseaux &amp; Systèmes</div>
+      <div class="tech-card__chips">
+        <span class="chip">Windows Server</span>
+        <span class="chip">Linux</span>
+        <span class="chip">Cisco</span>
+        <span class="chip">Mikrotik</span>
+        <span class="chip">Wireshark</span>
       </div>
+    </div>
 
-      <div class="tech-card">
-        <div class="tech-card__title">Front-End</div>
-        <div class="tech-card__chips">
-          <span class="chip">HTML/CSS</span>
-          <span class="chip">Tailwind CSS</span>
-          <span class="chip">Figma</span>
-          <span class="chip">Canva</span>
-        </div>
+    <div class="bento-card bento-tech bento-t2 reveal" style="transition-delay:.6s">
+      <div class="tech-card__title">Langages</div>
+      <div class="tech-card__chips">
+        <span class="chip">JavaScript</span>
+        <span class="chip">Node.js</span>
+        <span class="chip">PHP</span>
+        <span class="chip">Python</span>
+        <span class="chip">C#</span>
+        <span class="chip">Java</span>
+        <span class="chip">Lua</span>
       </div>
+    </div>
 
-      <div class="tech-card">
-        <div class="tech-card__title">Outils &amp; Autres</div>
-        <div class="tech-card__chips">
-          <span class="chip">Docker</span>
-          <span class="chip">Git</span>
-          <span class="chip">MySQL</span>
-          <span class="chip">Excel</span>
-        </div>
+    <div class="bento-card bento-tech bento-t3 reveal" style="transition-delay:.66s">
+      <div class="tech-card__title">Front-End</div>
+      <div class="tech-card__chips">
+        <span class="chip">HTML/CSS</span>
+        <span class="chip">Tailwind CSS</span>
+        <span class="chip">Figma</span>
+        <span class="chip">Canva</span>
       </div>
+    </div>
 
+    <div class="bento-card bento-tech bento-t4 reveal" style="transition-delay:.72s">
+      <div class="tech-card__title">Outils &amp; Autres</div>
+      <div class="tech-card__chips">
+        <span class="chip">Docker</span>
+        <span class="chip">Git</span>
+        <span class="chip">MySQL</span>
+        <span class="chip">Excel</span>
+      </div>
     </div>
 
   </div>
-
 </div>
-
-<script defer src="/js/scroll.js"></script>
 
 <%- include('partials/footer') %>
