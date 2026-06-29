@@ -39,44 +39,6 @@
     }, { threshold: 0.5 }).observe(el);
   });
 
-  // ── Scroll progress bar ──────────────────────────
-  var progressBar = document.getElementById('scroll-progress');
-  if (progressBar) {
-    window.addEventListener('scroll', function () {
-      var h = document.documentElement.scrollHeight - window.innerHeight;
-      progressBar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
-    }, { passive: true });
-  }
-
-  // ── Scroll-to-top button ─────────────────────────
-  var scrollBtn = document.getElementById('scroll-top');
-  if (scrollBtn) {
-    window.addEventListener('scroll', function () {
-      scrollBtn.classList.toggle('visible', window.scrollY > 400);
-    }, { passive: true });
-    scrollBtn.addEventListener('click', function () {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-
-  // ── Scroll-reactive background ───────────────────
-  if (!prefersReducedMotion) {
-    var gridBg = document.querySelector('.grid-bg');
-    var auroraBg = document.querySelector('.aurora');
-    var bgTicking = false;
-    window.addEventListener('scroll', function () {
-      if (bgTicking) return;
-      bgTicking = true;
-      requestAnimationFrame(function () {
-        var y = window.scrollY || 0;
-        if (gridBg) gridBg.style.transform = 'translateY(' + Math.min(120, y * 0.05) + 'px)';
-        if (auroraBg) auroraBg.style.filter =
-          'hue-rotate(' + Math.min(34, y * 0.025) + 'deg) saturate(' + (1 + Math.min(0.35, y * 0.0004)) + ')';
-        bgTicking = false;
-      });
-    }, { passive: true });
-  }
-
   // ── Project modal ────────────────────────────────
   var modal = document.getElementById('project-modal');
   if (modal) {
