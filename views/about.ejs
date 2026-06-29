@@ -3,154 +3,202 @@
 <div class="page-wrap">
   <div id="about-config" data-config="<%- encodeURIComponent(JSON.stringify(aboutConfig || {})) %>" hidden></div>
 
-  <div class="about-header reveal">
-    <p class="section-label">À propos</p>
-    <h1>Qui suis-je</h1>
-    <p>
-      Actuellement en Terminale Bac Pro CIEL, futur alternant en BTS SIO SISR.
-      Passionné par les réseaux et l'administration système, je construis
-      des infrastructures performantes et développe mes compétences en développement web.
-    </p>
-  </div>
+  <!-- ── TOP: INTRO + LIVE WIDGETS ─────────────────── -->
+  <div class="about-grid">
 
-  <div class="about-widgets reveal" style="transition-delay:.08s">
-
-    <% if (!aboutConfig || aboutConfig.spotifyEnabled) { %>
-    <div id="spotify-widget" class="sp-card" style="display:none">
-      <div class="sp-card__top">
-        <div style="display:flex;align-items:center;gap:.5rem">
-          <div class="sp-card__cover-wrap">
-            <img id="sp-img" class="sp-card__cover" src="" alt="">
-            <div class="sp-card__bars" aria-hidden="true"><span></span><span></span><span></span></div>
-          </div>
-          <div id="sp-label" class="sp-card__label">ÉCOUTE</div>
-        </div>
-        <svg class="sp-card__logo" viewBox="0 0 24 24" fill="#1db954" width="16" height="16"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.516 17.313a.75.75 0 01-1.032.25c-2.822-1.724-6.376-2.114-10.562-1.158a.75.75 0 01-.336-1.462c4.579-1.048 8.504-.597 11.68 1.338a.75.75 0 01.25 1.032zm1.472-3.27a.937.937 0 01-1.288.308c-3.226-1.983-8.148-2.558-11.97-1.4a.938.938 0 01-.544-1.794c4.365-1.324 9.787-.683 13.494 1.597a.938.938 0 01.308 1.289zm.126-3.399c-3.868-2.297-10.246-2.508-13.938-1.387a1.124 1.124 0 01-.651-2.151c4.242-1.287 11.29-1.038 15.746 1.605a1.125 1.125 0 01-1.157 1.933z"/></svg>
-      </div>
-      <div class="sp-card__body">
-        <div class="sp-card__act-row">
-          <div class="sp-card__act-info">
-            <a id="sp-title" class="sp-card__title" href="#" target="_blank" rel="noopener"></a>
-            <div id="sp-artist" class="sp-card__artist"></div>
-          </div>
-        </div>
-      </div>
-      <div class="card__divider"></div>
-      <div class="sp-card__progress">
-        <div class="sp-card__progress-times">
-          <span id="sp-current">0:00</span>
-          <span id="sp-duration">0:00</span>
-        </div>
-        <div class="sp-card__progress-bar">
-          <div id="sp-bar" class="sp-card__progress-fill"></div>
-        </div>
+    <!-- INTRO -->
+    <div class="bento-card about-intro reveal">
+      <span class="bento-kicker">À propos</span>
+      <h1>Olivier<br>DUTOIT</h1>
+      <p class="about-tagline">Construire des infrastructures fiables, automatiser l'ennuyeux, héberger soi-même le reste.</p>
+      <p class="about-bio">
+        En Terminale Bac Pro CIEL, je poursuis en <strong style="color:var(--text-strong)">BTS SIO SISR</strong> (option réseaux &amp; systèmes) en alternance.
+        Passionné par l'infrastructure et l'administration système, je construis des environnements fiables &mdash; et je développe aussi mes compétences en web.
+      </p>
+      <div class="about-meta">
+        <span class="about-badge">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          Alternance trouvée · BTS SIO SISR
+        </span>
+        <span class="about-loc">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.4-8 12-8 12s-8-7.6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          Saint-Étienne, France
+        </span>
       </div>
     </div>
-    <% } %>
 
-    <% if (!aboutConfig || aboutConfig.discordEnabled) { %>
-    <div id="discord-widget" class="dc-card">
-      <div class="dc-card__top">
-        <div style="display:flex;align-items:center;gap:.5rem">
-          <div class="dc-card__avatar-wrap">
-            <img id="dc-avatar" class="dc-card__avatar" src="<%= (aboutConfig && aboutConfig.discordAvatarUrl) ? aboutConfig.discordAvatarUrl : 'https://cdn.discordapp.com/avatars/293855276665405440/c0b1517c692b47673ddcfc35214514f3.webp?size=80' %>" alt="<%= (aboutConfig && aboutConfig.discordUsername) ? aboutConfig.discordUsername : 'Discord' %>">
-            <span id="dc-dot" class="dc-card__dot" data-status="offline"></span>
+    <!-- LIVE WIDGETS -->
+    <div class="about-widgets reveal" style="transition-delay:.08s">
+
+      <% if (!aboutConfig || aboutConfig.spotifyEnabled) { %>
+      <div id="spotify-widget" class="lw lw--sp" style="display:none">
+        <span class="lw-glow lw-glow--sp"></span>
+        <div class="lw-head">
+          <span class="lw-live"><span class="lw-pulse lw-pulse--sp"></span><span id="sp-label">ÉCOUTE</span></span>
+          <svg class="lw-brand" viewBox="0 0 24 24" fill="#1db954" width="15" height="15" aria-hidden="true"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.516 17.313a.75.75 0 01-1.032.25c-2.822-1.724-6.376-2.114-10.562-1.158a.75.75 0 01-.336-1.462c4.579-1.048 8.504-.597 11.68 1.338a.75.75 0 01.25 1.032zm1.472-3.27a.937.937 0 01-1.288.308c-3.226-1.983-8.148-2.558-11.97-1.4a.938.938 0 01-.544-1.794c4.365-1.324 9.787-.683 13.494 1.597a.938.938 0 01.308 1.289zm.126-3.399c-3.868-2.297-10.246-2.508-13.938-1.387a1.124 1.124 0 01-.651-2.151c4.242-1.287 11.29-1.038 15.746 1.605a1.125 1.125 0 01-1.157 1.933z"/></svg>
+        </div>
+        <div class="lw-sp-main">
+          <div class="lw-sp-art">
+            <img id="sp-img" class="lw-sp-cover" src="" alt="">
+            <span class="sp-card__bars" aria-hidden="true"><span></span><span></span><span></span></span>
           </div>
-          <div>
-            <div class="dc-card__name"><%= (aboutConfig && aboutConfig.discordUsername) ? aboutConfig.discordUsername : 'Discord' %></div>
-            <div id="dc-status" class="dc-card__status">Hors ligne</div>
+          <div class="lw-sp-info">
+            <a id="sp-title" class="lw-sp-title" href="#" target="_blank" rel="noopener"></a>
+            <div id="sp-artist" class="lw-sp-artist"></div>
           </div>
         </div>
-        <svg class="dc-card__logo" viewBox="0 0 24 24" fill="#5865f2" width="16" height="16"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <div class="sp-card__progress lw-sp-progress">
+          <div class="lw-sp-track"><div id="sp-bar" class="lw-sp-fill"></div></div>
+          <div class="lw-sp-times"><span id="sp-current">0:00</span><span id="sp-duration">0:00</span></div>
+        </div>
       </div>
-      <div class="dc-card__body" style="display:none"></div>
-      <div id="dc-activity" class="dc-card__activity" style="display:none">
-        <div class="card__divider"></div>
-        <div id="dc-act-label" class="dc-card__act-label">EN COURS</div>
-        <div class="dc-card__act-row">
-          <div class="dc-card__act-imgs" id="dc-act-imgs" style="display:none">
-            <img id="dc-act-large" class="dc-card__act-large" src="" alt="">
-            <img id="dc-act-small" class="dc-card__act-small" src="" alt="" style="display:none">
-          </div>
-          <div class="dc-card__act-info">
-            <div id="dc-act-name" class="dc-card__act-name"></div>
-            <div id="dc-act-details" class="dc-card__act-details"></div>
-            <div id="dc-act-state" class="dc-card__act-state"></div>
+      <% } %>
+
+      <% if (!aboutConfig || aboutConfig.discordEnabled) { %>
+      <div id="discord-widget" class="lw lw--dc">
+        <span class="lw-glow lw-glow--dc"></span>
+        <div class="lw-head">
+          <span class="lw-live"><span class="lw-pulse lw-pulse--dc"></span>DISCORD</span>
+          <svg class="lw-brand" viewBox="0 0 24 24" fill="#5865f2" width="15" height="15" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        </div>
+        <div class="lw-dc-id">
+          <span class="lw-dc-avatar-wrap">
+            <img id="dc-avatar" class="lw-dc-avatar" src="<%= (aboutConfig && aboutConfig.discordAvatarUrl) ? aboutConfig.discordAvatarUrl : 'https://cdn.discordapp.com/avatars/293855276665405440/c0b1517c692b47673ddcfc35214514f3.webp?size=80' %>" alt="<%= (aboutConfig && aboutConfig.discordUsername) ? aboutConfig.discordUsername : 'Discord' %>">
+            <span id="dc-dot" class="dc-card__dot lw-dc-dot" data-status="offline"></span>
+          </span>
+          <span class="lw-dc-text">
+            <span class="lw-dc-name"><%= (aboutConfig && aboutConfig.discordUsername) ? aboutConfig.discordUsername : 'Discord' %></span>
+            <span id="dc-status" class="lw-dc-status">Hors ligne</span>
+          </span>
+        </div>
+        <div id="dc-activity" class="lw-dc-act" style="display:none">
+          <div id="dc-act-label" class="lw-act-label">EN COURS</div>
+          <div class="lw-dc-act-row">
+            <div class="lw-dc-act-imgs" id="dc-act-imgs" style="display:none">
+              <img id="dc-act-large" class="lw-dc-act-large" src="" alt="">
+              <img id="dc-act-small" class="lw-dc-act-small" src="" alt="" style="display:none">
+            </div>
+            <div class="lw-dc-act-info">
+              <div id="dc-act-name" class="lw-dc-act-name"></div>
+              <div id="dc-act-details" class="lw-dc-act-details"></div>
+              <div id="dc-act-state" class="lw-dc-act-state"></div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <% } %>
+      <% } %>
 
-    <% if (!aboutConfig || aboutConfig.githubEnabled) { %>
-    <div id="gh-card" class="gh-card">
-      <div class="gh-card__top">
-        <div style="display:flex;align-items:center;gap:.5rem">
-          <div class="gh-card__avatar-wrap">
-            <img class="gh-card__avatar" src="https://github.com/<%= (aboutConfig && aboutConfig.githubUsername) ? aboutConfig.githubUsername : 'Teksya' %>.png?size=80" alt="<%= (aboutConfig && aboutConfig.githubUsername) ? aboutConfig.githubUsername : 'GitHub' %>">
-          </div>
-          <div>
-            <div class="gh-card__name"><%= (aboutConfig && aboutConfig.githubUsername) ? aboutConfig.githubUsername : 'GitHub' %></div>
-            <div class="gh-card__sub">GitHub</div>
-          </div>
+      <% if (!aboutConfig || aboutConfig.githubEnabled) { %>
+      <div id="gh-card" class="lw lw--gh">
+        <span class="lw-glow lw-glow--gh"></span>
+        <div class="lw-head">
+          <span class="lw-live">GITHUB</span>
+          <svg class="lw-brand" viewBox="0 0 24 24" fill="#e6edf3" width="15" height="15" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
         </div>
-        <svg class="gh-card__logo" viewBox="0 0 24 24" fill="#e6edf3" width="16" height="16"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-      </div>
-      <div id="gh-activity" class="gh-card__activity" style="display:none">
-        <div class="card__divider"></div>
-        <div class="gh-card__act-label">DERNIÈRE ACTIVITÉ</div>
-        <div class="gh-card__act-row">
-          <div class="gh-card__act-info">
-            <a id="gh-act-action" class="gh-card__act-name" href="#" target="_blank" rel="noopener"></a>
-            <div id="gh-act-repo" class="gh-card__act-details"></div>
-            <div id="gh-act-time" class="gh-card__act-time"></div>
-          </div>
+        <div class="lw-gh-id">
+          <img class="lw-gh-avatar" src="https://github.com/<%= (aboutConfig && aboutConfig.githubUsername) ? aboutConfig.githubUsername : 'Teksya' %>.png?size=80" alt="<%= (aboutConfig && aboutConfig.githubUsername) ? aboutConfig.githubUsername : 'GitHub' %>">
+          <span class="lw-gh-text">
+            <span class="lw-gh-name"><%= (aboutConfig && aboutConfig.githubUsername) ? aboutConfig.githubUsername : 'GitHub' %></span>
+            <span class="lw-gh-sub">@<%= (aboutConfig && aboutConfig.githubUsername) ? aboutConfig.githubUsername : 'github' %></span>
+          </span>
+        </div>
+        <div id="gh-activity" class="lw-gh-act" style="display:none">
+          <div class="lw-act-label">DERNIER PUSH</div>
+          <a id="gh-act-action" class="lw-gh-act-name" href="#" target="_blank" rel="noopener"></a>
+          <div id="gh-act-repo" class="lw-gh-repo"></div>
+          <div id="gh-act-time" class="lw-gh-time"></div>
         </div>
       </div>
-    </div>
-    <% } %>
+      <% } %>
 
-    <% if (!aboutConfig || aboutConfig.homelabEnabled) { %>
-    <a id="ut-card" class="ut-card ut-card--link" href="https://status.olivier-dutoit.fr/" style="display:none">
-      <div class="ut-card__top">
-        <div style="display:flex;align-items:center;gap:.5rem">
-          <div class="ut-card__icon-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><rect x="2" y="3" width="20" height="7" rx="1.5"/><rect x="2" y="14" width="20" height="7" rx="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="5.5" cy="17.5" r="1" fill="currentColor"/></svg>
-          </div>
-          <div>
-            <div class="ut-card__name"><%= (aboutConfig && aboutConfig.homelabName) ? aboutConfig.homelabName : 'Homelab' %></div>
-            <div id="ut-status" class="ut-card__status">Chargement...</div>
-          </div>
+      <% if (!aboutConfig || aboutConfig.homelabEnabled) { %>
+      <a id="ut-card" class="lw lw--ut" href="https://status.olivier-dutoit.fr/" style="display:none">
+        <span class="lw-glow lw-glow--ut"></span>
+        <div class="lw-head">
+          <span class="lw-live"><span class="lw-pulse lw-pulse--ut"></span>STATUS</span>
+          <span class="lw-ut-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15" aria-hidden="true"><rect x="2" y="3" width="20" height="7" rx="1.5"/><rect x="2" y="14" width="20" height="7" rx="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="5.5" cy="17.5" r="1" fill="currentColor"/></svg>
+          </span>
         </div>
-        <span class="ut-card__logo" style="font-size:.65rem;letter-spacing:.06em;text-transform:uppercase">Status</span>
-      </div>
-      <div class="card__divider"></div>
-      <div id="ut-groups" class="ut-card__groups"></div>
-    </a>
-    <% } %>
+        <div class="lw-ut-id">
+          <span class="lw-ut-name"><%= (aboutConfig && aboutConfig.homelabName) ? aboutConfig.homelabName : 'Homelab' %></span>
+          <span id="ut-status" class="ut-card__status lw-ut-status">Chargement...</span>
+        </div>
+        <div id="ut-groups" class="lw-ut-groups"></div>
+      </a>
+      <% } %>
 
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="about-section reveal" style="transition-delay:.1s">
-    <p class="about-section-title">Domaines</p>
-    <div class="about-domains">
-      <div class="about-domain">
-        <h3>Réseaux</h3>
-        <p>Configuration d'infrastructures réseau, routage, VLAN, pare-feu, VPN. Matériels Mikrotik, HP Aruba, Cisco.</p>
-      </div>
-      <div class="about-domain">
-        <h3>Administration Système</h3>
-        <p>Linux (Debian, Ubuntu), virtualisation Proxmox, Docker, gestion de services (DHCP, DNS, mail, NAS).</p>
-      </div>
     </div>
   </div>
 
-  <div class="divider"></div>
+  <!-- ── PARCOURS ──────────────────────────────────── -->
+  <div class="bento-card about-timeline reveal" style="transition-delay:.06s">
+    <p class="about-section-title">Parcours</p>
+    <ol class="timeline">
+      <li class="tl-item tl-now">
+        <span class="tl-dot"></span>
+        <div class="tl-body">
+          <span class="tl-date">Sept. 2026 — 2028</span>
+          <h3 class="tl-title">BTS SIO SISR <span class="tl-tag">en alternance</span></h3>
+          <p class="tl-desc">Services Informatiques aux Organisations, option Solutions d'Infrastructure, Systèmes &amp; Réseaux.</p>
+        </div>
+      </li>
+      <li class="tl-item">
+        <span class="tl-dot"></span>
+        <div class="tl-body">
+          <span class="tl-date">2023 — 2026</span>
+          <h3 class="tl-title">Bac Pro CIEL <span class="tl-tag">en initial</span></h3>
+          <p class="tl-desc">Cybersécurité, Informatique &amp; réseaux, Électronique. Bases solides en systèmes, réseaux et infrastructure.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
 
-  <div class="about-section reveal" style="padding-bottom:4rem;transition-delay:.14s">
-    <p class="about-section-title">Technologies</p>
+  <!-- ── DOMAINES + INTÉRÊTS ───────────────────────── -->
+  <div class="about-cards">
+
+    <div class="bento-card domain-card reveal">
+      <div class="domain-icon">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2.4"/><circle cx="5" cy="19" r="2.4"/><circle cx="19" cy="19" r="2.4"/><path d="M12 7.4v3.1M10.4 13 6.8 16.8M13.6 13l3.6 3.8"/></svg>
+      </div>
+      <div class="domain-title">Réseaux</div>
+      <div class="domain-desc">Routage, VLAN, pare-feu, VPN. Matériels Mikrotik, HP Aruba, Cisco.</div>
+    </div>
+
+    <div class="bento-card domain-card reveal" style="transition-delay:.05s">
+      <div class="domain-icon">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 7h.01M7 17h.01"/></svg>
+      </div>
+      <div class="domain-title">Administration système</div>
+      <div class="domain-desc">Linux (Debian, Ubuntu), virtualisation Proxmox, Docker, services (DNS, mail, NAS).</div>
+    </div>
+
+    <div class="bento-card domain-card reveal" style="transition-delay:.1s">
+      <div class="domain-icon">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 9-3 3 3 3M16 9l3 3-3 3M13.5 7l-3 10"/></svg>
+      </div>
+      <div class="domain-title">Développement web</div>
+      <div class="domain-desc">Node.js, Express, EJS, APIs REST. Ce site en est un exemple.</div>
+    </div>
+
+    <div class="bento-card domain-card reveal" style="transition-delay:.15s">
+      <div class="domain-icon">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.7 4.8L18.5 9l-4.8 1.2L12 15l-1.7-4.8L5.5 9l4.8-1.2zM18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/></svg>
+      </div>
+      <div class="domain-title">Centres d'intérêt</div>
+      <div class="about-skill-chips" style="margin-top:.65rem">
+        <span class="chip">Homelab</span>
+        <span class="chip">Self-hosting</span>
+        <span class="chip">Serveurs de jeu</span>
+        <span class="chip">Veille techno</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── STACK & TECHNOLOGIES ──────────────────────── -->
+  <div class="about-section reveal" style="padding:2.5rem 0 4rem;transition-delay:.06s">
+    <p class="about-section-title">Stack &amp; technologies</p>
     <div class="about-skills">
       <div class="about-skill-group">
         <h4>Réseaux &amp; Systèmes</h4>

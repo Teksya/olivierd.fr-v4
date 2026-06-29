@@ -5,21 +5,27 @@
     if (link.getAttribute('href') === path) link.classList.add('active');
   });
 
-  // ── Page fade transition (exit) ──────────────────
+  // ── Reduced-motion preference ────────────────────
+  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ── Cinematic page transition (exit wipe) ────────
+  var pageWipe = document.getElementById('page-wipe');
   document.querySelectorAll('a').forEach(function (link) {
     var href = link.getAttribute('href');
     if (!href || href.charAt(0) !== '/' || link.target === '_blank' || link.closest('form')) return;
     link.addEventListener('click', function (e) {
       if (href === path) return;
       e.preventDefault();
-      document.body.classList.add('page-exit');
-      setTimeout(function () { window.location.href = href; }, 280);
+      if (prefersReducedMotion || !pageWipe) { window.location.href = href; return; }
+      pageWipe.classList.add('wipe-in');
+      setTimeout(function () { window.location.href = href; }, 430);
     });
   });
 
   // ── Animated counter ─────────────────────────────
   document.querySelectorAll('.stat-number[data-count]').forEach(function (el) {
     var target = parseInt(el.dataset.count, 10) || 0;
+    if (prefersReducedMotion) { el.textContent = '+' + target; return; }
     new IntersectionObserver(function (entries, obs) {
       if (!entries[0].isIntersecting) return;
       obs.disconnect();
@@ -53,6 +59,24 @@
     });
   }
 
+  // ── Scroll-reactive background ───────────────────
+  if (!prefersReducedMotion) {
+    var gridBg = document.querySelector('.grid-bg');
+    var auroraBg = document.querySelector('.aurora');
+    var bgTicking = false;
+    window.addEventListener('scroll', function () {
+      if (bgTicking) return;
+      bgTicking = true;
+      requestAnimationFrame(function () {
+        var y = window.scrollY || 0;
+        if (gridBg) gridBg.style.transform = 'translateY(' + Math.min(120, y * 0.05) + 'px)';
+        if (auroraBg) auroraBg.style.filter =
+          'hue-rotate(' + Math.min(34, y * 0.025) + 'deg) saturate(' + (1 + Math.min(0.35, y * 0.0004)) + ')';
+        bgTicking = false;
+      });
+    }, { passive: true });
+  }
+
   // ── Project modal ────────────────────────────────
   var modal = document.getElementById('project-modal');
   if (modal) {
@@ -62,7 +86,10 @@
     var modalChips = document.getElementById('modal-chips');
     var modalTags = document.getElementById('modal-tags');
 
+    var lastFocused = null;
+
     function openModal(card) {
+      lastFocused = card;
       modalImg.src = card.dataset.image || '';
       modalImg.alt = card.dataset.title || '';
       modalTitle.textContent = card.dataset.title || '';
@@ -75,15 +102,24 @@
       }).join('');
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
+      var closeBtn = document.getElementById('modal-close');
+      if (closeBtn) closeBtn.focus();
     }
 
     function closeModal() {
       modal.classList.remove('open');
       document.body.style.overflow = '';
+      if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
     }
 
     document.querySelectorAll('.project-card').forEach(function (card) {
       card.addEventListener('click', function () { openModal(card); });
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openModal(card);
+        }
+      });
     });
 
     document.getElementById('modal-close').addEventListener('click', closeModal);
@@ -125,8 +161,8 @@
     }
   }
 
-  // ── Fine-pointer-only effects ────────────────────
-  if (!window.matchMedia('(pointer: fine)').matches) return;
+  // ── Fine-pointer-only effects (skip if reduced motion) ──
+  if (!window.matchMedia('(pointer: fine)').matches || prefersReducedMotion) return;
 
   // ── Custom cursor ────────────────────────────────
   var dot = document.createElement('div');
@@ -175,8 +211,8 @@
     });
   });
 
-  // ── Tilt 3D on bento cards ───────────────────────
-  document.querySelectorAll('.bento-card').forEach(function (card) {
+  // ── Tilt 3D on home bento cards only (skip hero) ──
+  document.querySelectorAll('.bento-page .bento-card:not(.bento-main)').forEach(function (card) {
     card.addEventListener('mousemove', function (e) {
       var rect = card.getBoundingClientRect();
       var rX = ((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -4;
@@ -185,6 +221,15 @@
     });
     card.addEventListener('mouseleave', function () {
       card.style.transform = '';
+    });
+  });
+
+  // ── Cursor spotlight glow on cards ───────────────
+  document.querySelectorAll('.bento-card, .project-card').forEach(function (card) {
+    card.addEventListener('mousemove', function (e) {
+      var rect = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - rect.top) + 'px');
     });
   });
 })();

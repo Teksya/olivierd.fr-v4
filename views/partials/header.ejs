@@ -15,21 +15,21 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/styles.css">
   <script src="/js/loader.js" defer></script>
   <script src="/js/effects.js" defer></script>
 </head>
 <body style="overflow:hidden">
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="page-wipe" id="page-wipe" aria-hidden="true"></div>
   <div class="scroll-progress" id="scroll-progress"></div>
   <div id="page-loader">
-    <div class="ld-dot-row">
-      <div class="ld-dot"></div>
-      <div class="ld-dot"></div>
-      <div class="ld-dot"></div>
+    <div class="ld-box">
+      <div class="ld-mark">OD<span class="ld-caret"></span></div>
+      <div class="ld-bar"><i></i></div>
     </div>
   </div>
 
