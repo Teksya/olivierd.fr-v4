@@ -454,34 +454,6 @@ a { color: inherit; text-decoration: none }
   margin-bottom: 1.5rem;
 }
 
-.about-domains {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2.5rem;
-}
-.about-domain h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-strong);
-  margin-bottom: .5rem;
-}
-.about-domain p {
-  font-size: .88rem;
-  color: var(--text);
-  line-height: 1.7;
-}
-
-.about-skills {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
-}
-.about-skill-group h4 {
-  font-size: .82rem;
-  font-weight: 600;
-  color: var(--text-strong);
-  margin-bottom: .65rem;
-}
 .about-skill-chips {
   display: flex;
   flex-wrap: wrap;
@@ -814,20 +786,7 @@ a { color: inherit; text-decoration: none }
 .tc--prx { --tc-accent: #f97316 }
 .tc--cnt { --tc-accent: #06b6d4 }
 
-/* ── Tech card grid ────────────────────────────── */
-.tech-card-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: .75rem;
-}
-.tech-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  transition: border-color .3s;
-}
-.tech-card:hover { border-color: var(--border-md) }
+/* ── Tech category cards (home) ────────────────── */
 .tech-card__title {
   font-size: .85rem;
   font-weight: 600;
@@ -837,79 +796,7 @@ a { color: inherit; text-decoration: none }
 }
 .tech-card__chips { display: flex; flex-wrap: wrap; gap: .35rem }
 
-/* ── Status widgets ────────────────────────────── */
-.status-widgets {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: .75rem;
-}
-
-/* ── Widget base ───────────────────────────────── */
-.widget-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: border-color .3s;
-}
-.widget-card:hover { border-color: var(--border-md) }
-.widget-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: .75rem 1rem;
-  border-bottom: 1px solid var(--border);
-}
-.widget-header-left {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-}
-.widget-avatar {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.widget-cover {
-  width: 32px; height: 32px;
-  border-radius: 6px;
-  object-fit: cover;
-}
-.widget-service {
-  font-size: .65rem;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-.widget-body {
-  padding: .75rem 1rem;
-  flex: 1;
-}
-
-/* ── Spotify card ──────────────────────────────── */
-.sp-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: border-color .3s;
-}
-.sp-card:hover { border-color: rgba(29,185,84,.2) }
-.sp-card__banner { display: none }
-.sp-card__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: .75rem 1rem;
-  border-bottom: 1px solid var(--border);
-}
-.sp-card__cover-wrap { position: relative; width: 32px; height: 32px; flex-shrink: 0 }
-.sp-card__cover { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; display: block; border: none }
+/* ── Spotify equalizer (used by LIVE widget) ───── */
 .sp-card__bars {
   position: absolute; bottom: 1px; right: 1px;
   display: flex; align-items: flex-end; gap: 2px; height: 10px;
@@ -920,42 +807,8 @@ a { color: inherit; text-decoration: none }
 .sp-card__bars span:nth-child(2) { animation-duration:.7s; animation-delay:.2s }
 .sp-card__bars span:nth-child(3) { animation-duration:1.1s; animation-delay:.15s }
 @keyframes sp-bar { 0%,100% { height:3px } 50% { height:8px } }
-.sp-card__logo { opacity: .5 }
-.sp-card__body { padding: .6rem 1rem .5rem; flex: 1 }
-.sp-card__label { font-size: .6rem; font-weight: 600; letter-spacing: .08em; color: #1db954; margin-bottom: .35rem }
-.card__divider { height: 1px; background: var(--border) }
-.sp-card .card__divider { margin: 0 }
-.sp-card__act-row { display: flex; gap: .5rem; align-items: center }
-.sp-card__act-info { display: flex; flex-direction: column; gap: .1rem; min-width: 0 }
-.sp-card__title { font-size: .78rem; font-weight: 600; color: var(--text-strong); text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100% }
-.sp-card__title:hover { text-decoration: underline }
-.sp-card__artist { font-size: .7rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100% }
-.sp-card__progress { padding: .5rem 1rem .75rem }
-.sp-card__progress-times { display: flex; justify-content: space-between; font-size: .6rem; color: var(--text-muted); margin-bottom: .3rem; font-variant-numeric: tabular-nums }
-.sp-card__progress-bar { height: 3px; background: var(--border-md); border-radius: 99px; overflow: hidden }
-.sp-card__progress-fill { height: 100%; background: #1db954; border-radius: 99px; width: 0%; transition: width .9s linear }
 
-/* ── Discord card ──────────────────────────────── */
-.dc-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: border-color .3s;
-}
-.dc-card:hover { border-color: rgba(88,101,242,.2) }
-.dc-card__banner { display: none }
-.dc-card__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: .75rem 1rem;
-  border-bottom: 1px solid var(--border);
-}
-.dc-card__avatar-wrap { position: relative; width: 32px; height: 32px }
-.dc-card__avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; display: block; border: none }
+/* ── Discord status dot (used by LIVE widget) ──── */
 .dc-card__dot {
   position: absolute; bottom: -1px; right: -1px;
   width: 11px; height: 11px; border-radius: 50%;
@@ -966,102 +819,18 @@ a { color: inherit; text-decoration: none }
 .dc-card__dot[data-status="idle"] { background:#f0b232 }
 .dc-card__dot[data-status="dnd"] { background:#f23f43 }
 .dc-card__dot[data-status="offline"] { background:#80848e }
-.dc-card__logo { opacity: .5 }
-.dc-card__body { padding: .6rem 1rem .75rem; flex: 1 }
-.dc-card__name { font-size: .85rem; font-weight: 600; color: var(--text-strong); line-height: 1.2 }
-.dc-card__status { font-size: .72rem; color: var(--text); margin-top: .1rem }
-.dc-card .card__divider { margin: 0 }
-.dc-card__activity { padding: .6rem 1rem .75rem }
-.dc-card__act-label { font-size: .6rem; font-weight: 600; letter-spacing: .08em; color: var(--text-muted); margin-bottom: .4rem }
-.dc-card__act-row { display: flex; gap: .5rem; align-items: flex-start }
-.dc-card__act-imgs { position: relative; flex-shrink: 0; width: 44px; height: 44px }
-.dc-card__act-large { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; display: block; background: var(--bg) }
-.dc-card__act-small { position: absolute; bottom: -3px; right: -3px; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--surface); object-fit: cover }
-.dc-card__act-info { display: flex; flex-direction: column; gap: .1rem; min-width: 0 }
-.dc-card__act-name { font-size: .75rem; font-weight: 600; color: var(--text-strong); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100% }
-.dc-card__act-details, .dc-card__act-state { font-size: .68rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100% }
 
-/* ── GitHub card ───────────────────────────────── */
-.gh-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: border-color .3s;
-}
-.gh-card:hover { border-color: rgba(255,255,255,.12) }
-.gh-card__banner { display: none }
-.gh-card__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: .75rem 1rem;
-  border-bottom: 1px solid var(--border);
-}
-.gh-card__avatar-wrap { width: 32px; height: 32px }
-.gh-card__avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; display: block; border: none }
-.gh-card__logo { opacity: .5 }
-.gh-card__body { padding: .6rem 1rem .75rem; flex: 1 }
-.gh-card__name { font-size: .85rem; font-weight: 600; color: var(--text-strong); line-height: 1.2 }
-.gh-card__sub { font-size: .72rem; color: var(--text); margin-top: .1rem }
-.gh-card .card__divider { margin: 0 }
-.gh-card__activity { padding: .6rem 1rem .75rem }
-.gh-card__act-label { font-size: .6rem; font-weight: 600; letter-spacing: .08em; color: var(--text-muted); margin-bottom: .4rem }
-.gh-card__act-row { display: flex; gap: .5rem; align-items: flex-start }
-.gh-card__act-info { display: flex; flex-direction: column; gap: .1rem; min-width: 0 }
-.gh-card__act-name { font-size: .75rem; font-weight: 600; color: var(--text-strong); text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100% }
-.gh-card__act-name:hover { text-decoration: underline }
-.gh-card__act-details { font-size: .68rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100% }
-.gh-card__act-time { font-size: .65rem; color: var(--text-muted); margin-top: .1rem }
-
-/* ── Uptime card ───────────────────────────────── */
-.ut-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: border-color .3s;
-}
-.ut-card.ut-card--link { color: inherit; text-decoration: none; cursor: pointer }
-.ut-card:hover { border-color: rgba(91,155,213,.2) }
-.ut-card__banner { display: none }
-.ut-card__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: .75rem 1rem;
-  border-bottom: 1px solid var(--border);
-}
-.ut-card__icon-wrap {
-  width: 32px; height: 32px; border-radius: 8px;
-  background: rgba(59,130,246,.1); border: none;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--accent);
-}
-.ut-card__logo { opacity: .4; color: var(--text-muted) }
-.ut-card__body { padding: .6rem 1rem .4rem }
-.ut-card__name { font-size: .85rem; font-weight: 600; color: var(--text-strong); line-height: 1.2 }
+/* ── Uptime status + groups (used by LIVE widget) ─ */
 .ut-card__status { font-size: .7rem; color: var(--text-muted); margin-top: .15rem }
 .ut-card__status[data-up="true"] { color: #3ba55c }
 .ut-card__status[data-up="false"] { color: #ed4245 }
-.ut-card .card__divider { margin: .3rem 0 }
-.ut-card__groups { padding: .2rem 1rem .75rem; display: flex; flex-direction: column; gap: .25rem }
 .ut-group { display: flex; align-items: center; gap: .4rem }
 .ut-group__name { font-size: .7rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
 .ut-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: #72767d }
 .ut-dot[data-up="true"] { background: #3ba55c }
 .ut-dot[data-up="false"] { background: #ed4245 }
 
-/* ── Domains grid ──────────────────────────────── */
-.domains-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: .75rem;
-}
+/* ── Domain cards ──────────────────────────────── */
 .domain-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1081,12 +850,6 @@ a { color: inherit; text-decoration: none }
 }
 .domain-title { font-size: .95rem; font-weight: 600; color: var(--text-strong); margin-bottom: .5rem }
 .domain-desc { font-size: .85rem; color: var(--text); line-height: 1.6 }
-
-/* ── Skill grid ────────────────────────────────── */
-.skill-group { display:flex; flex-direction:column; gap:.6rem }
-.skill-group__title { font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.1em; color:var(--text) }
-.skill-group h4 { font-size:.7rem; text-transform:uppercase; letter-spacing:.1em; color:var(--text-muted); margin-bottom:.75rem; font-weight:600 }
-.skill-list { display:flex; flex-wrap:wrap; gap:.4rem }
 
 /* ── Projects ──────────────────────────────────── */
 .projects-grid {
@@ -1328,11 +1091,6 @@ body::after {
   background: var(--accent);
 }
 
-/* ── Page transition ───────────────────────────── */
-body.page-exit {
-  opacity: 0 !important;
-  transition: opacity .28s ease;
-}
 
 /* ── Scroll snap ───────────────────────────────── */
 html {
@@ -1464,8 +1222,6 @@ html {
 }
 
 /* ── Hidden ────────────────────────────────────── */
-.scroll-indicators, .scroll-indicator { display: none }
-.term-wrap, .terminal-wrap { display: none }
 
 /* ══════════════════════════════════════════════════
    ADMIN PAGES
@@ -1643,12 +1399,8 @@ html {
       "t3   t4";
   }
   .about-widgets { grid-template-columns: repeat(2, 1fr) }
-  .about-domains { grid-template-columns: 1fr }
-  .about-skills { grid-template-columns: repeat(2, 1fr) }
   .contact-layout { grid-template-columns: 1fr }
-  .status-widgets { grid-template-columns: repeat(2, 1fr) }
   .tech-cards { grid-template-columns: repeat(2, 1fr) }
-  .tech-card-grid { grid-template-columns: repeat(2, 1fr) }
   .contact-grid { grid-template-columns: 1fr; }
   .featured-card { grid-template-columns: 1fr; }
   .domains-grid { grid-template-columns: 1fr; }
@@ -1692,12 +1444,10 @@ html {
       "t4";
   }
   .about-widgets { grid-template-columns: 1fr }
-  .about-skills { grid-template-columns: 1fr }
   .bento-main { padding: 1.75rem }
   .bento-card { padding: 1.25rem }
-  .tech-cards, .tech-card-grid, .form-grid-2 { grid-template-columns: 1fr !important }
+  .tech-cards, .form-grid-2 { grid-template-columns: 1fr !important }
   .projects-grid { grid-template-columns: 1fr }
-  .status-widgets { grid-template-columns: 1fr }
   .footer-legal { padding-left: 1rem; padding-right: 1rem }
   .admin-dashboard-grid { grid-template-columns: 1fr }
   .admin-recent-item { flex-direction: column; align-items: flex-start }
@@ -1714,11 +1464,6 @@ html {
 .stack-title,
 .about-section-title,
 .contact-info-title,
-.widget-service,
-.sp-card__label,
-.dc-card__act-label,
-.gh-card__act-label,
-.ut-card__logo,
 .tc__num {
   font-family: var(--font-mono);
   font-weight: 500;
