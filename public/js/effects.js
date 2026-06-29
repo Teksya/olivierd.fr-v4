@@ -8,17 +8,55 @@
   // ── Reduced-motion preference ────────────────────
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ── Cinematic page transition (exit wipe) ────────
-  var pageWipe = document.getElementById('page-wipe');
+  // ── Cinematic page transition (paint draws itself) ──
+  var paintOverlay = document.getElementById('paint-transition');
+  var paintSvgText = null;
+  if (paintOverlay) {
+    fetch('/paint.svg').then(function (r) { return r.text(); })
+      .then(function (t) { paintSvgText = t; })
+      .catch(function () {});
+  }
+
+  function navigateWithPaint(href) {
+    if (!paintOverlay || !paintSvgText || typeof Element === 'undefined' || !Element.prototype.animate) {
+      window.location.href = href;
+      return;
+    }
+    paintOverlay.innerHTML = paintSvgText;
+    paintOverlay.classList.add('is-on');
+    var svg = paintOverlay.querySelector('svg');
+    var paths = svg ? svg.querySelectorAll('path') : [];
+    if (!paths.length) { window.location.href = href; return; }
+
+    var navigated = false;
+    function go() { if (navigated) return; navigated = true; window.location.href = href; }
+
+    paths.forEach(function (p, i) {
+      var len;
+      try { len = p.getTotalLength(); } catch (e) { len = 400; }
+      p.style.fill = 'none';
+      p.style.stroke = '#38A1FF';
+      p.style.strokeWidth = '1.6';
+      p.style.strokeLinecap = 'round';
+      p.style.strokeLinejoin = 'round';
+      p.style.strokeDasharray = len;
+      p.style.strokeDashoffset = len;
+      p.animate(
+        [{ strokeDashoffset: len }, { strokeDashoffset: 0 }],
+        { duration: 480, delay: i * 12, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'forwards' }
+      );
+    });
+    setTimeout(go, 480 + paths.length * 12 + 90);
+  }
+
   document.querySelectorAll('a').forEach(function (link) {
     var href = link.getAttribute('href');
     if (!href || href.charAt(0) !== '/' || link.target === '_blank' || link.closest('form')) return;
     link.addEventListener('click', function (e) {
       if (href === path) return;
       e.preventDefault();
-      if (prefersReducedMotion || !pageWipe) { window.location.href = href; return; }
-      pageWipe.classList.add('wipe-in');
-      setTimeout(function () { window.location.href = href; }, 430);
+      if (prefersReducedMotion) { window.location.href = href; return; }
+      navigateWithPaint(href);
     });
   });
 

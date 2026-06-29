@@ -1512,20 +1512,25 @@ body::after {
   will-change: transform;
 }
 
-/* ── Cinematic page transition wipe ────────────────── */
-.page-wipe {
+/* ── Page transition: the paint draws itself ───────── */
+.paint-transition {
   position: fixed;
   inset: 0;
   z-index: 95;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--bg);
-  transform: translateY(100%);
+  opacity: 0;
   pointer-events: none;
+  transition: opacity .16s ease;
 }
-.page-wipe.wipe-in {
-  transform: translateY(0);
-  border-top: 2px solid var(--accent);
-  box-shadow: 0 -14px 50px rgba(59,130,246,.28);
-  transition: transform .44s cubic-bezier(.7,0,.25,1);
+.paint-transition.is-on { opacity: 1; pointer-events: auto }
+.paint-transition svg {
+  width: min(42vw, 230px);
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 24px rgba(56,161,255,.25));
 }
 
 /* ── Cursor spotlight on cards ─────────────────────── */
