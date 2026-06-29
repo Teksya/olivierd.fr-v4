@@ -699,6 +699,7 @@ a { color: inherit; text-decoration: none }
 }
 @media (max-width: 640px) {
   .about-cards { grid-template-columns: 1fr }
+  .about-grid .about-widgets { grid-template-columns: 1fr }
   .about-intro { padding: 1.75rem }
   .about-timeline { padding: 1.5rem }
 }
@@ -877,6 +878,38 @@ a { color: inherit; text-decoration: none }
 .featured-chips { display: flex; align-items: center; gap: .4rem; margin-bottom: .75rem }
 .featured-title { font-size: 1.2rem; font-weight: 700; color: var(--text-strong); margin-bottom: .5rem; letter-spacing: -.01em }
 
+/* ── Work: tag filters + card polish ──────────────── */
+.work-filters {
+  display: flex;
+  gap: .4rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: .4rem;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.work-filters::-webkit-scrollbar { height: 3px }
+.work-filters::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 2px }
+.work-filter {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  padding: .35rem .75rem;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border-md);
+  color: var(--text);
+  white-space: nowrap;
+  transition: color .2s, border-color .2s, background .2s;
+}
+.work-filter:hover { color: var(--text-strong); border-color: rgba(255,255,255,.18) }
+.work-filter.is-active { background: var(--accent-dim); border-color: rgba(59,130,246,.3); color: var(--accent) }
+.work-empty { text-align: center; color: var(--text); font-size: .9rem; padding: 3rem 0 }
+
+/* Card image zoom on hover */
+.project-card .card-img, .project-card .card-img-sm { transition: transform .45s cubic-bezier(.16,1,.3,1) }
+.project-card:hover .card-img, .project-card:hover .card-img-sm { transform: scale(1.05) }
+
 /* ── Contact ───────────────────────────────────── */
 .contact-grid {
   display: grid;
@@ -1026,9 +1059,19 @@ a { color: inherit; text-decoration: none }
 }
 
 /* ── Scrollbar ─────────────────────────────────── */
-::-webkit-scrollbar { width: 4px }
-::-webkit-scrollbar-track { background: var(--bg) }
-::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 2px }
+html { scrollbar-width: thin; scrollbar-color: var(--accent) transparent }
+::-webkit-scrollbar { width: 12px }
+::-webkit-scrollbar-track { background: transparent }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent), #2563eb);
+  border-radius: 999px;
+  border: 3px solid var(--bg);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--accent-hover), var(--accent));
+  background-clip: padding-box;
+}
 
 /* ── Grain texture ─────────────────────────────── */
 body::after {
@@ -1097,6 +1140,9 @@ html {
   scroll-snap-type: y proximity;
 }
 .bento-page,
+.about-grid,
+.about-timeline,
+.about-cards,
 .about-header,
 .about-section,
 .section-header,

@@ -129,6 +129,29 @@
     });
   }
 
+  // ── Work: tag filtering ──────────────────────────
+  var workFilters = document.getElementById('work-filters');
+  if (workFilters) {
+    var filterCards = document.querySelectorAll('.project-card');
+    var workEmpty = document.getElementById('work-empty');
+    workFilters.addEventListener('click', function (e) {
+      var btn = e.target.closest('.work-filter');
+      if (!btn) return;
+      var f = btn.dataset.filter;
+      workFilters.querySelectorAll('.work-filter').forEach(function (b) {
+        b.classList.toggle('is-active', b === btn);
+      });
+      var shown = 0;
+      filterCards.forEach(function (card) {
+        var tags = (card.dataset.tags || '').split('|||');
+        var show = f === 'all' || tags.indexOf(f) !== -1;
+        card.style.display = show ? '' : 'none';
+        if (show) shown++;
+      });
+      if (workEmpty) workEmpty.hidden = shown > 0;
+    });
+  }
+
   // ── Konami code → confetti ───────────────────────
   var konamiSeq = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
   var konamiIdx = 0;

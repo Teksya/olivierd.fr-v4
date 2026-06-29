@@ -10,6 +10,14 @@
 
   <section style="padding-bottom:5rem">
 
+    <% const allTags = [...new Set(projects.flatMap(p => p.tags || []))].sort((a, b) => a.localeCompare(b)); %>
+    <div class="work-filters reveal" id="work-filters" role="tablist" aria-label="Filtrer les projets par technologie">
+      <button class="work-filter is-active" data-filter="all" type="button">Tous</button>
+      <% allTags.forEach(function (tag) { %>
+        <button class="work-filter" data-filter="<%= tag %>" type="button"><%= tag %></button>
+      <% }); %>
+    </div>
+
     <% const featured = projects.find(p => p.featured); %>
     <% const others = projects.filter(p => !p.featured); %>
 
@@ -63,6 +71,8 @@
         </div>
       <% }); %>
     </div>
+
+    <p class="work-empty" id="work-empty" hidden>Aucun projet ne correspond à ce filtre.</p>
 
   </section>
 
