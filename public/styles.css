@@ -1512,7 +1512,7 @@ body::after {
   will-change: transform;
 }
 
-/* ── Page transition: the paint draws itself ───────── */
+/* ── Page transition: the artist sketches ──────────── */
 .paint-transition {
   position: fixed;
   inset: 0;
@@ -1523,14 +1523,30 @@ body::after {
   background: var(--bg);
   opacity: 0;
   pointer-events: none;
-  transition: opacity .16s ease;
+  transition: opacity .18s ease;
 }
 .paint-transition.is-on { opacity: 1; pointer-events: auto }
 .paint-transition svg {
-  width: min(42vw, 230px);
+  width: min(46vw, 260px);
   height: auto;
   overflow: visible;
-  filter: drop-shadow(0 0 24px rgba(56,161,255,.25));
+  filter: drop-shadow(0 0 26px rgba(56,161,255,.22));
+}
+/* recolor dark parts so the character reads on the dark overlay */
+.paint-transition svg path[fill="#1A1A1A"],
+.paint-transition svg path[fill="#191919"],
+.paint-transition svg path[fill="black"] { fill: var(--text-strong) }
+/* rig: the raised arm pivots at the elbow */
+.paint-transition svg .pt-arm {
+  transform-box: view-box;
+  transform-origin: 160px 236px;
+}
+.paint-transition.is-on svg .pt-arm {
+  animation: ptSketch .46s ease-in-out infinite;
+}
+@keyframes ptSketch {
+  0%, 100% { transform: rotate(1deg) }
+  50%      { transform: rotate(-7deg) }
 }
 
 /* ── Cursor spotlight on cards ─────────────────────── */

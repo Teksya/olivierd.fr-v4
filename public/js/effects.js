@@ -18,35 +18,11 @@
   }
 
   function navigateWithPaint(href) {
-    if (!paintOverlay || !paintSvgText || typeof Element === 'undefined' || !Element.prototype.animate) {
-      window.location.href = href;
-      return;
-    }
+    if (!paintOverlay || !paintSvgText) { window.location.href = href; return; }
     paintOverlay.innerHTML = paintSvgText;
+    void paintOverlay.offsetWidth; // reflow so the CSS sketch animation starts cleanly
     paintOverlay.classList.add('is-on');
-    var svg = paintOverlay.querySelector('svg');
-    var paths = svg ? svg.querySelectorAll('path') : [];
-    if (!paths.length) { window.location.href = href; return; }
-
-    var navigated = false;
-    function go() { if (navigated) return; navigated = true; window.location.href = href; }
-
-    paths.forEach(function (p, i) {
-      var len;
-      try { len = p.getTotalLength(); } catch (e) { len = 400; }
-      p.style.fill = 'none';
-      p.style.stroke = '#38A1FF';
-      p.style.strokeWidth = '1.6';
-      p.style.strokeLinecap = 'round';
-      p.style.strokeLinejoin = 'round';
-      p.style.strokeDasharray = len;
-      p.style.strokeDashoffset = len;
-      p.animate(
-        [{ strokeDashoffset: len }, { strokeDashoffset: 0 }],
-        { duration: 480, delay: i * 12, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'forwards' }
-      );
-    });
-    setTimeout(go, 480 + paths.length * 12 + 90);
+    setTimeout(function () { window.location.href = href; }, 850);
   }
 
   document.querySelectorAll('a').forEach(function (link) {
