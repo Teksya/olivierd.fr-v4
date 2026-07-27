@@ -1,82 +1,100 @@
 <%- include('partials/header') %>
 
-<div class="page-wrap">
+<div class="mx-auto max-w-content px-6 py-20 sm:py-24">
 
-  <section class="section-header">
-    <p class="section-label reveal">Projets &amp; réalisations</p>
-    <h1 class="section-title reveal" style="transition-delay:.05s">Mes Travaux</h1>
-    <p class="section-desc reveal" style="transition-delay:.1s">Projets académiques et personnels &mdash; infrastructure, administration système, développement.</p>
+  <!-- EN-TÊTE -->
+  <section>
+    <p class="reveal text-sm font-semibold text-accenth">Projets &amp; réalisations</p>
+    <h1 class="reveal mt-4 text-4xl font-semibold tracking-tight text-strong sm:text-5xl" style="transition-delay:.05s">Mes Travaux</h1>
+    <p class="reveal mt-4 max-w-2xl text-base text-body" style="transition-delay:.1s">
+      Projets académiques et personnels - infrastructure, administration système, développement.
+    </p>
   </section>
 
-  <section style="padding-bottom:5rem">
+  <!-- FILTRES -->
+  <% const allTags = [...new Set(projects.flatMap(p => p.tags || []))].sort((a, b) => a.localeCompare(b)); %>
+  <div class="reveal mt-10 flex flex-wrap gap-2" id="work-filters" role="tablist" aria-label="Filtrer les projets par technologie">
+    <button class="work-filter is-active rounded-full border border-accent px-3.5 py-1.5 text-xs text-strong transition-colors" data-filter="all" type="button">Tous</button>
+    <% allTags.forEach(function (tag) { %>
+      <button class="work-filter rounded-full border border-line px-3.5 py-1.5 text-xs text-muted transition-colors hover:text-body" data-filter="<%= tag %>" type="button"><%= tag %></button>
+    <% }); %>
+  </div>
 
-    <% const featured = projects.find(p => p.featured); %>
-    <% const others = projects.filter(p => !p.featured); %>
+  <% const featured = projects.find(p => p.featured); %>
+  <% const others = projects.filter(p => !p.featured); %>
 
-    <% if (featured) { %>
-      <div class="featured-card reveal card project-card" style="cursor:pointer"
-        data-title="<%= featured.title %>"
-        data-desc="<%= featured.description %>"
-        data-image="<%= featured.image %>"
-        data-tags="<%= (featured.tags || []).join('|||') %>"
-        data-chips="<%= (featured.chips || []).join('|||') %>">
-        <img loading="lazy" src="<%= featured.image %>" alt="<%= featured.title %>" class="card-img">
-        <div class="card-body">
-          <div>
-            <div class="featured-chips">
-              <% featured.chips.forEach(chip => { %>
-                <span class="chip"><%= chip %></span>
-              <% }); %>
-            </div>
-            <div class="featured-title"><%= featured.title %></div>
-            <p class="card-desc"><%= featured.description %></p>
+  <!-- PROJET MIS EN AVANT -->
+  <% if (featured) { %>
+    <div class="project-card reveal group mt-8 grid cursor-pointer overflow-hidden rounded-3xl border border-line bg-surface transition-colors hover:border-line2 sm:grid-cols-2"
+      role="button" tabindex="0" aria-label="Ouvrir le projet : <%= featured.title %>"
+      data-title="<%= featured.title %>"
+      data-desc="<%= featured.description %>"
+      data-image="<%= featured.image %>"
+      data-tags="<%= (featured.tags || []).join('|||') %>"
+      data-chips="<%= (featured.chips || []).join('|||') %>">
+      <div class="aspect-video overflow-hidden sm:aspect-auto">
+        <img loading="lazy" src="<%= featured.image %>" alt="<%= featured.title %>" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
+      </div>
+      <div class="flex flex-col justify-between gap-6 p-7">
+        <div>
+          <div class="flex flex-wrap gap-2">
+            <% featured.chips.forEach(chip => { %>
+              <span class="inline-flex items-center rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accenth"><%= chip %></span>
+            <% }); %>
           </div>
-          <div class="card-tags">
-            <% featured.tags.forEach(tag => { %>
-              <span class="chip"><%= tag %></span>
+          <h2 class="mt-4 text-xl font-semibold text-strong"><%= featured.title %></h2>
+          <p class="mt-2 text-sm leading-relaxed text-body"><%= featured.description %></p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <% featured.tags.forEach(tag => { %>
+            <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-3 py-1 text-xs text-muted"><%= tag %></span>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- GRILLE -->
+  <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <% others.forEach((project, i) => { %>
+      <div class="project-card reveal group flex cursor-pointer flex-col overflow-hidden rounded-3xl border border-line bg-surface transition-colors hover:border-line2" style="transition-delay:<%= Math.min(i * 0.04, 0.3) %>s"
+        role="button" tabindex="0" aria-label="Ouvrir le projet : <%= project.title %>"
+        data-title="<%= project.title %>"
+        data-desc="<%= project.description %>"
+        data-image="<%= project.image %>"
+        data-tags="<%= (project.tags || []).join('|||') %>"
+        data-chips="<%= (project.chips || []).join('|||') %>">
+        <div class="aspect-video overflow-hidden">
+          <img loading="lazy" src="<%= project.image %>" alt="<%= project.title %>" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
+        </div>
+        <div class="flex flex-1 flex-col p-5">
+          <h3 class="font-semibold text-strong"><%= project.title %></h3>
+          <p class="mt-1.5 flex-1 text-sm leading-relaxed text-body"><%= project.description %></p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <% project.tags.forEach(tag => { %>
+              <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-0.5 text-xs text-muted"><%= tag %></span>
             <% }); %>
           </div>
         </div>
       </div>
-    <% } %>
+    <% }); %>
+  </div>
 
-    <div class="projects-grid">
-      <% others.forEach((project, i) => { %>
-        <div class="card project-card reveal" style="cursor:pointer;transition-delay:<%= Math.min(i * 0.04, 0.3) %>s"
-          data-title="<%= project.title %>"
-          data-desc="<%= project.description %>"
-          data-image="<%= project.image %>"
-          data-tags="<%= (project.tags || []).join('|||') %>"
-          data-chips="<%= (project.chips || []).join('|||') %>">
-          <img loading="lazy" src="<%= project.image %>" alt="<%= project.title %>" class="card-img-sm">
-          <div class="card-body">
-            <div class="card-title"><%= project.title %></div>
-            <p class="card-desc"><%= project.description %></p>
-            <div class="card-tags">
-              <% project.tags.forEach(tag => { %>
-                <span class="chip"><%= tag %></span>
-              <% }); %>
-            </div>
-          </div>
-        </div>
-      <% }); %>
-    </div>
-
-  </section>
+  <p class="mt-10 text-center text-sm text-muted" id="work-empty" hidden>Aucun projet ne correspond à ce filtre.</p>
 
 </div>
 
-<!-- PROJECT MODAL -->
-<div class="project-modal" id="project-modal">
-  <div class="project-modal__backdrop" id="modal-backdrop"></div>
-  <div class="project-modal__content">
-    <button class="project-modal__close" id="modal-close">&times;</button>
-    <img class="project-modal__img" id="modal-img" src="" alt="">
-    <div class="project-modal__body">
-      <div class="project-modal__chips" id="modal-chips"></div>
-      <h2 class="project-modal__title" id="modal-title"></h2>
-      <p class="project-modal__desc" id="modal-desc"></p>
-      <div class="project-modal__tags" id="modal-tags"></div>
+<!-- MODAL PROJET -->
+<div class="fixed inset-0 z-[100] hidden items-center justify-center p-4" id="project-modal">
+  <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" id="modal-backdrop"></div>
+  <div class="relative z-10 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-line bg-surface">
+    <button class="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-line bg-bg/70 text-lg text-body transition-colors hover:text-strong" id="modal-close" aria-label="Fermer">&times;</button>
+    <img class="aspect-video w-full object-cover" id="modal-img" src="" alt="">
+    <div class="p-7">
+      <div class="flex flex-wrap gap-2" id="modal-chips"></div>
+      <h2 class="mt-4 text-2xl font-semibold text-strong" id="modal-title"></h2>
+      <p class="mt-3 leading-relaxed text-body" id="modal-desc"></p>
+      <div class="mt-5 flex flex-wrap gap-2" id="modal-tags"></div>
     </div>
   </div>
 </div>

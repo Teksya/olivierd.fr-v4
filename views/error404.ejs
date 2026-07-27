@@ -1,15 +1,13 @@
 <%- include('partials/header') %>
 
-<div class="page-wrap">
-  <section class="error-section">
-    <div>
-      <div class="error-code">404</div>
-      <h1 class="error-title">Page non trouvée</h1>
-      <p class="error-desc">La page que vous cherchez n'existe pas ou a été déplacée.</p>
-      <div class="error-ctas">
-        <a href="/" class="btn btn-primary">Retour à l'accueil</a>
-        <a href="/work" class="btn btn-ghost">Voir mes projets</a>
-      </div>
-    </div>
-  </section>
+<div class="mx-auto flex max-w-content flex-col items-center px-6 py-32 text-center">
+  <div class="text-7xl font-semibold tracking-tight text-strong sm:text-8xl">404</div>
+  <h1 class="mt-4 text-2xl font-semibold tracking-tight text-strong">Page non trouvée</h1>
+  <p class="mt-3 max-w-md text-body">La page que vous cherchez n'existe pas ou a été déplacée.</p>
+  <div class="mt-8 flex flex-wrap justify-center gap-3">
+    <a href="/" class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accenth">Retour à l'accueil</a>
+    <a href="/work" class="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-body transition-colors hover:border-line2 hover:text-strong">Voir mes projets</a>
+  </div>
 </div>
+
+<%- include('partials/footer') %>

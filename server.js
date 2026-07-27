@@ -710,11 +710,12 @@ if (smtpHost && smtpUser) {
 	});
 }
 
-app.get('/', (req, res) => res.render('index', { 
+app.get('/', (req, res) => res.render('index', {
 	title: 'Olivier D - Accueil',
 	description: 'Étudiant en Bac Pro CIEL futur alternant en BTS SIO SISR. Passionné par les réseaux, administration système et développement web.',
 	url: 'https://www.olivier-dutoit.fr',
-	ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
+	ogImage: 'https://www.olivier-dutoit.fr/og-image.png',
+	projectCount: loadProjects().length
 }));
 
 app.get('/about', (req, res) => res.render('about', { 

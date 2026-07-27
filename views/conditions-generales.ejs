@@ -1,52 +1,48 @@
 <%- include('partials/header') %>
 
-<div class="page-wrap">
-  <section class="section-header">
-    <p class="section-label reveal">Cadre d'utilisation</p>
-    <h1 class="section-title reveal" style="transition-delay:.05s">Conditions générales</h1>
-    <p class="section-desc reveal" style="transition-delay:.1s;max-width:740px">
+<div class="mx-auto max-w-content px-6 py-20 sm:py-24">
+  <section class="reveal">
+    <p class="text-sm font-semibold text-accenth">Cadre d'utilisation</p>
+    <h1 class="mt-4 text-4xl font-semibold tracking-tight text-strong sm:text-5xl">Conditions générales</h1>
+    <p class="mt-4 max-w-2xl text-base text-body">
       Ce site est un portfolio personnel. Aucune vente n'y est effectuée. Les ventes, si elles existent, sont gérées sur store.olivier-dutoit.fr avec ses propres conditions générales de vente.
     </p>
   </section>
 
-  <div class="divider"></div>
-
-  <section style="padding:3rem 0 5rem">
-    <div class="legal-grid reveal" style="transition-delay:.06s">
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title" style="margin-bottom:.75rem">Conditions générales d'utilisation</div>
-          <p class="card-desc" style="margin-bottom:.5rem">L'accès au site est libre et gratuit. L'utilisateur s'engage à consulter le site dans le respect des lois en vigueur et à ne pas en perturber le fonctionnement.</p>
-          <p class="card-desc" style="margin-bottom:.5rem">Les contenus publiés ont une vocation informative et personnelle. Ils peuvent être modifiés, suspendus ou supprimés à tout moment sans préavis.</p>
-          <p class="card-desc">Toute reproduction, modification ou diffusion non autorisée des contenus est interdite sans accord préalable.</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title" style="margin-bottom:.75rem">Conditions générales de vente</div>
-          <p class="card-desc" style="margin-bottom:.5rem">Aucune vente de biens ou de services n'est effectuée sur ce site.</p>
-          <p class="card-desc" style="margin-bottom:.5rem">Les conditions générales de vente sont donc sans objet pour le site principal.</p>
-          <p class="card-desc">Toute activité commerciale éventuelle est régie par les CGV du sous-domaine store.olivier-dutoit.fr.</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title" style="margin-bottom:.75rem">Responsabilité</div>
-          <p class="card-desc" style="margin-bottom:.5rem">L'éditeur du site s'efforce de fournir des informations exactes mais ne peut garantir l'absence d'erreurs ou d'omissions.</p>
-          <p class="card-desc" style="margin-bottom:.5rem">L'utilisateur reste responsable de l'usage qu'il fait des informations consultées.</p>
-          <p class="card-desc">L'éditeur ne saurait être tenu responsable des dommages indirects liés à l'utilisation du site.</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title" style="margin-bottom:.75rem">Droit applicable</div>
-          <p class="card-desc" style="margin-bottom:.5rem">Le site est régi par le droit français.</p>
-          <p class="card-desc" style="margin-bottom:.5rem">En cas de litige, une solution amiable sera recherchée en priorité.</p>
-          <p class="card-desc">À défaut d'accord, les juridictions françaises compétentes seront saisies.</p>
-        </div>
+  <div class="mt-12 grid gap-4 sm:grid-cols-2">
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Conditions générales d'utilisation</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>L'accès au site est libre et gratuit. L'utilisateur s'engage à consulter le site dans le respect des lois en vigueur et à ne pas en perturber le fonctionnement.</p>
+        <p>Les contenus publiés ont une vocation informative et personnelle. Ils peuvent être modifiés, suspendus ou supprimés à tout moment sans préavis.</p>
+        <p>Toute reproduction, modification ou diffusion non autorisée des contenus est interdite sans accord préalable.</p>
       </div>
     </div>
-  </section>
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Conditions générales de vente</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>Aucune vente de biens ou de services n'est effectuée sur ce site.</p>
+        <p>Les conditions générales de vente sont donc sans objet pour le site principal.</p>
+        <p>Toute activité commerciale éventuelle est régie par les CGV du sous-domaine store.olivier-dutoit.fr.</p>
+      </div>
+    </div>
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Responsabilité</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>L'éditeur du site s'efforce de fournir des informations exactes mais ne peut garantir l'absence d'erreurs ou d'omissions.</p>
+        <p>L'utilisateur reste responsable de l'usage qu'il fait des informations consultées.</p>
+        <p>L'éditeur ne saurait être tenu responsable des dommages indirects liés à l'utilisation du site.</p>
+      </div>
+    </div>
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Droit applicable</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>Le site est régi par le droit français.</p>
+        <p>En cas de litige, une solution amiable sera recherchée en priorité.</p>
+        <p>À défaut d'accord, les juridictions françaises compétentes seront saisies.</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <%- include('partials/footer') %>

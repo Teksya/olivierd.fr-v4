@@ -1,54 +1,50 @@
 <%- include('partials/header') %>
 
-<div class="page-wrap">
-  <section class="section-header">
-    <p class="section-label reveal">Informations légales</p>
-    <h1 class="section-title reveal" style="transition-delay:.05s">Mentions légales</h1>
-    <p class="section-desc reveal" style="transition-delay:.1s;max-width:720px">
+<div class="mx-auto max-w-content px-6 py-20 sm:py-24">
+  <section class="reveal">
+    <p class="text-sm font-semibold text-accenth">Informations légales</p>
+    <h1 class="mt-4 text-4xl font-semibold tracking-tight text-strong sm:text-5xl">Mentions légales</h1>
+    <p class="mt-4 max-w-2xl text-base text-body">
       Cette page regroupe les informations d'édition, d'hébergement et les règles d'usage du site personnel olivier-dutoit.fr.
     </p>
   </section>
 
-  <div class="divider"></div>
-
-  <section style="padding:3rem 0 5rem">
-    <div class="legal-grid reveal" style="transition-delay:.06s">
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title" style="margin-bottom:.75rem">Éditeur du site</div>
-          <p class="card-desc" style="margin-bottom:.5rem">Olivier Dutoit</p>
-          <p class="card-desc" style="margin-bottom:.5rem">SIREN : 105931174</p>
-          <p class="card-desc" style="margin-bottom:.5rem">SIRET : 10593117400012</p>
-          <p class="card-desc">Contact : olivierdutoit@etik.com</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title" style="margin-bottom:.75rem">Hébergement</div>
-          <p class="card-desc" style="margin-bottom:.5rem">Hébergeur : Olivier Dutoit</p>
-          <p class="card-desc" style="margin-bottom:.5rem">SIREN : 105931174</p>
-          <p class="card-desc" style="margin-bottom:.5rem">SIRET : 10593117400012</p>
-          <p class="card-desc" style="margin-bottom:.5rem">Adressage IP fourni par WEDEPLOY SAS, France</p>
-          <p class="card-desc">Réseau : AS210699</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title" style="margin-bottom:.75rem">Conditions d'utilisation</div>
-          <p class="card-desc" style="margin-bottom:.5rem">Le site est proposé à titre informatif et personnel. Toute reproduction, diffusion ou réutilisation du contenu sans autorisation préalable est interdite.</p>
-          <p class="card-desc" style="margin-bottom:.5rem">L'accès au site peut être suspendu ou modifié à tout moment pour maintenance, évolution ou raison technique.</p>
-          <p class="card-desc">L'utilisateur s'engage à ne pas perturber le bon fonctionnement du site ni tenter d'en compromettre la sécurité.</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title" style="margin-bottom:.75rem">Données personnelles</div>
-          <p class="card-desc" style="margin-bottom:.5rem">Les modalités de traitement des données personnelles sont détaillées dans la politique de confidentialité du site.</p>
-          <p class="card-desc">Vous y trouverez les informations relatives aux données collectées, aux finalités, aux destinataires et aux durées de conservation.</p>
-        </div>
+  <div class="mt-12 grid gap-4 sm:grid-cols-2">
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Éditeur du site</h2>
+      <div class="mt-3 space-y-1.5 text-sm leading-relaxed text-body">
+        <p>Olivier Dutoit</p>
+        <p>SIREN : 105931174</p>
+        <p>SIRET : 10593117400012</p>
+        <p>Contact : olivierdutoit@etik.com</p>
       </div>
     </div>
-  </section>
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Hébergement</h2>
+      <div class="mt-3 space-y-1.5 text-sm leading-relaxed text-body">
+        <p>Hébergeur : Olivier Dutoit</p>
+        <p>SIREN : 105931174</p>
+        <p>SIRET : 10593117400012</p>
+        <p>Adressage IP fourni par WEDEPLOY SAS, France</p>
+        <p>Réseau : AS210699</p>
+      </div>
+    </div>
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Conditions d'utilisation</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>Le site est proposé à titre informatif et personnel. Toute reproduction, diffusion ou réutilisation du contenu sans autorisation préalable est interdite.</p>
+        <p>L'accès au site peut être suspendu ou modifié à tout moment pour maintenance, évolution ou raison technique.</p>
+        <p>L'utilisateur s'engage à ne pas perturber le bon fonctionnement du site ni tenter d'en compromettre la sécurité.</p>
+      </div>
+    </div>
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Données personnelles</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>Les modalités de traitement des données personnelles sont détaillées dans la politique de confidentialité du site.</p>
+        <p>Vous y trouverez les informations relatives aux données collectées, aux finalités, aux destinataires et aux durées de conservation.</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <%- include('partials/footer') %>

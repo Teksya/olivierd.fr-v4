@@ -1,31 +1,28 @@
   </main>
 
-  <button class="scroll-top" id="scroll-top" aria-label="Retour en haut">
-    <i class="fa-solid fa-chevron-up"></i>
-  </button>
-
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <span class="footer-left">&copy; <%= new Date().getFullYear() %> Olivier D.</span>
-      <div class="footer-right">
-        <a href="http://github.com/Teksya" target="_blank" rel="noopener" class="footer-link">GitHub</a>
-        <a href="https://fr.linkedin.com/in/olivier-dutoit" target="_blank" rel="noopener" class="footer-link">LinkedIn</a>
-        <a href="mailto:olivierdutoit@etik.com" class="footer-link">Email</a>
-      <a href="https://www.anthropic.com" target="_blank" rel="noopener" class="footer-claude-link" aria-label="Built with Claude">
-        <img src="/claude.png" alt="Claude" class="footer-claude">
-      </a>
+  <footer class="mt-28 border-t border-line">
+    <div class="mx-auto max-w-content px-6">
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-3 py-7 text-xs">
+        <a href="http://github.com/Teksya" target="_blank" rel="noopener" class="text-muted transition-colors hover:text-strong">GitHub</a>
+        <a href="https://fr.linkedin.com/in/olivier-dutoit" target="_blank" rel="noopener" class="text-muted transition-colors hover:text-strong">LinkedIn</a>
+        <a href="mailto:olivierdutoit@etik.com" class="text-muted transition-colors hover:text-strong">Email</a>
+        <span class="hidden h-3 w-px bg-line sm:block"></span>
+        <a href="/mentions-legales" class="text-muted transition-colors hover:text-strong">Mentions légales</a>
+        <a href="/confidentialite" class="text-muted transition-colors hover:text-strong">Confidentialité</a>
+        <a href="/conditions-generales" class="text-muted transition-colors hover:text-strong">CGU</a>
       </div>
-    </div>
-    <div class="footer-legal">
-      <a href="/mentions-legales" class="footer-legal__link">Mentions légales</a>
-      <a href="/confidentialite" class="footer-legal__link">Confidentialité</a>
-      <a href="/conditions-generales" class="footer-legal__link">CGU</a>
+      <div class="flex flex-col gap-2 border-t border-line py-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+        <span>Copyright &copy; <%= new Date().getFullYear() %> Olivier Dutoit. Tous droits réservés.</span>
+        <a href="https://www.anthropic.com" target="_blank" rel="noopener" class="text-muted/50 transition-colors hover:text-muted">Co-auteur Claude</a>
+      </div>
     </div>
   </footer>
 
   <script>
-    document.querySelectorAll('.reveal').forEach(el => {
-      new IntersectionObserver(([e]) => { if(e.isIntersecting) { el.classList.add('visible'); } }, {threshold:.1}).observe(el);
+    document.querySelectorAll('.reveal').forEach(function (el) {
+      new IntersectionObserver(function (entries, obs) {
+        if (entries[0].isIntersecting) { el.classList.add('visible'); obs.disconnect(); }
+      }, { threshold: .12 }).observe(el);
     });
   </script>
 </body>

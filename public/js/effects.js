@@ -1,25 +1,18 @@
 (function () {
-  // ── Active nav link ──────────────────────────────
+  'use strict';
+
+  // ── Lien de navigation actif ─────────────────────
   var path = window.location.pathname;
   document.querySelectorAll('.nav-link').forEach(function (link) {
     if (link.getAttribute('href') === path) link.classList.add('active');
   });
 
-  // ── Page fade transition (exit) ──────────────────
-  document.querySelectorAll('a').forEach(function (link) {
-    var href = link.getAttribute('href');
-    if (!href || href.charAt(0) !== '/' || link.target === '_blank' || link.closest('form')) return;
-    link.addEventListener('click', function (e) {
-      if (href === path) return;
-      e.preventDefault();
-      document.body.classList.add('page-exit');
-      setTimeout(function () { window.location.href = href; }, 280);
-    });
-  });
+  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ── Animated counter ─────────────────────────────
-  document.querySelectorAll('.stat-number[data-count]').forEach(function (el) {
+  // ── Compteur animé (chiffres de la home) ─────────
+  document.querySelectorAll('[data-count]').forEach(function (el) {
     var target = parseInt(el.dataset.count, 10) || 0;
+    if (prefersReducedMotion) { el.textContent = '+' + target; return; }
     new IntersectionObserver(function (entries, obs) {
       if (!entries[0].isIntersecting) return;
       obs.disconnect();
@@ -33,27 +26,7 @@
     }, { threshold: 0.5 }).observe(el);
   });
 
-  // ── Scroll progress bar ──────────────────────────
-  var progressBar = document.getElementById('scroll-progress');
-  if (progressBar) {
-    window.addEventListener('scroll', function () {
-      var h = document.documentElement.scrollHeight - window.innerHeight;
-      progressBar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
-    }, { passive: true });
-  }
-
-  // ── Scroll-to-top button ─────────────────────────
-  var scrollBtn = document.getElementById('scroll-top');
-  if (scrollBtn) {
-    window.addEventListener('scroll', function () {
-      scrollBtn.classList.toggle('visible', window.scrollY > 400);
-    }, { passive: true });
-    scrollBtn.addEventListener('click', function () {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-
-  // ── Project modal ────────────────────────────────
+  // ── Modal projet ─────────────────────────────────
   var modal = document.getElementById('project-modal');
   if (modal) {
     var modalImg = document.getElementById('modal-img');
@@ -61,48 +34,83 @@
     var modalDesc = document.getElementById('modal-desc');
     var modalChips = document.getElementById('modal-chips');
     var modalTags = document.getElementById('modal-tags');
+    var lastFocused = null;
+
+    function chipHtml(v) {
+      return '<span class="inline-flex items-center rounded-full border border-line bg-surface2 px-3 py-1 text-xs text-body">' + v + '</span>';
+    }
 
     function openModal(card) {
+      lastFocused = card;
       modalImg.src = card.dataset.image || '';
       modalImg.alt = card.dataset.title || '';
       modalTitle.textContent = card.dataset.title || '';
       modalDesc.textContent = card.dataset.desc || '';
-      modalChips.innerHTML = (card.dataset.chips || '').split('|||').filter(Boolean).map(function (c) {
-        return '<span class="chip">' + c + '</span>';
-      }).join('');
-      modalTags.innerHTML = (card.dataset.tags || '').split('|||').filter(Boolean).map(function (t) {
-        return '<span class="chip">' + t + '</span>';
-      }).join('');
-      modal.classList.add('open');
+      modalChips.innerHTML = (card.dataset.chips || '').split('|||').filter(Boolean).map(chipHtml).join('');
+      modalTags.innerHTML = (card.dataset.tags || '').split('|||').filter(Boolean).map(chipHtml).join('');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
+      var closeBtn = document.getElementById('modal-close');
+      if (closeBtn) closeBtn.focus();
     }
 
     function closeModal() {
-      modal.classList.remove('open');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
       document.body.style.overflow = '';
+      if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
     }
 
     document.querySelectorAll('.project-card').forEach(function (card) {
       card.addEventListener('click', function () { openModal(card); });
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(card); }
+      });
     });
 
     document.getElementById('modal-close').addEventListener('click', closeModal);
     document.getElementById('modal-backdrop').addEventListener('click', closeModal);
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
     });
   }
 
-  // ── Konami code → confetti ───────────────────────
+  // ── Filtres par tag (page Travaux) ───────────────
+  var workFilters = document.getElementById('work-filters');
+  if (workFilters) {
+    var filterCards = document.querySelectorAll('.project-card');
+    var workEmpty = document.getElementById('work-empty');
+    workFilters.addEventListener('click', function (e) {
+      var btn = e.target.closest('.work-filter');
+      if (!btn) return;
+      var f = btn.dataset.filter;
+      workFilters.querySelectorAll('.work-filter').forEach(function (b) {
+        var on = b === btn;
+        b.classList.toggle('is-active', on);
+        b.classList.toggle('border-accent', on);
+        b.classList.toggle('text-strong', on);
+        b.classList.toggle('border-line', !on);
+        b.classList.toggle('text-muted', !on);
+      });
+      var shown = 0;
+      filterCards.forEach(function (card) {
+        var tags = (card.dataset.tags || '').split('|||');
+        var show = f === 'all' || tags.indexOf(f) !== -1;
+        card.style.display = show ? '' : 'none';
+        if (show) shown++;
+      });
+      if (workEmpty) workEmpty.hidden = shown > 0;
+    });
+  }
+
+  // ── Konami → confetti (easter egg) ───────────────
   var konamiSeq = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
   var konamiIdx = 0;
   document.addEventListener('keydown', function (e) {
     if (e.keyCode === konamiSeq[konamiIdx]) {
       konamiIdx++;
-      if (konamiIdx === konamiSeq.length) {
-        konamiIdx = 0;
-        fireConfetti();
-      }
+      if (konamiIdx === konamiSeq.length) { konamiIdx = 0; fireConfetti(); }
     } else {
       konamiIdx = 0;
     }
@@ -124,67 +132,4 @@
       (function (el) { setTimeout(function () { el.remove(); }, 4500); })(c);
     }
   }
-
-  // ── Fine-pointer-only effects ────────────────────
-  if (!window.matchMedia('(pointer: fine)').matches) return;
-
-  // ── Custom cursor ────────────────────────────────
-  var dot = document.createElement('div');
-  dot.className = 'cursor-dot';
-  var ring = document.createElement('div');
-  ring.className = 'cursor-ring';
-  document.body.appendChild(dot);
-  document.body.appendChild(ring);
-
-  var mx = -100, my = -100, rx = -100, ry = -100;
-
-  document.addEventListener('mousemove', function (e) {
-    mx = e.clientX;
-    my = e.clientY;
-    dot.style.left = mx + 'px';
-    dot.style.top = my + 'px';
-  });
-
-  (function tickRing() {
-    rx += (mx - rx) * 0.25;
-    ry += (my - ry) * 0.25;
-    ring.style.left = rx + 'px';
-    ring.style.top = ry + 'px';
-    requestAnimationFrame(tickRing);
-  })();
-
-  document.addEventListener('mouseover', function (e) {
-    if (e.target.closest('a, button, [role="button"], input, textarea, select, .tc, .card, .bento-card'))
-      ring.classList.add('cursor-hover');
-  });
-  document.addEventListener('mouseout', function (e) {
-    if (e.target.closest('a, button, [role="button"], input, textarea, select, .tc, .card, .bento-card'))
-      ring.classList.remove('cursor-hover');
-  });
-
-  // ── Magnetic buttons ─────────────────────────────
-  document.querySelectorAll('.btn').forEach(function (btn) {
-    btn.addEventListener('mousemove', function (e) {
-      var rect = btn.getBoundingClientRect();
-      var dx = e.clientX - rect.left - rect.width / 2;
-      var dy = e.clientY - rect.top - rect.height / 2;
-      btn.style.transform = 'translate(' + (dx * 0.18) + 'px,' + (dy * 0.18) + 'px)';
-    });
-    btn.addEventListener('mouseleave', function () {
-      btn.style.transform = '';
-    });
-  });
-
-  // ── Tilt 3D on bento cards ───────────────────────
-  document.querySelectorAll('.bento-card').forEach(function (card) {
-    card.addEventListener('mousemove', function (e) {
-      var rect = card.getBoundingClientRect();
-      var rX = ((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -4;
-      var rY = ((e.clientX - rect.left - rect.width / 2) / (rect.width / 2)) * 4;
-      card.style.transform = 'perspective(800px) rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) scale3d(1.01,1.01,1.01)';
-    });
-    card.addEventListener('mouseleave', function () {
-      card.style.transform = '';
-    });
-  });
 })();

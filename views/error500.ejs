@@ -1,15 +1,13 @@
 <%- include('partials/header') %>
 
-<div class="page-wrap">
-  <section class="error-section">
-    <div>
-      <div class="error-code">500</div>
-      <h1 class="error-title">Erreur serveur</h1>
-      <p class="error-desc">Une erreur inattendue s'est produite. Veuillez réessayer dans quelques instants.</p>
-      <div class="error-ctas">
-        <a href="/" class="btn btn-primary">Retour à l'accueil</a>
-        <a href="/contact" class="btn btn-ghost">Me contacter</a>
-      </div>
-    </div>
-  </section>
+<div class="mx-auto flex max-w-content flex-col items-center px-6 py-32 text-center">
+  <div class="text-7xl font-semibold tracking-tight text-strong sm:text-8xl">500</div>
+  <h1 class="mt-4 text-2xl font-semibold tracking-tight text-strong">Erreur serveur</h1>
+  <p class="mt-3 max-w-md text-body">Une erreur inattendue s'est produite. Veuillez réessayer dans quelques instants.</p>
+  <div class="mt-8 flex flex-wrap justify-center gap-3">
+    <a href="/" class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accenth">Retour à l'accueil</a>
+    <a href="/contact" class="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-body transition-colors hover:border-line2 hover:text-strong">Me contacter</a>
+  </div>
 </div>
+
+<%- include('partials/footer') %>

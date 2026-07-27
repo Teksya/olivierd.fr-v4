@@ -1,147 +1,106 @@
 <%- include('partials/header') %>
 
-<div class="page-wrap">
-  <div class="bento-page">
+<div class="mx-auto max-w-content px-6 py-16 sm:py-20">
+
+  <!-- BENTO -->
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:auto-rows-[minmax(11rem,auto)]">
 
     <!-- HERO -->
-    <div class="bento-card bento-main reveal">
-      <span class="bento-kicker">Étudiant en informatique &middot; France</span>
-      <h1>Olivier<br>DUTOIT</h1>
-      <p>
-        Actuellement en <strong style="color:var(--text-strong)">Terminale Bac Pro CIEL</strong>, futur alternant en <strong style="color:var(--text-strong)">BTS SIO SISR</strong>. Passionné par l'infrastructure IT, je développe également mes compétences en développement web.
-      </p>
-      <div class="bento-ctas">
-        <a href="/work" class="btn btn-primary">Voir mes projets</a>
-        <a href="/contact" class="btn btn-ghost">Me contacter</a>
+    <section class="reveal flex flex-col justify-between rounded-3xl border border-line bg-surface p-8 sm:col-span-2 lg:row-span-2">
+      <div>
+        <p class="text-sm font-semibold text-accenth">Étudiant en informatique · France</p>
+        <h1 class="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-strong sm:text-6xl">Olivier<br>Dutoit</h1>
       </div>
-    </div>
-
-    <!-- STAT -->
-    <div class="bento-card bento-stat reveal" style="transition-delay:.12s">
-      <div class="stat-number" data-count="4">+0</div>
-      <div class="stat-label">Années d'expérience avec les technologies modernes</div>
-    </div>
-
-    <!-- GOAL -->
-    <div class="bento-card bento-goal reveal" style="transition-delay:.22s">
-      <span class="goal-badge">Objectif</span>
-      <div class="goal-title">BTS SIO SISR</div>
-      <div class="goal-desc">En alternance &mdash; réseaux, systèmes, web</div>
-    </div>
-
-    <!-- LOCATION -->
-    <div class="bento-card bento-location reveal" style="transition-delay:.32s">
-      <i class="fa-solid fa-location-dot loc-icon"></i>
-      <div class="loc-city">Saint-Étienne</div>
-      <div class="loc-country">France</div>
-    </div>
-
-    <!-- STACK -->
-    <div class="bento-card bento-stack reveal" style="transition-delay:.38s">
-      <div class="stack-title">Stack principale</div>
-      <div class="stack-items">
-        <span class="chip">Linux</span>
-        <span class="chip">Windows Server</span>
-        <span class="chip">Docker</span>
-        <span class="chip">Proxmox</span>
-        <span class="chip">Cisco</span>
-        <span class="chip">Mikrotik</span>
-        <span class="chip">Node.js</span>
-        <span class="chip">Git</span>
-      </div>
-    </div>
-
-    <!-- COMPETENCES -->
-    <div class="bento-card bento-competences reveal" style="transition-delay:.46s">
-      <div class="comp-header">
-        <span class="comp-title">Compétences</span>
-        <span class="comp-sub">5 domaines clés</span>
-      </div>
-      <div class="tech-cards">
-        <div class="tc tc--win">
-          <div class="tc__top"><span class="tc__num">01</span><span class="tc__dot"></span></div>
-          <div class="tc__bottom">
-            <span class="tc__name">Windows Server</span>
-            <span class="tc__sub">2016 &middot; 2019 &middot; 2022</span>
-          </div>
-        </div>
-        <div class="tc tc--lnx">
-          <div class="tc__top"><span class="tc__num">02</span><span class="tc__dot"></span></div>
-          <div class="tc__bottom">
-            <span class="tc__name">Linux</span>
-            <span class="tc__sub">Debian &middot; Ubuntu &middot; Kali</span>
-          </div>
-        </div>
-        <div class="tc tc--net">
-          <div class="tc__top"><span class="tc__num">03</span><span class="tc__dot"></span></div>
-          <div class="tc__bottom">
-            <span class="tc__name">Cisco &middot; Mikrotik</span>
-            <span class="tc__sub">VLAN &middot; VPN &middot; Firewall</span>
-          </div>
-        </div>
-        <div class="tc tc--prx">
-          <div class="tc__top"><span class="tc__num">04</span><span class="tc__dot"></span></div>
-          <div class="tc__bottom">
-            <span class="tc__name">Proxmox PVE</span>
-            <span class="tc__sub">KVM &middot; LXC &middot; Clustering</span>
-          </div>
-        </div>
-        <div class="tc tc--cnt">
-          <div class="tc__top"><span class="tc__num">05</span><span class="tc__dot"></span></div>
-          <div class="tc__bottom">
-            <span class="tc__name">Conteneurs</span>
-            <span class="tc__sub">Docker &middot; OVM &middot; NAS</span>
-          </div>
+      <div>
+        <p class="mt-6 max-w-md text-[15px] leading-relaxed text-body">
+          Actuellement en <strong class="font-medium text-strong">1<sup>re</sup> année de BTS SIO SISR</strong> en alternance,
+          après un <strong class="font-medium text-strong">Bac Pro CIEL</strong> mention Très Bien. Passionné par l'infrastructure IT.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="/work" class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accenth">Voir mes projets</a>
+          <a href="/contact" class="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-body transition-colors hover:border-line2 hover:text-strong">Me contacter</a>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- TECH CATEGORIES -->
-    <div class="bento-card bento-tech bento-t1 reveal" style="transition-delay:.54s">
-      <div class="tech-card__title">Réseaux &amp; Systèmes</div>
-      <div class="tech-card__chips">
-        <span class="chip">Windows Server</span>
-        <span class="chip">Linux</span>
-        <span class="chip">Cisco</span>
-        <span class="chip">Mikrotik</span>
-        <span class="chip">Wireshark</span>
+    <!-- CHIFFRES -->
+    <section class="reveal flex items-center gap-6 rounded-3xl border border-line bg-surface p-6 sm:col-span-2" style="transition-delay:.05s">
+      <div class="flex-1">
+        <div class="text-3xl font-semibold tracking-tight text-strong sm:text-4xl" data-count="4">+0</div>
+        <div class="mt-1 text-xs text-muted">Années à explorer<br>les techs modernes</div>
       </div>
-    </div>
+      <div class="h-14 w-px bg-line"></div>
+      <div class="flex-1">
+        <div class="text-3xl font-semibold tracking-tight text-strong sm:text-4xl" data-count="<%= projectCount %>">+0</div>
+        <div class="mt-1 text-xs text-muted">Projets &amp; réalisations<br>infra &amp; dev</div>
+      </div>
+    </section>
 
-    <div class="bento-card bento-tech bento-t2 reveal" style="transition-delay:.6s">
-      <div class="tech-card__title">Langages</div>
-      <div class="tech-card__chips">
-        <span class="chip">JavaScript</span>
-        <span class="chip">Node.js</span>
-        <span class="chip">PHP</span>
-        <span class="chip">Python</span>
-        <span class="chip">C#</span>
-        <span class="chip">Java</span>
-        <span class="chip">Lua</span>
+    <!-- OBJECTIF -->
+    <section class="reveal flex flex-col justify-between rounded-3xl border border-line bg-surface p-6" style="transition-delay:.1s">
+      <span class="inline-flex w-fit items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-1 text-xs font-medium text-accenth">
+        <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>En cours
+      </span>
+      <div class="mt-4">
+        <div class="text-lg font-semibold text-strong">BTS SIO SISR</div>
+        <div class="mt-1 text-xs text-muted">1<sup>re</sup> année en alternance - réseaux, systèmes, web</div>
       </div>
-    </div>
+    </section>
 
-    <div class="bento-card bento-tech bento-t3 reveal" style="transition-delay:.66s">
-      <div class="tech-card__title">Front-End</div>
-      <div class="tech-card__chips">
-        <span class="chip">HTML/CSS</span>
-        <span class="chip">Tailwind CSS</span>
-        <span class="chip">Figma</span>
-        <span class="chip">Canva</span>
+    <!-- LOCALISATION -->
+    <section class="reveal flex flex-col justify-between rounded-3xl border border-line bg-surface p-6" style="transition-delay:.15s">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="text-accenth" aria-hidden="true"><path d="M20 10c0 4.4-8 12-8 12s-8-7.6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      <div class="mt-4">
+        <div class="text-lg font-semibold text-strong">Saint-Étienne</div>
+        <div class="mt-1 text-xs text-muted">France</div>
       </div>
-    </div>
+    </section>
 
-    <div class="bento-card bento-tech bento-t4 reveal" style="transition-delay:.72s">
-      <div class="tech-card__title">Outils &amp; Autres</div>
-      <div class="tech-card__chips">
-        <span class="chip">Docker</span>
-        <span class="chip">Git</span>
-        <span class="chip">MySQL</span>
-        <span class="chip">Excel</span>
+    <!-- COMPÉTENCES -->
+    <section class="reveal flex flex-col rounded-3xl border border-line bg-surface p-6" style="transition-delay:.05s">
+      <h2 class="text-sm font-semibold text-strong">Réseaux &amp; Systèmes</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Windows Server</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Linux</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Cisco</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Mikrotik</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Proxmox</span>
       </div>
-    </div>
+    </section>
+
+    <section class="reveal flex flex-col rounded-3xl border border-line bg-surface p-6" style="transition-delay:.1s">
+      <h2 class="text-sm font-semibold text-strong">Langages</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">JavaScript</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Node.js</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">PHP</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Python</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">C#</span>
+      </div>
+    </section>
+
+    <section class="reveal flex flex-col rounded-3xl border border-line bg-surface p-6" style="transition-delay:.15s">
+      <h2 class="text-sm font-semibold text-strong">Front-End</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">HTML/CSS</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Tailwind CSS</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Figma</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Canva</span>
+      </div>
+    </section>
+
+    <section class="reveal flex flex-col rounded-3xl border border-line bg-surface p-6" style="transition-delay:.2s">
+      <h2 class="text-sm font-semibold text-strong">Outils &amp; Autres</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Docker</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Git</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">MySQL</span>
+        <span class="inline-flex items-center rounded-full border border-line bg-surface2 px-2.5 py-1 text-xs text-body">Wireshark</span>
+      </div>
+    </section>
 
   </div>
+
 </div>
 
 <%- include('partials/footer') %>
