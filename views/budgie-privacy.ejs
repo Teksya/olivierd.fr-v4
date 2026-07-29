@@ -1,0 +1,97 @@
+<%- include('partials/header') %>
+
+<div class="mx-auto max-w-content px-6 py-20 sm:py-24">
+  <section class="reveal">
+    <p class="text-sm font-semibold text-accenth">Application Budgie</p>
+    <h1 class="mt-4 text-4xl font-semibold tracking-tight text-strong sm:text-5xl">Politique de confidentialité</h1>
+    <p class="mt-4 max-w-2xl text-base text-body">
+      Cette page décrit le traitement des données de l'application Android <strong class="text-strong">Budgie</strong> (identifiant <span class="font-mono text-[13px]">com.olivierd.budgie</span>), une application de budget personnel éditée par Olivier Dutoit.
+    </p>
+    <p class="mt-3 text-sm text-muted">Dernière mise à jour : 27 juillet 2026</p>
+  </section>
+
+  <div class="reveal mt-12 rounded-3xl border border-line bg-surface p-6 sm:p-7">
+    <h2 class="text-base font-semibold text-strong">En résumé</h2>
+    <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+      <p>Budgie ne collecte aucune donnée personnelle. Il n'existe ni compte, ni serveur, ni base de données distante : vos revenus, vos dépenses, vos catégories et votre historique sont enregistrés uniquement dans la mémoire de votre téléphone.</p>
+      <p>L'éditeur n'a aucun accès à ces informations et n'a aucun moyen technique d'y accéder. Aucune publicité, aucun traceur, aucune revente de données.</p>
+      <p>Une seule nuance, détaillée plus bas : le scanner de tickets s'appuie sur une bibliothèque Google qui transmet ses propres statistiques techniques à Google. Elle ne transporte aucune donnée budgétaire.</p>
+    </div>
+  </div>
+
+  <div class="mt-4 grid gap-4 sm:grid-cols-2">
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Données traitées et lieu de stockage</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>Les données que vous saisissez — montants, dates, catégories, notes, comptes, budgets, objectifs d'épargne, dettes, échéances — sont stockées dans une base de données locale, dans l'espace privé de l'application sur votre appareil.</p>
+        <p>Les photos de tickets que vous ajoutez sont copiées dans ce même espace privé et n'en sortent pas.</p>
+        <p>Aucune de ces informations n'est transmise à l'éditeur ni à un tiers.</p>
+      </div>
+    </div>
+
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Absence de compte</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>L'application ne demande ni inscription, ni adresse électronique, ni identifiant. Elle ne se connecte à aucun établissement bancaire et ne propose aucune agrégation de comptes.</p>
+        <p>Aucun identifiant publicitaire, aucun identifiant d'appareil et aucune donnée de localisation ne sont lus ni transmis.</p>
+      </div>
+    </div>
+
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Autorisations demandées</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p><strong class="text-strong">Notifications</strong> — pour vous rappeler localement une échéance à payer ou un budget dépassé. Ces rappels sont générés par l'appareil et ne transitent par aucun serveur.</p>
+        <p><strong class="text-strong">Biométrie</strong> — pour déverrouiller l'application par empreinte ou par le code de l'appareil, si vous activez cette option. L'empreinte est gérée par Android et n'est jamais accessible à l'application.</p>
+        <p><strong class="text-strong">Appareil photo et fichiers</strong> — uniquement lorsque vous choisissez de photographier ou de sélectionner un ticket de caisse.</p>
+        <p><strong class="text-strong">Accès réseau</strong> — présent dans l'application pour la raison exposée dans la section suivante, et pour cette raison uniquement.</p>
+      </div>
+    </div>
+
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Service tiers : Google ML Kit</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>La lecture automatique du montant sur une photo de ticket utilise <strong class="text-strong">Google ML Kit Text Recognition</strong>. La reconnaissance elle-même s'exécute hors ligne, sur l'appareil : l'image du ticket n'est envoyée nulle part.</p>
+        <p>En revanche, cette bibliothèque embarque un composant de télémétrie qui transmet à Google des statistiques techniques de fonctionnement. C'est la seule raison pour laquelle l'application déclare l'autorisation d'accès à Internet.</p>
+        <p>Ces échanges ne contiennent aucune donnée budgétaire : ni montant, ni catégorie, ni note, ni photo. Ils sont régis par la politique de confidentialité de Google.</p>
+      </div>
+    </div>
+
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Sauvegarde et exportation</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>L'application permet d'exporter une sauvegarde complète dans un fichier chiffré, protégé par un mot de passe que vous choisissez. Le chiffrement est effectué sur l'appareil.</p>
+        <p>Cette exportation est toujours déclenchée par vous et n'a jamais lieu automatiquement. La destination du fichier — stockage local, messagerie, service de synchronisation — dépend entièrement de l'application que vous sélectionnez au moment du partage. Ce que devient le fichier ensuite relève de ce service et non de Budgie.</p>
+        <p>Le mot de passe de sauvegarde n'est ni stocké ni récupérable. Il vous appartient de le conserver.</p>
+      </div>
+    </div>
+
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Conservation et suppression</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>Les données restent sur votre appareil aussi longtemps que l'application y est installée.</p>
+        <p>Vous pouvez tout effacer à tout moment depuis <strong class="text-strong">Réglages &rsaquo; Données &rsaquo; Repartir de zéro</strong>, ou en désinstallant l'application : la suppression est alors immédiate et définitive.</p>
+        <p>L'éditeur ne détenant aucune copie de vos données, aucune demande de suppression ne peut lui être adressée — il n'a rien à supprimer.</p>
+      </div>
+    </div>
+
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Vos droits</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>Le règlement général sur la protection des données vous ouvre des droits d'accès, de rectification, d'effacement, de limitation et d'opposition.</p>
+        <p>Dans le cas de Budgie, ces droits s'exercent directement dans l'application : vous êtes le seul détenteur des données, vous pouvez les consulter, les modifier et les supprimer sans intermédiaire.</p>
+        <p>Pour toute question relative à cette politique, vous pouvez écrire à <a href="mailto:olivierdutoit@etik.com" class="text-accenth transition-colors hover:text-strong">olivierdutoit@etik.com</a>.</p>
+      </div>
+    </div>
+
+    <div class="reveal rounded-3xl border border-line bg-surface p-6 sm:p-7">
+      <h2 class="text-base font-semibold text-strong">Enfants et modifications</h2>
+      <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">
+        <p>Budgie ne s'adresse pas spécifiquement aux enfants et ne collecte sciemment aucune donnée les concernant.</p>
+        <p>Cette politique peut évoluer si l'application intègre de nouvelles fonctionnalités. Toute modification sera publiée sur cette page, avec mise à jour de la date indiquée en haut.</p>
+        <p>Éditeur : Olivier Dutoit — France.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

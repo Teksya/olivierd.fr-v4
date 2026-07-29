@@ -765,6 +765,14 @@ app.get('/confidentialite', (req, res) => res.render('confidentialite', {
 	ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
 }));
 
+// URL déclarée sur la fiche Google Play de l'application Budgie.
+app.get('/budgie-privacy', (req, res) => res.render('budgie-privacy', {
+	title: 'Budgie - Politique de confidentialité',
+	description: 'Politique de confidentialité de l\'application Android Budgie : aucune donnée collectée, tout reste sur l\'appareil.',
+	url: 'https://www.olivier-dutoit.fr/budgie-privacy',
+	ogImage: 'https://www.olivier-dutoit.fr/og-image.png'
+}));
+
 function verifyTurnstile(token, remoteip) {
 	return new Promise((resolve, reject) => {
 		const postData = querystring.stringify({
